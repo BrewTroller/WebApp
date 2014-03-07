@@ -15,12 +15,6 @@
 </script>
 <script>
 
-    var host = "adamandnicole.com:8082";
-    var username = "admin";
-    var password = "password";
-    var connected = false;
-    var lastUpdate = 0;
-
     function connectWatchdog()
     {
         var d = new Date();
@@ -171,41 +165,6 @@
       
     }
     
-    /* function click_startTimer(vessel) {
-      var timerStatus;
-      var timerId = "";
-      var setTime = "";
-      var vessel = vessel;
-      if (vessel == "mash") {
-        timerId = 0;
-        setTime = $('#mashTimerSet').val();
-        a = "werwe";
-      } else if (vessel="boil") {
-        timerId = 1;
-        setTime = $('#boilTimerSet').val();
-        b = "wefawe";
-      } else {
-        alert("Unable To Set Timer");
-      }
-      brewTrollerExecCommand(BTCMD_GetTimerStatus, timerId, null, host, username, password, function(data){
-        timerStatus = data.TimerStatus;
-        if (timerStatus == "0") {
-          $timer = "werwe";
-          brewTrollerExecCommand(BTCMD_StartTimer, timerId, {"TimerStatus": 1}, host, username, password, function(data){
-          });
-          $("#" + vessel + "TimerButton").text("Manual Start");
-          Brewtroller.timer.printTimer();
-        }else{
-          $timer = "wwerwe";
-          brewTrollerExecCommand(BTCMD_StartTimer, timerId, {"TimerStatus": 0}, host, username, password, function(data){
-          });
-          $("#" + vessel + "TimerButton").text("Pause");
-          Brewtroller.timer.printTimer();
-        }
-      });
-      
-    } */
-    
     function click_buttonAlarm()
     {
         brewTrollerExecCommand(BTCMD_SetAlarm, null, {"alarmStatus": "0"}, host, username, password, function(data){
@@ -321,7 +280,13 @@
                         <div id="div_hltVolume"></div>
                         <div id="div_hltTargetVolume"></div>
                         <div id="div_hltFlowRate"></div>
-                    </div>
+                        <div class="input-group">
+											      <span class="input-group-btn">
+											        <button id="hltTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
+											      </span>
+											      <input id="hltTempSet" type="text" class="form-control">
+											    </div><!-- /input-group -->
+										</div>
                 </div>
             	</div>
             </div>
@@ -335,6 +300,12 @@
                         <div id="div_mashVolume"></div>
                         <div id="div_mashTargetVolume"></div>
                         <div id="div_mashFlowRate"></div>
+                        <div class="input-group">
+									      <span class="input-group-btn">
+									        <button id="mashTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
+									      </span>
+									      <input id="mashTempSet" type="text" class="form-control">
+									    </div><!-- /input-group -->
                     </div>
                 </div>
             </div>
@@ -342,21 +313,21 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"><h3 class="panel-title">Boil Kettle</h3></div>
                     <div class="panel-body">
-						<div class="container">
-							<div class="row">
-								<div class="col-sm-2">
-									<div id="div_kettleTemperature"></div>
-									<div id="div_kettleSetpoint"></div>
-									<div id="div_kettleHeatPower"></div>
-									<div id="div_kettleVolume"></div>
-									<div id="div_kettleTargetVolume"></div>
-									<div id="div_kettleFlowRate"></div>
-								</div>
-								<div class="col-sm-2">
-									<div id="div_boilControl"></div>
-								</div>
-							</div>
-						</div>
+											<div class="container">
+												<div class="row">
+													<div class="col-sm-2">
+														<div id="div_kettleTemperature"></div>
+														<div id="div_kettleSetpoint"></div>
+														<div id="div_kettleHeatPower"></div>
+														<div id="div_kettleVolume"></div>
+														<div id="div_kettleTargetVolume"></div>
+														<div id="div_kettleFlowRate"></div>
+													</div>
+													<div class="col-sm-2">
+														<div id="div_boilControl"></div>
+													</div>
+												</div>
+											</div>
                     </div>
                 </div>
             </div>
@@ -417,7 +388,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
+                    <button id="settingsSaveBtn" type="button" class="btn btn-default" data-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>

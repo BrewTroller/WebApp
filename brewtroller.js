@@ -1,4 +1,10 @@
 Brewtroller = {};
+var host;
+var username = "admin";
+var password = "password";
+var connected = false;
+var lastUpdate = 0;
+var storedHost;
 
 //Map BTNic CGI Byte Codes to Human Readable Functions
 var BTCMD_GetVersion = {
@@ -142,13 +148,33 @@ var BTCMD_GetStatus = {
 	]
 };
 
+var BTCMD_SetSetpoint = {
+    reqCode: 'X',
+    reqIndex: true,
+    reqParams: ["Setpoint"],
+    rspCode: 't',
+    rspParams: [
+      "Setpoint"
+    ]
+  };
+
 //Brewtroller Web Init
 Brewtroller.init = function () {
   $('#button_connect').on("click", function() {
     Brewtroller.connected.click_buttonConnect();
+    //Brewtroller.program.getProgramList();
   });
+  $('#settingsSaveBtn').on("click", function() {
+    Brewtroller.connected.saveConnectionSettings();
+  });
+  storedHost = localStorage.getItem('btHost');
+  if (storedHost) {
+    host = storedHost;
+    $('#settingsHost').attr('placeholder', host);
+  }
   
   Brewtroller.timer.setup();
+  Brewtroller.temp.setup();
   //Brewtroller.connected.loop();
 };
 
@@ -163,6 +189,7 @@ Brewtroller.connected = {
         } else {
             connected = true;
             Brewtroller.connected.loop();
+            //Brewtroller.program.getProgramList();
         }
     },    
     loop : function () {
@@ -180,7 +207,28 @@ Brewtroller.connected = {
             $("#button_connect").css('color', 'red');
             
         }
+    },
+    saveConnectionSettings : function () {
+      host = $('#settingsHost').val();
+      $('#settingsHost').text("host");
+      localStorage.setItem('btHost',host);
     }
+    
+};
+
+//Program Functions
+Brewtroller.program = {
+  getProgramList : function () {
+    var programList = [];
+    $i = 0;
+    while($i < 20) {
+      brewTrollerExecCommand(BTCMD_GetProgram, $i, null, host, username, password, function(data){
+        $a = "werwe";
+        array_push(programList, data.name);
+        $i++;
+      });
+    }
+  }  
 };
 
 //Timer Functions
@@ -214,7 +262,7 @@ Brewtroller.timer = {
       }else{
         rStatus = "On";
       }
-    $(id).html("Set Time: " + value/1000 + " seconds <br>Status: " + rStatus);
+    $(id).html("Set Time: " + millisecondsToTime(value) + " seconds <br>Status: " + rStatus);
     },
     click_startTimer : function (vessel) {
       var timerStatus;
@@ -246,6 +294,24 @@ Brewtroller.timer = {
     }
 };
 
+//Temp Functions
+Brewtroller.temp = {
+    setup : function() {
+      $('#hltTempSetBtn').on("click", function () {
+        temp = $('#hltTempSet').val();
+        Brewtroller.temp.setTemp(0, temp);
+      });
+      $('#mashTempSetBtn').on("click", function () {
+        temp = $('#hltTempSet').val();
+        Brewtroller.temp.setTemp(0, temp);
+      });
+    },
+    setTemp : function (vessel, temp) {
+            brewTrollerExecCommand(BTCMD_SetSetpoint, vessel, {"Setpoint":temp}, host, username, password, function(data){
+      });
+    }  
+};
+
 //Command Helper Functions
 function brewTrollerExecCommand(cmdObj, index, params, host, user, pwd, callback){
 	var command = cmdObj.reqCode;
@@ -271,8 +337,6 @@ function brewTrollerExecCommand(cmdObj, index, params, host, user, pwd, callback
 			return object;
 		},
 		error: function(result) {
-		  alert("Did not Work");
-		  alert(result);
 		}
 	});
 }
@@ -313,4 +377,14 @@ function brewTrollerParseResponse(result, cmdObject)
 		returnObject[cmdObject.rspParams[i]] = result[i];
 	}
 	return returnObject;
+};
+
+
+function millisecondsToTime(milli)
+{
+      var milliseconds = milli % 1000;
+      var seconds = Math.floor((milli / 1000) % 60);
+      var minutes = Math.floor((milli / (60 * 1000)) % 60);
+
+      return minutes + "m" + seconds + "s" + milliseconds + "ms";
 };
