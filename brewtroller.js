@@ -302,8 +302,8 @@ Brewtroller.temp = {
         Brewtroller.temp.setTemp(0, temp);
       });
       $('#mashTempSetBtn').on("click", function () {
-        temp = $('#hltTempSet').val();
-        Brewtroller.temp.setTemp(0, temp);
+        temp = $('#mashTempSet').val();
+        Brewtroller.temp.setTemp(1, temp);
       });
     },
     setTemp : function (vessel, temp) {
