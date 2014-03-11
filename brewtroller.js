@@ -5,6 +5,7 @@ var password = "password";
 var connected = false;
 var lastUpdate = 0;
 var storedHost;
+var programList = [];
 
 //Map BTNic CGI Byte Codes to Human Readable Functions
 var BTCMD_GetVersion = {
@@ -156,7 +157,92 @@ var BTCMD_SetSetpoint = {
     rspParams: [
       "Setpoint"
     ]
-  };
+};
+
+var BTCMD_Reset = {
+	    reqCode: 'c',
+	    reqIndex: true,
+	    reqParams: [],
+	    rspCode: 'c',
+	    rspParams: []
+};
+var BTCMD_StartStep = {
+	    reqCode: 'U',
+	    reqIndex: true,
+	    reqParams: [
+	                "0",
+	                "1",
+	                "2",
+	                "3",
+	                "4",
+	                "5",
+	                "6",
+	                "7",
+	                "8",
+	                "9",
+	                "10",
+	                "11",
+	                "12",
+	                "13",
+	                "14"
+	                ],
+	    rspCode: 'n',
+	    rspParams: [
+					"Fill",
+					"Delay",
+					"Preheat",
+					"Grain In",
+					"Refill",
+					"Dough In",
+					"Acid",
+					"Protein",
+					"Sacch",
+					"Sacch2",
+					"Mash Out",
+					"Mash Hold",
+					"Sparge",
+					"Boil",
+					"Chill"
+	                ]
+};
+
+var BTCMD_NextStep = {
+	    reqCode: 'S',
+	    reqIndex: true,
+	    reqParams: [],
+	    rspCode: 'n',
+	    rspParams: [
+					"Fill",
+					"Delay",
+					"Preheat",
+					"Grain In",
+					"Refill",
+					"Dough In",
+					"Acid",
+					"Protein",
+					"Sacch",
+					"Sacch2",
+					"Mash Out",
+					"Mash Hold",
+					"Sparge",
+					"Boil",
+					"Chill"
+	                ]
+};
+
+var BTCMD_GetActivePrograms = {
+	    reqCode: 'n',
+	    reqIndex: false,
+	    reqParams: [],
+	    rspCode: 'n',
+	    rspParams: [
+					"Response Code",
+					"Program 1 Step",
+					"Program 1 Number",
+					"Program 2 Step",
+					"Program 2 Number"
+					]
+};
 
 //Brewtroller Web Init
 Brewtroller.init = function () {
@@ -166,6 +252,22 @@ Brewtroller.init = function () {
   });
   $('#settingsSaveBtn').on("click", function() {
     Brewtroller.connected.saveConnectionSettings();
+  });
+  $('#button_reset').on("click", function() {
+	Brewtroller.reset.resetPrograms(); 
+  });
+  $('#startBtn1').on("click", function () {
+	var programRet = $('#recipeDetails table tbody tr:first-child td:nth-child(2)').text();
+	var program = programRet.substr(1,1);
+	Brewtroller.program.startStep(program, "0"); 
+  });
+  $('#startBtn2').on("click", function () {
+	var programRet = $('#recipeDetails table tbody tr:first-child td:nth-child(2)').text();
+	var program = programRet.substr(1,1);
+	Brewtroller.program.startStep(program, "0"); 
+  });
+  $('#button_nextStep').on("click", function () {
+	 Brewtroller.program.nextStep("1"); 
   });
   storedHost = localStorage.getItem('btHost');
   if (storedHost) {
@@ -197,6 +299,7 @@ Brewtroller.connected = {
         Brewtroller.connected.checkWatchdog();
         brewTrollerExecCommand(BTCMD_GetStatus, null, {}, host, username, password, printUI);
         setTimeout(Brewtroller.connected.loop, 500);
+        Brewtroller.status.updateStatusBar();
       }
     },
     checkWatchdog : function () {
@@ -219,17 +322,41 @@ Brewtroller.connected = {
 //Program Functions
 Brewtroller.program = {
   getProgramList : function () {
-    var programList = [];
-    $i = 0;
-    while($i < 20) {
-      brewTrollerExecCommand(BTCMD_GetProgram, $i, null, host, username, password, function(data){
-        $a = "werwe";
-        array_push(programList, data.name);
-        $i++;
-      });
-    }
-  }  
+    brewTrollerExecCommand(BTCMD_GetProgram, $i, null, host, username, password, function(data){});
+	},
+  getProgram : function (vessel) {
+	$('#recipeDetails table tbody tr').remove();
+	brewTrollerExecCommand(BTCMD_GetProgram, vessel, null, host, username, password, function(data){
+	$.each(data, function( index, value ) {
+		$('#recipeDetails table tbody').append('<tr><td class="text-muted">' + index + '</td><td>' + value + "</td></tr>");
+	});
+	});
+  },
+  getProgramName : function (vessel) {
+		brewTrollerExecCommand(BTCMD_GetProgram, vessel, null, host, username, password, function(data){
+		return data["name"];
+		});
+	  },
+  startStep : function (program, step) {
+	  brewTrollerExecCommand(BTCMD_StartStep, program, step, host, username, password, function(data){});
+  },
+  nextStep : function (program) {
+	  brewTrollerExecCommand(BTCMD_GetStatus, null, {}, host, username, password, function(data){
+	  var program1currStep = data["ProgramThread1_Step"];
+	  var program2currStep = data["ProgramThread2_Step"];
+	  if (program = "0") {
+		  if (program1currStep != "255") {
+			  brewTrollerExecCommand(BTCMD_NextStep, program1currStep, null, host, username, password, function(data){});
+		  }
+	  }else{
+		  if (program2currStep != "255") {
+			  brewTrollerExecCommand(BTCMD_NextStep, program2currStep, null, host, username, password, function(data){});	  
+		  }
+	  }
+	});
+  }
 };
+
 
 //Timer Functions
 Brewtroller.timer = {
@@ -311,6 +438,52 @@ Brewtroller.temp = {
       });
     }  
 };
+
+//Reset Functions
+Brewtroller.reset = {
+	resetPrograms : function() {
+		brewTrollerExecCommand(BTCMD_Reset, "0", null, host, username, password, function(data){
+	    });
+	}
+}
+
+//Status Functions
+Brewtroller.status = {
+	updateStatusBar : function () {
+		brewTrollerExecCommand(BTCMD_GetActivePrograms, null, null, host, username, password, function(data){
+			var stepName1 = data["Program 1 Step"];
+			var stepName2 = data["Program 2 Step"];
+			var programName1 = data["Program 1 Number"];
+			var programName2 = data["Program 2 Number"];
+			$('#program1Name').html(Brewtroller.program.getProgramName(programName1));
+			$('#program2Name').html(Brewtroller.program.getProgramName(programName2));
+			$('#currStatusProg1').html(Brewtroller.status.translateStepCode(stepName1));
+			$('#currStatusProg2').html(Brewtroller.status.translateStepCode(stepName2));
+	    });
+	},
+		translateStepCode : function (step) {
+			var stepTranslate = {
+								"0": "Fill",
+								"1": "Delay",
+								"2": "Preheat",
+								"3": "Grain In",
+								"4": "Refill",
+								"5": "Dough In",
+								"6": "Acid",
+								"7": "Protein",
+								"8": "Sacch",
+								"9": "Sacch2",
+								"10": "Mash Out",
+								"11":"Mash Hold",
+								"12": "Sparge",
+								"13": "Boil",
+								"14": "Chill",
+								"255": "Idle"
+								}
+			return stepTranslate[step];
+		}
+	};
+
 
 //Command Helper Functions
 function brewTrollerExecCommand(cmdObj, index, params, host, user, pwd, callback){

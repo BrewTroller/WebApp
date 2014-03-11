@@ -2,20 +2,20 @@
 <html>
 <head>
 <title>BrewTroller jQuery/Bootstrap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-
 <!-- Optional theme -->
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="brewtroller.js">
-</script>
+
 <script>
 
-    function connectWatchdog()
+
+	function connectWatchdog()
     {
         var d = new Date();
         lastUpdate = d.getTime();
@@ -185,6 +185,7 @@
 </script>
 </head>
 <body>
+  <div class="container">
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -217,9 +218,34 @@
     </nav>
     <div class="container">
         <div class="row">
+        <div class="well well-sm">
+        <div class="row">
+        	<div class="col-sm-5">
+        	  <p id="program1Name"></p>
+        	  <p class="alert alert-success" style="padding:5px;">(1)Current Step : <span id="currStatusProg1"></span></p>
+       	  	</div>
+       	  	<div class="col-sm-5">
+        	  <p id="program2Name"></p>
+        	  <p class="alert alert-success" style="padding:5px;">(2)Current Step : <span id="currStatusProg2"></span></p>
+        	</div>
+        	<div class="col-sm-2">
+        		<div class="btn-group">
+				  <button id="button_nextStep" type="button" class="btn btn-default">Next Step</button>
+				  <button id="button_reset" type="button" class="btn btn-default">Reset</button>
+				</div>
+            </div>
+        </div>
+        </div>
+        </div>
+        <div class="row">
             <div class="col-sm-5">
                 <div class="panel panel-default">
-                    <div class="panel-heading"><h3 class="panel-title">Program Threads</h3></div>
+                    <div class="panel-heading clearfix">
+                    	<h3 class="panel-title pull-left">
+                    		Program Threads
+                    	</h3>
+                    	<button id="programModalButton" data-toggle="modal" data-target="#modal_programPicker" class="btn btn-default btn-xs pull-right" type="button">Load Recipe</button>
+                    </div>
                     <div class="panel-body">
                         <div id="div_programThread1"></div>
                         <div id="div_programThread2"></div>
@@ -265,7 +291,11 @@
                 </div>
             </div>
             <div class="col-sm-1 text-right">
-                <button id="button_alarm" class="btn btn-default btn-lg" onClick="click_buttonAlarm('mash');"><span class="glyphicon glyphicon-warning-sign"></span></button>
+                <div class="row">
+                	<div class="col-sm-12">
+                		<button id="button_alarm" class="btn btn-default btn-lg" onClick="click_buttonAlarm('mash');"><span class="glyphicon glyphicon-warning-sign"></span></button>
+                	</div>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -393,7 +423,61 @@
             </div>
         </div>
     </div>
+    <!-- Program Picker modal -->
+    <div class="modal fade" id="modal_programPicker" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Pick Recipe</h4>
+                </div>
+                <div class="modal-body" id="recipeModalBody">
+                    <div class="btn-group">
+					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					    Select Recipe <span class="caret"></span>
+					  </button>
+					  <ul id="recipeModalDropdown" class="dropdown-menu" role="menu">
+					    <li><a href="#" onClick="Brewtroller.program.getProgram(0);">0</a></li>
+					    <li><a href="#" onClick="Brewtroller.program.getProgram(1);">1</a></li>
+					    <li><a href="#" onClick="Brewtroller.program.getProgram(2);">2</a></li>
+					    <li><a href="#">3</a></li>
+					    <li><a href="#">4</a></li>
+					    <li><a href="#">5</a></li>
+					    <li><a href="#">6</a></li>
+					    <li><a href="#">7</a></li>
+					    <li><a href="#">8</a></li>
+					    <li><a href="#">9</a></li>
+					    <li><a href="#">10</a></li>
+					    <li><a href="#">11</a></li>
+					    <li><a href="#">12</a></li>
+					    <li><a href="#">13</a></li>
+					    <li><a href="#">14</a></li>
+					    <li><a href="#">15</a></li>
+					    <li><a href="#">16</a></li>
+					    <li><a href="#">17</a></li>
+					    <li><a href="#">18</a></li>
+					    <li><a href="#">19</a></li>
+					  </ul>
+					</div>
+					<div id="recipeDetails">
+						<table class="table table-condensed">
+						  <tbody>
+						  	
+						  </tbody>
+						</table>
+					</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="startBtn1" type="button" class="btn btn-default" data-dismiss="modal">Start Program 1</button>
+                    <button id="startBtn2" type="button" class="btn btn-default" data-dismiss="modal">Start Program 2</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
 </body>
+<script src="brewtroller.js"></script>
 <script>
 	Brewtroller.init();
 </script>
