@@ -6,6 +6,10 @@ var connected = false;
 var lastUpdate = 0;
 var storedHost;
 var programList = [];
+var programStep1;
+var programStep2;
+var programName1;
+var programName2;
 
 //Map BTNic CGI Byte Codes to Human Readable Functions
 var BTCMD_GetVersion = {
@@ -109,45 +113,53 @@ var BTCMD_GetProgram = {
 };
 
 var BTCMD_GetStatus = {
-	reqCode: 'a',
-	reqIndex: false,
-	reqParams: [],
-	rspCode: 'a',
-	rspParams: [
-		"responseCode",
-		"alarmStatus",
-		"autoValveStatus",
-		"profileStatus",
-		"outputStatus",
-		"HLT_Setpoint",
-		"HLT_Temperature",
-		"HLT_HeatPower",
-		"HLT_TargetVolume",
-		"HLT_Volume",
-		"HLT_FlowRate",
-		"Mash_Setpoint",
-		"Mash_Temperature",
-		"Mash_HeatPower",
-		"Mash_TargetVolume",
-		"Mash_Volume",
-		"Mash_FlowRate",
-		"Kettle_Setpoint",
-		"Kettle_Temperature",
-		"Kettle_HeatPower",
-		"Kettle_TargetVolume",
-		"Kettle_Volume",
-		"Kettle_FlowRate",
-		"Mash_TimerValue",
-		"Mash_TimerStatus",
-		"Boil_TimerValue",
-		"Boil_TimerStatus",
-		"Boil_ControlState",
-		"ProgramThread1_Step",
-		"ProgramThread1_Recipe",
-		"ProgramThread2_Step",
-		"ProgramThread2_Recipe",
-	]
-};
+		reqCode: 'a',
+		reqIndex: false,
+		reqParams: [],
+		rspCode: 'a',
+		rspParams: [
+			"responseCode",
+			"alarmStatus",
+			"autoValveStatus",
+			"profileStatus",
+			"outputStatus",
+			"HLT_Setpoint",
+			"HLT_Temperature",
+			"HLT_HeatPower",
+			"HLT_TargetVolume",
+			"HLT_Volume",
+			"HLT_FlowRate",
+			"Mash_Setpoint",
+			"Mash_Temperature",
+			"Mash_HeatPower",
+			"Mash_TargetVolume",
+			"Mash_Volume",
+			"Mash_FlowRate",
+			"Kettle_Setpoint",
+			"Kettle_Temperature",
+			"Kettle_HeatPower",
+			"Kettle_TargetVolume",
+			"Kettle_Volume",
+			"Kettle_FlowRate",
+			"H2OIn_Temperature",
+			"H2OOut_Temperature",
+			"WortOut_Temperature",
+			"AUX1_Temperature",
+			"AUX2_Temperature",
+			"AUX3_Temperature",
+			"Mash_TimerValue",
+			"Mash_TimerStatus",
+			"Boil_TimerValue",
+			"Boil_TimerStatus",
+			"Boil_ControlState",
+			"ProgramThread1_Step",
+	        "ProgramThread1_Name",
+			"ProgramThread1_Recipe",
+			"ProgramThread2_Step",
+	        "ProgramThread2_Name",
+			"ProgramThread2_Recipe",
+		]
+	};
 
 var BTCMD_SetSetpoint = {
     reqCode: 'X',
@@ -243,6 +255,34 @@ var BTCMD_GetActivePrograms = {
 					"Program 2 Number"
 					]
 };
+var BTCMD_GetProgramList = {
+	    reqCode: '%3e',
+	    reqIndex: false,
+	    reqParams: [],
+	    rspCode: '>',
+	    rspParams: [
+					"Response Code",
+					"Program1_Name",
+					"Program2_Name",
+					"Program3_Name",
+					"Program4_Name",
+					"Program5_Name",
+					"Program6_Name",
+					"Program7_Name",
+					"Program8_Name",
+					"Program9_Name",
+					"Program10_Name",
+					"Program11_Name",
+					"Program12_Name",
+					"Program13_Name",
+					"Program14_Name",
+					"Program15_Name",
+					"Program16_Name",
+					"Program17_Name",
+					"Program18_Name",
+					"Program19_Name"
+					]
+};
 
 //Brewtroller Web Init
 Brewtroller.init = function () {
@@ -269,6 +309,9 @@ Brewtroller.init = function () {
   $('#button_nextStep').on("click", function () {
 	 Brewtroller.program.nextStep("1"); 
   });
+  $('#getRecipeList').on("click", function () {
+	 //Brewtroller.program.getProgramList();
+  });
   storedHost = localStorage.getItem('btHost');
   if (storedHost) {
     host = storedHost;
@@ -291,13 +334,13 @@ Brewtroller.connected = {
         } else {
             connected = true;
             Brewtroller.connected.loop();
-            //Brewtroller.program.getProgramList();
+            Brewtroller.program.getProgramList();
         }
     },    
     loop : function () {
       if(connected == true) {
         Brewtroller.connected.checkWatchdog();
-        brewTrollerExecCommand(BTCMD_GetStatus, null, {}, host, username, password, printUI);
+        brewTrollerExecCommand(BTCMD_GetStatus, null, {}, host, username, password, Brewtroller.status.printUI);
         setTimeout(Brewtroller.connected.loop, 500);
         Brewtroller.status.updateStatusBar();
       }
@@ -311,6 +354,12 @@ Brewtroller.connected = {
             
         }
     },
+    connectWatchdog : function () {
+    	var d = new Date();
+        lastUpdate = d.getTime();
+        $("#button_connect").css('color', '#777777');
+        $("#button_connect").html("Disconnect");
+    },
     saveConnectionSettings : function () {
       host = $('#settingsHost').val();
       $('#settingsHost').text("host");
@@ -322,8 +371,38 @@ Brewtroller.connected = {
 //Program Functions
 Brewtroller.program = {
   getProgramList : function () {
-    brewTrollerExecCommand(BTCMD_GetProgram, $i, null, host, username, password, function(data){});
-	},
+    brewTrollerExecCommand(BTCMD_GetProgramList, null, null, host, username, password, function(data){
+    	programList = data;
+    	$.each(data, function(index,value) {
+    		if (value != ">" && value != "") {
+    			var recipeLine = '<tr><td class="text-muted">';
+    			recipeLine += index;
+    			recipeLine += '</td><td>';
+    			recipeLine += value;
+    			recipeLine += '</td><td><button id="';
+    			recipeLine += index;
+    			recipeLine += '1" type="button" class="btn btn-default" data-dismiss="modal">Start Program 1</button>';
+    			recipeLine += '</td><td><button id="';
+    			recipeLine += index;
+    			recipeLine += '2" type="button" class="btn btn-default" data-dismiss="modal">Start Program 2</button>';
+    			recipeLine += '</td></tr>';
+    			recipeBtnId1 = index + "1";
+    			recipeBtnId2 = index + "2";
+    			recipeId = index.substring(7,9);
+    			if (recipeId.substring(1) === "_") {
+    				recipeId = recipeId.substring(0,1);
+    			}
+    			$('#recipeDetails table tbody').append(recipeLine);
+    			$('#' + recipeBtnId1).on("click", function () {
+    				Brewtroller.program.startStep(recipeId, "0"); 
+    			  });
+    			$('#' + recipeBtnId2).on("click", function () {
+    				Brewtroller.program.startStep(recipeId, "0"); 
+    			  });
+    		}
+    	});
+    });
+  },
   getProgram : function (vessel) {
 	$('#recipeDetails table tbody tr').remove();
 	brewTrollerExecCommand(BTCMD_GetProgram, vessel, null, host, username, password, function(data){
@@ -450,38 +529,66 @@ Brewtroller.reset = {
 //Status Functions
 Brewtroller.status = {
 	updateStatusBar : function () {
-		brewTrollerExecCommand(BTCMD_GetActivePrograms, null, null, host, username, password, function(data){
-			var stepName1 = data["Program 1 Step"];
-			var stepName2 = data["Program 2 Step"];
-			var programName1 = data["Program 1 Number"];
-			var programName2 = data["Program 2 Number"];
-			$('#program1Name').html(Brewtroller.program.getProgramName(programName1));
-			$('#program2Name').html(Brewtroller.program.getProgramName(programName2));
-			$('#currStatusProg1').html(Brewtroller.status.translateStepCode(stepName1));
-			$('#currStatusProg2').html(Brewtroller.status.translateStepCode(stepName2));
-	    });
+		$('#program1Name').html(programName1);
+		$('#program2Name').html(programName2);
+		$('#currStatusProg1').html(Brewtroller.status.translateStepCode(programStep1));
+		$('#currStatusProg2').html(Brewtroller.status.translateStepCode(programStep2));
 	},
-		translateStepCode : function (step) {
-			var stepTranslate = {
-								"0": "Fill",
-								"1": "Delay",
-								"2": "Preheat",
-								"3": "Grain In",
-								"4": "Refill",
-								"5": "Dough In",
-								"6": "Acid",
-								"7": "Protein",
-								"8": "Sacch",
-								"9": "Sacch2",
-								"10": "Mash Out",
-								"11":"Mash Hold",
-								"12": "Sparge",
-								"13": "Boil",
-								"14": "Chill",
-								"255": "Idle"
-								}
-			return stepTranslate[step];
-		}
+	translateStepCode : function (step) {
+		var stepTranslate = {
+							"0": "Fill",
+							"1": "Delay",
+							"2": "Preheat",
+							"3": "Grain In",
+							"4": "Refill",
+							"5": "Dough In",
+							"6": "Acid",
+							"7": "Protein",
+							"8": "Sacch",
+							"9": "Sacch2",
+							"10": "Mash Out",
+							"11":"Mash Hold",
+							"12": "Sparge",
+							"13": "Boil",
+							"14": "Chill",
+							"255": "Idle"
+							}
+		return stepTranslate[step];
+	},
+	printUI : function (data) {
+		programName1 = data["ProgramThread1_Name"];
+		programName2 = data["ProgramThread2_Name"];
+		programStep1 = data["ProgramThread1_Step"];
+		programStep2 = data["ProgramThread2_Step"];
+		$("#div_status").html("<pre>" + JSON.stringify(data, null, '\t') + "</pre>");
+        printProgramThread("#div_programThread1", data.ProgramThread1_Step, data.ProgramThread1_Recipe);
+        printProgramThread("#div_programThread2", data.ProgramThread2_Step, data.ProgramThread2_Recipe);
+        Brewtroller.timer.printTimer("#div_mashTimer", data.Mash_TimerValue, data.Mash_TimerStatus);
+        Brewtroller.timer.printTimer("#div_boilTimer", data.Boil_TimerValue, data.Boil_TimerStatus);
+        printAlarm("#button_alarm", data.alarmStatus);
+        printTemperature("#div_hltTemperature", data.HLT_Temperature);
+        printSetpoint("#div_hltSetpoint", data.HLT_Setpoint);
+        printHeatPower("#div_hltHeatPower", data.HLT_HeatPower);
+		printVolume("#div_hltVolume", data.HLT_Volume);
+		printTargetVolume("#div_hltTargetVolume", data.HLT_TargetVolume);
+		printFlowRate("#div_hltFlowRate", data.HLT_FlowRate);
+        printTemperature("#div_mashTemperature", data.Mash_Temperature);
+        printSetpoint("#div_mashSetpoint", data.Mash_Setpoint);
+        printHeatPower("#div_mashHeatPower", data.Mash_HeatPower);
+		printVolume("#div_mashVolume", data.Mash_Volume);
+		printTargetVolume("#div_mashTargetVolume", data.Mash_TargetVolume);
+		printFlowRate("#div_mashFlowRate", data.Mash_FlowRate);
+        printTemperature("#div_kettleTemperature", data.Kettle_Temperature);
+        printSetpoint("#div_kettleSetpoint", data.Kettle_Setpoint);
+        printHeatPower("#div_kettleHeatPower", data.Kettle_HeatPower);
+		printVolume("#div_kettleVolume", data.Kettle_Volume);
+		printTargetVolume("#div_kettleTargetVolume", data.Kettle_TargetVolume);
+		printFlowRate("#div_kettleFlowRate", data.Kettle_FlowRate);
+		printBoilControl("#div_boilControl", data.Boil_ControlState);
+	    printOutputProfiles("#div_outputProfiles", data.profileStatus);
+		printOutputStatus("#div_outputStatus", data.outputStatus);
+        Brewtroller.connected.connectWatchdog();
+    }
 	};
 
 
