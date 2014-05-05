@@ -7,14 +7,15 @@
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 <!-- Optional theme -->
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="css/jquery.sidr.light.css">
+<link rel="stylesheet" href="css/main.css">
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="js/jquery.sidr.min.js"></script>
 
 <script>
-
-
 	function printAlarm(id, status)
     {
         if (status == 1) {
@@ -39,7 +40,7 @@
     
     function printHeatPower(id, heatPower)
     {
-        $(id).html("Heat Power: " + (heatPower == 0 ? "Off" : heatPower == 100 ? "On" : (heatPower + "%")));
+        $(id).html("Heat Power: " + (heatPower == 0 ? "Off" : heatPower == 100 ? '<span class="text text-danger">On</span>' : (heatPower + "%")));
     }
     
 	function printVolume(id, volume)
@@ -93,7 +94,7 @@
         timerId = 0;
         setTime = $('#mashTimerSet').val();
         a = "werwe";
-      } else if (vessel="boil") {
+      } else if (vessel == "boil") {
         timerId = 1;
         setTime = $('#boilTimerSet').val();
         b = "wefawe";
@@ -121,6 +122,7 @@
     
     $(document).ready(function(){
                       Brewtroller.connected.loop();
+                      $('#simple-menu').sidr();
                       });
 </script>
 </head>
@@ -136,7 +138,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">BrewTroller jQuery/Bootstrap</a>
+                <a class="navbar-brand" href="#">BrewTroller jQuery/Bootstrap <span id="tempStatus"></span></a>
             </div>
             
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -158,28 +160,41 @@
     </nav>
     <div class="container">
         <div class="row">
-        <div class="well well-sm">
-        <div class="row">
-        	<div class="col-sm-5">
-        	  <p id="program1Name"></p>
-        	  <p class="alert alert-success" style="padding:5px;">(1)Current Step : <span id="currStatusProg1"></span></p>
-       	  	</div>
-       	  	<div class="col-sm-5">
-        	  <p id="program2Name"></p>
-        	  <p class="alert alert-success" style="padding:5px;">(2)Current Step : <span id="currStatusProg2"></span></p>
-        	</div>
-        	<div class="col-sm-2">
-        		<div class="btn-group">
+        <div class="col-sm-5">
+          <div id="mashZonePanel" class="panel panel-default">
+          	<div class="panel-heading">
+           	  <h3 class="panel-title">
+           		Mash Zone
+           	  </h3>
+           </div>
+           <div class="panel-body">
+  			 <p id="programSlot1" class="alert alert-success" style="padding:5px;"><span class="program1Name">No Program Selected (1)</span> : <span id="currStatusProg1"></span></p>
+  		   </div>	
+       	 </div>
+       	</div>
+       	<div class="col-sm-5">
+       	  <div id="boilZonePanel" class="panel panel-default">
+          	<div class="panel-heading">
+           	  <h3 class="panel-title">
+           		Boil Zone
+           	  </h3>
+           </div>
+           <div class="panel-body">
+  			 <p id="programSlot2" class="alert alert-success" style="padding:5px;"><span class="program2Name">No Program Selected (2)</span> : <span id="currStatusProg2"></span></p>
+  		   </div>	
+       	  </div>
+        </div>
+        <div class="col-sm-2">
+        	<div class="btn-group">
 				  <button id="button_nextStep" type="button" class="btn btn-default">Next Step</button>
 				  <button id="button_reset" type="button" class="btn btn-default">Reset</button>
-				</div>
-            </div>
+					</div>
         </div>
         </div>
         </div>
         <div class="row">
             <div class="col-sm-5">
-                <div class="panel panel-default">
+                <div id="programThreadPanel" class="panel panel-default">
                     <div class="panel-heading clearfix">
                     	<h3 class="panel-title pull-left">
                     		Program Threads
@@ -193,7 +208,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-                <div class="panel panel-default">
+                <div id="mashTimerPanel" class="panel panel-default">
                     <div class="panel-heading clearfix">
                     	<h3 class="panel-title pull-left">Mash Timer</h3>
                     	<button id="mashTimerButton" class="btn btn-default btn-xs pull-right" type="button">Manual Start</button>
@@ -212,7 +227,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-                <div class="panel panel-default">
+                <div id="boilTimerPanel" class="panel panel-default">
                     <div class="panel-heading clearfix">
                     	<h3 class="panel-title pull-left">Boil Timer</h3>
                     	<button id="boilTimerButton" class="btn btn-default btn-xs pull-right" type="button">Manual Start</button>
@@ -295,6 +310,11 @@
 													</div>
 													<div class="col-sm-2">
 														<div id="div_boilControl"></div>
+														<div class="btn-group-vertical btn-group-sm">
+														  <button type="button" class="btn btn-default boilControl">Kettle Off</button>
+														  <button type="button" class="btn btn-default boilControl">Auto Boil</button>
+														  <button type="button" class="btn btn-default boilControl">Manual Boil</button>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -307,6 +327,9 @@
                 <div id="div_outputProfiles" class="well well-sm"></div>
 				<div id="div_outputStatus" class="well well-sm"></div>
             </div>
+        </div>
+        <div class="row">
+        <a id="simple-menu" href="#sidr">Toggle menu</a>
         </div>
     </div>
     
@@ -387,8 +410,24 @@
         </div>
     </div>
   </div>
+  <div id="sidr">
+  <!-- Your content -->
+  <ul>
+    <li><a href="#">List 1</a></li>
+    <li class="active"><a href="#">List 2</a></li>
+    <li><a href="#">List 3</a></li>
+  </ul>
+  <div id="recipeDetails2">
+						<table class="table table-condensed">
+						  <tbody>
+						  	
+						  </tbody>
+						</table>
+					</div>
+</div>
 </body>
 <script src="brewtroller.js"></script>
+<script src="cgiByteCodeMap.js"></script>
 <script>
 	Brewtroller.init();
 </script>
