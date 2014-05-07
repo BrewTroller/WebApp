@@ -14,8 +14,6 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script src="js/jquery.sidr.min.js"></script>
-<script src="js/filereader.js"></script>
-<script src="js/jquery.xml2json.js"></script>
 
 <script>
 	function printAlarm(id, status)
@@ -412,18 +410,23 @@
             </div>
         </div>
     </div>
-        <div class="modal fade" id="modal_beerXMLLoader" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
+        <div class="modal fade" id="#modal_beerXMLLoader" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Load Beer XML</h4>
+                    <h4 class="modal-title" id="myModalLabel">Pick Recipe</h4>
                 </div>
-                <div class="modal-body" id="loadBeerXMLModalBody">
-                	<input type="file" id="file" name="myFile" />               
+                <div class="modal-body" id="recipeModalBody">
+                    <div id="recipeDetails">
+						<table class="table table-condensed">
+						  <tbody>
+						  	
+						  </tbody>
+						</table>
+					</div>
                 </div>
                 <div class="modal-footer">
-                <button type="button" id="loadBeerXMLButton" class="btn btn-default">Save Recipe to Brewtroller</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -446,8 +449,8 @@
 					</div>
 </div>
 </body>
-<script src="js/brewtroller.js"></script>
-<script src="js/cgiByteCodeMap.js"></script>
+<script src="brewtroller.js"></script>
+<script src="cgiByteCodeMap.js"></script>
 <script>
 	Brewtroller.init();
 </script>
