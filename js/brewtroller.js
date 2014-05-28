@@ -26,14 +26,38 @@ Brewtroller.init = function () {
   $('#button_nextStep').on("click", function () {
 	 Brewtroller.program.nextStep(); 
   });
-  $('.boilControl').on("click", function () {
-	  Brewtroller.boil.control($(this).text());
+  $('.boilControl').on("change", function () {
+	  Brewtroller.boil.control(this.name);
   });
+//  $('.boilControl').on("change", function () {alert("hey!")});
   storedHost = localStorage.getItem('btHost');
   if (storedHost) {
     host = storedHost;
     $('#settingsHost').attr('placeholder', host);
-  }
+  };
+//  $("#boilTimerGraphical").TimeCircles(
+//	{
+//		time: {
+//			Days: { show: false },
+//			Hours: { show: true },
+//			Minutes: { show: true },
+//			Seconds: { show: true }
+//		}	  
+//	}
+//  );
+//  Brewtroller.timer.display = new SegmentDisplay("mashTimerGraphical");
+//  Brewtroller.timer.display.pattern         = "##:##:##";
+//  Brewtroller.timer.display.displayAngle    = 6;
+//  Brewtroller.timer.display.digitHeight     = 5;
+//  Brewtroller.timer.display.digitWidth      = 5;
+//  Brewtroller.timer.display.digitDistance   = 0.40;
+//  Brewtroller.timer.display.segmentWidth    = 0.70;
+//  Brewtroller.timer.display.segmentDistance = 0.10;
+//  Brewtroller.timer.display.segmentCount    = 7;
+//  Brewtroller.timer.display.cornerType      = 3;
+//  Brewtroller.timer.display.colorOn         = "#090909";
+//  Brewtroller.timer.display.colorOff        = "#afcbaf";
+//  Brewtroller.timer.display.draw();
   
   //display file contents
   $('#loadBeerXMLButton').on("click", function() {
@@ -43,6 +67,17 @@ Brewtroller.init = function () {
   Brewtroller.timer.setup();
   Brewtroller.temp.setup();
   $('#programSlot2').hide();
+  $("#beerXMLModalButton").attr("disabled", "disabled");
+  $("#programModalButton").attr("disabled", "disabled");
+  $("#programSlot1").hide();
+  $("#powerControl").hide();
+  $("#powerSlider").slider().on("slide", function(ev){
+	  $("#boilPower").text(ev.value);
+	  Brewtroller.boil.control("2", ev.value);
+  });
+  $("#powerSlider").slider().on("slideStop", function(ev){
+	  Brewtroller.boil.control("2", ev.value);
+  });
 };
 
 //Brewtroller Connected Functions
@@ -57,6 +92,8 @@ Brewtroller.connected = {
             connected = true;
             Brewtroller.connected.loop();
             Brewtroller.program.getProgramList();
+            $("#beerXMLModalButton").removeAttr("disabled");
+            $("#programModalButton").removeAttr("disabled");
         }
     },    
     loop : function () {
@@ -70,10 +107,11 @@ Brewtroller.connected = {
     checkWatchdog : function () {
         var d = new Date();
         if (d.getTime() - lastUpdate > 1000) {
-            
             $("#button_connect").html("Timeout");
             $("#button_connect").css('color', 'red');
-            
+            $("#modal_Timeout").modal();
+        }else{
+        	$("#modal_Timeout").modal("hide");
         }
     },
     connectWatchdog : function () {
@@ -150,12 +188,172 @@ Brewtroller.program = {
 	          reader.onload = function(e) {
 	              // browser completed reading file - display it
 	        	    var beerXML = e.target.result;
-	        	    return beerXML;
+	        	    var beerJSON = $.xml2json(beerXML);
+	        	    Brewtroller.program.sendRecipeToBrewtroller(beerJSON);
 	          };
-			  var beerJSON = $.xml2json(beerXML);
-			  alert(beerJSON);
+		   $("#modal_beerXMLLoader").modal("hide"); 
+		   Brewtroller.program.getProgramList();
 	      }
-	  }
+  },
+  sendRecipeToBrewtroller : function (beerJSON) {
+	  var recipeSlot = $("#loadProgramNumber").val(),
+	  	  doughIn,
+	  	  proteinRest,
+	  	  proteinTime,
+	  	  acidRest,
+	  	  saccRest,
+	  	  saccRest2,
+	  	  mashOut,
+	  	  hopBitMask = "",
+	  	  bitMaskHash = [],
+	  	  bitMaskSplit,
+	  	  hopTimes = [
+	  	              "105",
+	  	              "90",
+	  	              "75",
+	  	              "60",
+	  	              "45",
+	  	              "30",
+	  	              "20",
+	  	              "15",
+	  	              "10",
+	  	              "5",
+	  	              "0",
+	  	              ],
+	  	  $i = 1,
+	  	  name = beerJSON["RECIPE"]["NAME"],
+	  	  batchSize = beerJSON["RECIPE"]["BATCH_SIZE"],
+	  	  grainWeight = 0;
+	  	  grainRatio = parseFloat(beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"]["WATER_GRAIN_RATIO"]),
+	  	  doughInTemp = 0, //beerJSON["RECIPE"]["DOUGHINTEMP"],
+	  	  doughInTime = "0", //beerJSON["RECIPE"]["DOUGHINMINUTES"],
+	  	  acidTemp = 0, //beerJSON["RECIPE"]["ACIDTEMP"],
+	  	  acidTime = "0", //beerJSON["RECIPE"]["ACIDMINUTES"],
+	  	  proteinTemp = 0,
+	  	  proteinTime = "0",
+	  	  saccTemp = 0,
+	  	  saccTime = "0",
+	  	  saccTemp2 = 0,
+	  	  saccTime2 = "0",
+	  	  mashOutTemp = 0,
+	  	  mashOutTime = "0",
+	  	  spargeTemp = beerJSON["RECIPE"]["MASH"]["SPARGE_TEMP"],
+	  	  boilTime = beerJSON["RECIPE"]["BOIL_TIME"],
+		  chillTemp = beerJSON["RECIPE"]["PRIMARY_TEMP"];
+	  $.each(beerJSON["RECIPE"]["FERMENTABLES"]["FERMENTABLE"], function(index, value) {
+		  grainWeight = grainWeight + parseFloat(value["AMOUNT"]);
+		});
+	  $.each(beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"], function(index, value) {
+		if(value["NAME"] == "Protein Rest") {
+			proteinRest = value;
+		}else if (value["NAME"] == "Saccharification") {
+			saccRest = value;
+		}else if (value["NAME"] == "mashOut") {
+			mashOut = value;
+		}
+	  });
+	  if (proteinRest) {
+		  proteinTemp = proteinRest["STEP_TEMP"];
+		  proteinTime = proteinRest["STEP_TIME"];
+	  	  }	
+	  if (saccRest) {
+		  saccTemp = saccRest["STEP_TEMP"];
+		  saccTime = saccRest["STEP_TIME"];
+		  }
+	  if (saccRest2) {
+		  saccTemp2 = saccRest2["STEP_TEMP"];
+		  saccTime2 = saccRest2["STEP_TIME"];
+		  }
+	  if (mashOut) {
+		  mashOutTemp = mashOut["STEP_TEMP"];
+		  mashOutTime = mashOut["STEP_TIME"];
+		  }
+	  
+	  if(beerJSON["RECIPE"]["HOPS"]["HOP"][0]) {
+	  $.each(beerJSON["RECIPE"]["HOPS"]["HOP"], function(index, value){
+		bitMaskSplit = value["TIME"].split(".");
+		bitMaskHash[bitMaskSplit[0]] = "1";
+	  });
+  	  } else {
+  		bitMaskSplit = beerJSON["RECIPE"]["HOPS"]["HOP"]["TIME"].split(".");
+		bitMaskHash[bitMaskSplit[0]] = "1";  
+  	  };
+	  $.each(hopTimes, function (index, value) {
+		  if(bitMaskHash[value]) {
+			  hopBitMask = hopBitMask + "1";
+		  }else{
+			  hopBitMask = hopBitMask + "0";
+		  }
+	  });
+	  brewTrollerExecCommand(BTCMD_SetProgramSettings,
+			  recipeSlot,
+			  {
+			      "Sparge_Temp": spargeTemp,
+				  "HLT_Setpoint": "0", //HLT Setpoint
+				  "Boil_Mins": boilTime,
+				  "Pitch_Temp": chillTemp,
+				  "Boil_Additions": hopBitMask,
+				  "Mash_Liquor_Heat_Source": "0"
+			  },			  
+			  host,
+			  username,
+			  password,
+			  function(data){});
+    
+	  brewTrollerExecCommand(BTCMD_SetProgramName,
+			  recipeSlot,
+			  {
+		  		"Program_Name": name
+			  },			  
+			  host,
+			  username,
+			  password,
+			  function(data){});
+	  
+	  brewTrollerExecCommand(BTCMD_SetProgramMashTemps,
+			  recipeSlot,
+			  {
+			  "Dough_In_Temp": doughInTemp,
+			  "Acid_Temp": acidTemp,
+			  "Protein_Temp": proteinTemp,
+			  "Sacch_Temp": saccTemp,
+			  "Sacch2_Temp": saccTemp2,
+			  "Mash_Out_Temp": mashOutTemp
+			  },			  
+			  host,
+			  username,
+			  password,
+			  function(data){});
+	  
+	  brewTrollerExecCommand(BTCMD_SetProgramMashMins,
+			  recipeSlot,
+			  {
+			  "Dough_In_Mins": doughInTime,
+			  "Acid_Mins": acidTime,
+			  "Protein_Mins": proteinTime,
+			  "Sacch_Mins": saccTime,
+			  "Sacch2_Mins": saccTime2,
+			  "Mash_Out_Mins": mashOutTime
+			  },			  
+			  host,
+			  username,
+			  password,
+			  function(data){});
+	  
+	  
+	  brewTrollerExecCommand(BTCMD_SetProgramVolumes,
+			  recipeSlot,
+			  {
+			  "Batch_Volume": batchSize,
+			  "Grain_Weight": grainWeight,
+			  "Mash_Ratio": grainRatio
+			  },			  
+			  host,
+			  username,
+			  password,
+			  function(data){});
+	  
+  }  
 };
 
 
@@ -316,6 +514,16 @@ Brewtroller.status = {
 		printBoilControl("#div_boilControl", data.Boil_ControlState);
 	    printOutputProfiles("#div_outputProfiles", data.profileStatus);
 		printOutputStatus("#div_outputStatus", data.outputStatus);
+		if (data.Boil_ControlState === "2") {
+			$("#powerControl").show();
+			$("#boilManual").parent().button("toggle");
+		}else if (data.Boil_ControlState === "1") {
+			$("#powerControl").hide();
+			$("#boilAuto").parent().button("toggle");
+		}else{
+			$("#powerControl").hide();
+			$("#boilOff").parent().button("toggle");
+		}
         Brewtroller.connected.connectWatchdog();
     }
 	};
@@ -323,15 +531,31 @@ Brewtroller.status = {
 
 // Boil Control Functions
 Brewtroller.boil = {
-	control : function (control) {
-		if (control == "Kettle Off") {
-			control = 0;
-		}else if (control == "Auto Boil") {
-			control = 1;
+	control : function (control, percentage) {
+		var controlMode,
+			controlPercentage;
+		if (control == "boilOff") {
+			controlMode = 0;
+			controlPercentage = 0;
+			$("#powerControl").hide();
+		}else if (control == "boilAuto") {
+			controlMode = 1;
+			controlPercentage = 0;
+			$("#powerControl").hide();
 		}else{
-			control = 2;
+			controlMode = 2;
+			if (percentage) { 
+				controlPercentage = percentage;
+			}else{
+			controlPercentage = 100;
+			}	
+			$("#powerControl").show();
 		}
-		brewTrollerExecCommand(BTCMD_SetBoilControl, null, control, host, username, password, function(data){});
+		brewTrollerExecCommand(BTCMD_SetBoilControl, null, {"Control_Mode":controlMode, "Percentage":controlPercentage}, host, username, password, function(data){
+			$("#powerSlider").slider('setValue', controlPercentage);
+			$("#boilPower").text(controlPercentage);
+			
+		});
 	}
 };
 

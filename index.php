@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>BrewTroller jQuery/Bootstrap</title>
+<title>WebAppTroller - A web interface for Brewtroller</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="css/jquery.sidr.light.css">
 <link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/slider.css">
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -16,6 +18,7 @@
 <script src="js/jquery.sidr.min.js"></script>
 <script src="js/filereader.js"></script>
 <script src="js/jquery.xml2json.js"></script>
+<script src="js/bootstrap-slider.js"></script>
 
 <script>
 	function printAlarm(id, status)
@@ -140,7 +143,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">BrewTroller jQuery/Bootstrap <span id="tempStatus"></span></a>
+                <a class="navbar-brand" href="#">WebAppTroller - A web interface for Brewtroller<span id="tempStatus"></span></a>
             </div>
             
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -201,8 +204,10 @@
                     	<h3 class="panel-title pull-left">
                     		Program Threads
                     	</h3>
-                    	<button id="beerXMLModalButton" data-toggle="modal" data-target="#modal_beerXMLLoader" class="btn btn-default btn-xs pull-right" type="button">Import Beer XML</button>
-                    	<button id="programModalButton" data-toggle="modal" data-target="#modal_programPicker" class="btn btn-default btn-xs pull-right" type="button">Load Recipe</button>
+                    	<div class="btn-group pull-right">
+	                    	<button id="beerXMLModalButton" data-toggle="modal" data-target="#modal_beerXMLLoader" class="btn btn-default btn-xs" type="button">Import Beer XML</button>
+	                    	<button id="programModalButton" data-toggle="modal" data-target="#modal_programPicker" class="btn btn-default btn-xs" type="button">Load Recipe</button>
+                    	</div>
                     </div>
                     <div class="panel-body">
                         <div id="div_programThread1"></div>
@@ -299,29 +304,44 @@
             </div>
             <div class="col-sm-4">
                 <div class="panel panel-default">
-                    <div class="panel-heading"><h3 class="panel-title">Boil Kettle</h3></div>
-                    <div class="panel-body">
-											<div class="container">
-												<div class="row">
-													<div class="col-sm-2">
-														<div id="div_kettleTemperature"></div>
-														<div id="div_kettleSetpoint"></div>
-														<div id="div_kettleHeatPower"></div>
-														<div id="div_kettleVolume"></div>
-														<div id="div_kettleTargetVolume"></div>
-														<div id="div_kettleFlowRate"></div>
-													</div>
-													<div class="col-sm-2">
-														<div id="div_boilControl"></div>
-														<div class="btn-group-vertical btn-group-sm">
-														  <button type="button" class="btn btn-default boilControl">Kettle Off</button>
-														  <button type="button" class="btn btn-default boilControl">Auto Boil</button>
-														  <button type="button" class="btn btn-default boilControl">Manual Boil</button>
-														</div>
-													</div>
-												</div>
-											</div>
+                    <div class="panel-heading">
+                    	<h3 class="panel-title">
+                    		Boil Kettle
+                    	</h3>
                     </div>
+                    <div class="panel-body">
+						<div class="row">
+							<div class="col-sm-6">
+								<div id="div_kettleTemperature"></div>
+								<div id="div_kettleSetpoint"></div>
+								<div id="div_kettleHeatPower"></div>
+								<div id="div_kettleVolume"></div>
+								<div id="div_kettleTargetVolume"></div>
+								<div id="div_kettleFlowRate"></div>
+							</div>
+							<div class="col-sm-6">
+								<div class="btn-group-vertical btn-group-sm" data-toggle="buttons">
+								  <label class="btn btn-default">
+								  	<input type="radio" class="boilControl" name="boilOff" id="boilOff">Kettle Off</input>
+								  </label>
+								   <label class="btn btn-default">
+								  	<input type="radio" class="boilControl" name="boilAuto" id="boilAuto">Auto Boil</input>
+								  </label>
+								   <label class="btn btn-default">
+								  	<input type="radio" class="boilControl" name="boilManual" id="boilManual">Manual Boil</input>
+								  </label>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div id="powerControl">
+									<p>Power: <span id="boilPower">0</span>%</p>
+									<input id="powerSlider" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
+								</div>
+							</div>
+						</div>
+					</div>
                 </div>
             </div>
         </div>
@@ -412,7 +432,7 @@
             </div>
         </div>
     </div>
-        <div class="modal fade" id="modal_beerXMLLoader" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
+      <div class="modal fade" id="modal_beerXMLLoader" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -420,7 +440,31 @@
                     <h4 class="modal-title" id="myModalLabel">Load Beer XML</h4>
                 </div>
                 <div class="modal-body" id="loadBeerXMLModalBody">
-                	<input type="file" id="file" name="myFile" />               
+                	<input type="file" id="file" name="myFile" />  
+                	<label>
+                	Select a recipe slot to load recipe in to:
+                	<select class="form-control" id="loadProgramNumber">
+					  <option>1</option>
+					  <option>2</option>
+					  <option>3</option>
+					  <option>4</option>
+					  <option>5</option>
+					  <option>6</option>
+					  <option>7</option>
+					  <option>8</option>
+					  <option>9</option>
+					  <option>10</option>
+					  <option>11</option>
+					  <option>12</option>
+					  <option>13</option>
+					  <option>14</option>
+					  <option>15</option>
+					  <option>16</option>
+					  <option>17</option>
+					  <option>18</option>
+					  <option>19</option>
+					</select>   
+					</label>          
                 </div>
                 <div class="modal-footer">
                 <button type="button" id="loadBeerXMLButton" class="btn btn-default">Save Recipe to Brewtroller</button>
@@ -429,22 +473,24 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modal_Timeout" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Connection Issue</h4>
+                </div>
+                <div class="modal-body" id="recipeModalBody">
+                    <h3 class="text-danger">Connection Timeout - Please Wait</h3>
+                    <i class="fa fa-spinner fa-spin fa-5x"></i>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
-  <div id="sidr">
-  <!-- Your content -->
-  <ul>
-    <li><a href="#">List 1</a></li>
-    <li class="active"><a href="#">List 2</a></li>
-    <li><a href="#">List 3</a></li>
-  </ul>
-  <div id="recipeDetails2">
-						<table class="table table-condensed">
-						  <tbody>
-						  	
-						  </tbody>
-						</table>
-					</div>
-</div>
 </body>
 <script src="js/brewtroller.js"></script>
 <script src="js/cgiByteCodeMap.js"></script>

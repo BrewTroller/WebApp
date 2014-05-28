@@ -274,14 +274,101 @@ var BTCMD_SetBoilControl = {
 	      reqCode: '%7d',
 	      reqIndex: false,
 	      reqParams: [
-	                  "Kettle_Off",
-	                  "Auto_Boil",
-	                  "Manual_Boil"
+	                  "Control_Mode",
+	                  "Percentage",
 	                  ],
 	      rspCode: '~',
 	      rspParams: [
-					   "Kettle_Off",
-					   "Auto_Boil",
-					   "Manual_Boil"
+					   "Control_Mode",
+					   "Percentage",
 					 ]
+	};
+var BTCMD_SetProgramName = {
+	      reqCode: '%5C',
+	      reqIndex: true,
+	      reqParams: [
+	                  "Program_Name"
+	                  ],
+	      rspCode: '[',
+	      rspParams: [
+					   "Program_Name"
+					 ]
+	};
+var BTCMD_SetProgramMashTemps = {
+	      reqCode: '%5E',
+	      reqIndex: true,
+	      reqParams: [
+	                  "Dough_In_Temp",
+	                  "Acid_Temp",
+	                  "Protein_Temp",
+	                  "Sacch_Temp",
+	                  "Sacch2_Temp",
+	                  "Mash_Out_Temp"
+	                  ],
+	      rspCode: '#91',
+	      rspParams: [
+						"Dough_In_Temp",
+						"Acid_Temp",
+						"Protein_Temp",
+						"Sacch_Temp",
+						"Sacch2_Temp",
+						"Mash_Out_Temp"
+					 ]
+	};
+var BTCMD_SetProgramMashMins = {
+	      reqCode: '`',
+	      reqIndex: true,
+	      reqParams: [
+	                  "Dough_In_Mins",
+	                  "Acid_Mins",
+	                  "Protein_Mins",
+	                  "Sacch_Mins",
+	                  "Sacch2_Mins",
+	                  "Mash_Out_Mins"
+	                  ],
+	      rspCode: '_',
+	      rspParams: [
+	                  "Dough_In_Mins",
+	                  "Acid_Mins",
+	                  "Protein_Mins",
+	                  "Sacch_Mins",
+	                  "Sacch2_Mins",
+	                  "Mash_Out_Mins"
+					 ]
+	};
+var BTCMD_SetProgramVolumes = {
+	      reqCode: 'y',
+	      reqIndex: true,
+	      reqParams: [
+	                  "Batch_Volume",
+	                  "Grain_Weight",
+	                  "Mash_Ratio"
+	                  ],
+	      rspCode: 'x',
+	      rspParams: [
+	                  "Batch_Volume",
+	                  "Grain_Weight",
+	                  "Mash_Ratio"
+					 ]
+	};
+var BTCMD_SetProgramSettings = {
+	      reqCode: 'O',
+	      reqIndex: true,
+	      reqParams: [
+	                  "Sparge_Temp",
+	                  "HLT_Setpoint",
+	                  "Boil_Mins",
+	                  "Pitch_Temp",
+	                  "Boil_Additions",
+	                  "Mash_Liquor_Heat_Source"
+	                  ],
+	      rspCode: 'E',
+	      rspParams: [
+	                  "Sparge_Temp",
+	                  "HLT_Setpoint",
+	                  "Boil_Mins",
+	                  "Pitch_Temp",
+	                  "Boil_Additions",
+	                  "Mash_Liquor_Heat_Source"
+	                  ]
 	};
