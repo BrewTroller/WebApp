@@ -17,6 +17,9 @@ Brewtroller.init = function () {
     Brewtroller.connected.click_buttonConnect();
     //Brewtroller.program.getProgramList();
   });
+  $('#connectionModalCancel').on("click", function() {
+	Brewtroller.connected.click_buttonConnect();
+  });
   $('#settingsSaveBtn').on("click", function() {
     Brewtroller.connected.saveConnectionSettings();
   });

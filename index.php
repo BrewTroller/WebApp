@@ -16,7 +16,6 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="js/jquery.sidr.min.js"></script>
 <script src="js/filereader.js"></script>
 <script src="js/jquery.xml2json.js"></script>
 <script src="js/bootstrap-slider.js"></script>
@@ -93,30 +92,7 @@
     {
         $(id).html("Output Status: " + status);
     }
-    
-//     function click_setTimer(vessel) {
-//       var timerId,
-//       	  setTime,
-//       	  hours,
-//       	  minutes;
-//       if (vessel == "mash") {
-//         timerId = 0;
-//         hours = $("#mashHours").val();
-//         minutes = $("#mashMinutes").val();
-//         milliseconds = hoursMinutesToMilliseconds(hours, minutes);
-//       } else if (vessel == "boil") {
-//         timerId = 1;
-//         hours = $("#boilHours").val();
-//         minutes = $("#boilMinutes").val();
-//         milliseconds = hoursMinutesToMilliseconds(hours, minutes);
-//       } else {
-//         alert("Unable To Set Timer");
-//       }
-//       brewTrollerExecCommand(BTCMD_SetTimerValue, timerId, {"TimerValue": milliseconds}, host, username, password, function(data){
-//         });
-      
-//     }
-    
+
     function click_buttonAlarm()
     {
         brewTrollerExecCommand(BTCMD_SetAlarm, null, {"alarmStatus": "0"}, host, username, password, function(data){
@@ -210,53 +186,6 @@
         </div>
         </div>
         </div>
-<!--         <div class="row"> -->
-<!--             <div class="col-sm-5"> -->
-<!--                 <div id="mashTimerPanel" class="panel panel-default"> -->
-<!--                     <div class="panel-heading clearfix"> -->
-<!--                     	<h3 class="panel-title pull-left">Mash Timer</h3> -->
-<!--                     	<button id="mashTimerButton" class="btn btn-default btn-xs pull-right" type="button">Manual Start</button> -->
-<!--                     </div> -->
-<!--                     <div class="panel-body" id="div_mashTimer"></div> -->
-<!--                     <div class="row"> -->
-<!-- 									  <div class="col-md-12"> -->
-<!-- 									    <div class="input-group"> -->
-<!-- 									      <span class="input-group-btn"> -->
-<!-- 									        <button class="btn btn-default" type="button" onClick="click_setTimer('mash');">Manual Set</button>
-<!-- 									      </span> -->
-<!-- 									      <input id="mashTimerSet" type="text" class="form-control"> -->
-<!-- 									    </div><!-- /input-group -->
-<!-- 									  </div><!-- /.col-lg-6 -->
-<!-- 									</div><!-- /.row -->
-<!--                 </div> -->
-<!--             </div> -->
-<!--             <div class="col-sm-5"> -->
-<!--                 <div id="boilTimerPanel" class="panel panel-default"> -->
-<!--                     <div class="panel-heading clearfix"> -->
-<!--                     	<h3 class="panel-title pull-left">Boil Timer</h3> -->
-<!--                     	<button id="boilTimerButton" class="btn btn-default btn-xs pull-right" type="button">Manual Start</button> -->
-<!--                    	</div> -->
-<!--                     <div class="panel-body" id="div_boilTimer"></div> -->
-<!--                     <div class="row"> -->
-<!-- 									  <div class="col-md-12"> -->
-<!-- 									    <div class="input-group"> -->
-<!-- 									      <span class="input-group-btn"> -->
-<!-- 									        <button class="btn btn-default" type="button" onClick="click_setTimer('boil');">Manual Set</button> -->
-<!-- 									      </span> -->
-<!-- 									      <input id="boilTimerSet" type="text" class="form-control"> -->
-<!--									    </div><!-- /input-group -->
-<!--									  </div><!-- /.col-lg-6 -->
-<!--									</div><!-- /.row -->
-<!--                 </div> -->
-<!--             </div> -->
-<!--             <div class="col-sm-2 text-right"> -->
-<!--                 <div class="row"> -->
-<!--                 	<div class="col-sm-12"> -->
-<!--                		<button id="button_alarm" class="btn btn-default btn-lg" onClick="click_buttonAlarm('mash');"><span class="glyphicon glyphicon-warning-sign"></span></button>
-<!--                 	</div> -->
-<!--                 </div> -->
-<!--             </div> -->
-<!--         </div> -->
         <div class="row">
             <div class="col-sm-4">
             	<div class="row">
@@ -408,9 +337,6 @@
 				<div id="div_outputStatus" class="well well-sm"></div>
             </div>
         </div>
-        <div class="row">
-        <a id="simple-menu" href="#sidr">Toggle menu</a>
-        </div>
     </div>
     
     <!-- Status Data modal -->
@@ -537,6 +463,9 @@
                     <h3 class="text-danger">Establishing Connection - Please Wait</h3>
                     <i class="fa fa-spinner fa-spin fa-5x"></i>
                 </div>
+                <div class="modal-footer">
+                <button id="connectionModalCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
             </div>
         </div>
     </div>
