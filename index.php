@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="css/jquery.sidr.light.css">
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/slider.css">
+
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
 <!-- Latest compiled and minified JavaScript -->
@@ -19,6 +20,7 @@
 <script src="js/filereader.js"></script>
 <script src="js/jquery.xml2json.js"></script>
 <script src="js/bootstrap-slider.js"></script>
+
 
 <script>
 	function printAlarm(id, status)
@@ -92,24 +94,28 @@
         $(id).html("Output Status: " + status);
     }
     
-    function click_setTimer(vessel) {
-      var timerId = "";
-      var setTime = "";
-      if (vessel == "mash") {
-        timerId = 0;
-        setTime = $('#mashTimerSet').val();
-        a = "werwe";
-      } else if (vessel == "boil") {
-        timerId = 1;
-        setTime = $('#boilTimerSet').val();
-        b = "wefawe";
-      } else {
-        alert("Unable To Set Timer");
-      }
-      brewTrollerExecCommand(BTCMD_SetTimerValue, timerId, {"TimerValue": setTime}, host, username, password, function(data){
-        });
+//     function click_setTimer(vessel) {
+//       var timerId,
+//       	  setTime,
+//       	  hours,
+//       	  minutes;
+//       if (vessel == "mash") {
+//         timerId = 0;
+//         hours = $("#mashHours").val();
+//         minutes = $("#mashMinutes").val();
+//         milliseconds = hoursMinutesToMilliseconds(hours, minutes);
+//       } else if (vessel == "boil") {
+//         timerId = 1;
+//         hours = $("#boilHours").val();
+//         minutes = $("#boilMinutes").val();
+//         milliseconds = hoursMinutesToMilliseconds(hours, minutes);
+//       } else {
+//         alert("Unable To Set Timer");
+//       }
+//       brewTrollerExecCommand(BTCMD_SetTimerValue, timerId, {"TimerValue": milliseconds}, host, username, password, function(data){
+//         });
       
-    }
+//     }
     
     function click_buttonAlarm()
     {
@@ -145,7 +151,6 @@
                 </button>
                 <a class="navbar-brand" href="#">WebAppTroller - A web interface for Brewtroller<span id="tempStatus"></span></a>
             </div>
-            
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
@@ -158,7 +163,15 @@
                     </li>
                     
                     <li><a href="#" id="button_connect">Connect</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Recipes <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" id="beerXMLModalButton" data-toggle="modal" data-target="#modal_beerXMLLoader">Load Beer XML</a></li>
+                            <li><a href="#"id="programModalButton" data-toggle="modal" data-target="#modal_programPicker">Load Recipe</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#" class="btn-lg" data-toggle="modal" data-target="#modal_settings"><span class="glyphicon glyphicon-cog"></a></li>
+                	<li><button id="button_alarm" class="btn btn-default btn-lg" onClick="click_buttonAlarm('mash');"><span class="glyphicon glyphicon-warning-sign"></span></button></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -173,7 +186,7 @@
            	  </h3>
            </div>
            <div class="panel-body">
-  			 <p id="programSlot1" class="alert alert-success" style="padding:5px;"><span class="program1Name">No Program Selected (1)</span> : <span id="currStatusProg1"></span></p>
+  			 <p id="programSlot1" class="alert alert-success" style="padding:5px;"><span id="currStatusProg1"></span></p>
   		   </div>	
        	 </div>
        	</div>
@@ -185,7 +198,7 @@
            	  </h3>
            </div>
            <div class="panel-body">
-  			 <p id="programSlot2" class="alert alert-success" style="padding:5px;"><span class="program2Name">No Program Selected (2)</span> : <span id="currStatusProg2"></span></p>
+  			 <p id="programSlot2" class="alert alert-success" style="padding:5px;"><span id="currStatusProg2"></span></p>
   		   </div>	
        	  </div>
         </div>
@@ -197,70 +210,53 @@
         </div>
         </div>
         </div>
-        <div class="row">
-            <div class="col-sm-5">
-                <div id="programThreadPanel" class="panel panel-default">
-                    <div class="panel-heading clearfix">
-                    	<h3 class="panel-title pull-left">
-                    		Program Threads
-                    	</h3>
-                    	<div class="btn-group pull-right">
-	                    	<button id="beerXMLModalButton" data-toggle="modal" data-target="#modal_beerXMLLoader" class="btn btn-default btn-xs" type="button">Import Beer XML</button>
-	                    	<button id="programModalButton" data-toggle="modal" data-target="#modal_programPicker" class="btn btn-default btn-xs" type="button">Load Recipe</button>
-                    	</div>
-                    </div>
-                    <div class="panel-body">
-                        <div id="div_programThread1"></div>
-                        <div id="div_programThread2"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div id="mashTimerPanel" class="panel panel-default">
-                    <div class="panel-heading clearfix">
-                    	<h3 class="panel-title pull-left">Mash Timer</h3>
-                    	<button id="mashTimerButton" class="btn btn-default btn-xs pull-right" type="button">Manual Start</button>
-                    </div>
-                    <div class="panel-body" id="div_mashTimer"></div>
-                    <div class="row">
-									  <div class="col-md-12">
-									    <div class="input-group">
-									      <span class="input-group-btn">
-									        <button class="btn btn-default" type="button" onClick="click_setTimer('mash');">Manual Set</button>
-									      </span>
-									      <input id="mashTimerSet" type="text" class="form-control">
-									    </div><!-- /input-group -->
-									  </div><!-- /.col-lg-6 -->
-									</div><!-- /.row -->
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div id="boilTimerPanel" class="panel panel-default">
-                    <div class="panel-heading clearfix">
-                    	<h3 class="panel-title pull-left">Boil Timer</h3>
-                    	<button id="boilTimerButton" class="btn btn-default btn-xs pull-right" type="button">Manual Start</button>
-                   	</div>
-                    <div class="panel-body" id="div_boilTimer"></div>
-                    <div class="row">
-									  <div class="col-md-12">
-									    <div class="input-group">
-									      <span class="input-group-btn">
-									        <button class="btn btn-default" type="button" onClick="click_setTimer('boil');">Manual Set</button>
-									      </span>
-									      <input id="boilTimerSet" type="text" class="form-control">
-									    </div><!-- /input-group -->
-									  </div><!-- /.col-lg-6 -->
-									</div><!-- /.row -->
-                </div>
-            </div>
-            <div class="col-sm-1 text-right">
-                <div class="row">
-                	<div class="col-sm-12">
-                		<button id="button_alarm" class="btn btn-default btn-lg" onClick="click_buttonAlarm('mash');"><span class="glyphicon glyphicon-warning-sign"></span></button>
-                	</div>
-                </div>
-            </div>
-        </div>
+<!--         <div class="row"> -->
+<!--             <div class="col-sm-5"> -->
+<!--                 <div id="mashTimerPanel" class="panel panel-default"> -->
+<!--                     <div class="panel-heading clearfix"> -->
+<!--                     	<h3 class="panel-title pull-left">Mash Timer</h3> -->
+<!--                     	<button id="mashTimerButton" class="btn btn-default btn-xs pull-right" type="button">Manual Start</button> -->
+<!--                     </div> -->
+<!--                     <div class="panel-body" id="div_mashTimer"></div> -->
+<!--                     <div class="row"> -->
+<!-- 									  <div class="col-md-12"> -->
+<!-- 									    <div class="input-group"> -->
+<!-- 									      <span class="input-group-btn"> -->
+<!-- 									        <button class="btn btn-default" type="button" onClick="click_setTimer('mash');">Manual Set</button>
+<!-- 									      </span> -->
+<!-- 									      <input id="mashTimerSet" type="text" class="form-control"> -->
+<!-- 									    </div><!-- /input-group -->
+<!-- 									  </div><!-- /.col-lg-6 -->
+<!-- 									</div><!-- /.row -->
+<!--                 </div> -->
+<!--             </div> -->
+<!--             <div class="col-sm-5"> -->
+<!--                 <div id="boilTimerPanel" class="panel panel-default"> -->
+<!--                     <div class="panel-heading clearfix"> -->
+<!--                     	<h3 class="panel-title pull-left">Boil Timer</h3> -->
+<!--                     	<button id="boilTimerButton" class="btn btn-default btn-xs pull-right" type="button">Manual Start</button> -->
+<!--                    	</div> -->
+<!--                     <div class="panel-body" id="div_boilTimer"></div> -->
+<!--                     <div class="row"> -->
+<!-- 									  <div class="col-md-12"> -->
+<!-- 									    <div class="input-group"> -->
+<!-- 									      <span class="input-group-btn"> -->
+<!-- 									        <button class="btn btn-default" type="button" onClick="click_setTimer('boil');">Manual Set</button> -->
+<!-- 									      </span> -->
+<!-- 									      <input id="boilTimerSet" type="text" class="form-control"> -->
+<!--									    </div><!-- /input-group -->
+<!--									  </div><!-- /.col-lg-6 -->
+<!--									</div><!-- /.row -->
+<!--                 </div> -->
+<!--             </div> -->
+<!--             <div class="col-sm-2 text-right"> -->
+<!--                 <div class="row"> -->
+<!--                 	<div class="col-sm-12"> -->
+<!--                		<button id="button_alarm" class="btn btn-default btn-lg" onClick="click_buttonAlarm('mash');"><span class="glyphicon glyphicon-warning-sign"></span></button>
+<!--                 	</div> -->
+<!--                 </div> -->
+<!--             </div> -->
+<!--         </div> -->
         <div class="row">
             <div class="col-sm-4">
             	<div class="row">
@@ -285,8 +281,12 @@
             </div>
             <div class="col-sm-4">
                 <div class="panel panel-default">
-                    <div class="panel-heading"><h3 class="panel-title">Mash</h3></div>
+                    <div class="panel-heading clearfix">
+                    	<h3 class="panel-title pull-left">Mash</h3>
+                    	<button id="mashTimerButton" class="btn btn-default btn-xs pull-right" type="button">Timer Start</button>
+                    </div>
                     <div class="panel-body">
+                        <div id="div_mashTimer"></div>
                         <div id="div_mashTemperature"></div>
                         <div id="div_mashSetpoint"></div>
                         <div id="div_mashHeatPower"></div>
@@ -299,17 +299,46 @@
 					      </span>
 					      <input id="mashTempSet" type="text" class="form-control">
 					    </div><!-- /input-group -->
-                    </div>
+					    <div class="input-group">
+					      <span class="input-group-btn">
+					        <button class="btn btn-default" type="button" onClick="Brewtroller.timer.click_setTimer('mash');">Set Timer</button>
+					      </span>
+					      <select id="mashHours" class="form-control">
+							  <option value="0">Hours</option>
+							  <?php 
+							  $i = 0;
+							  while ($i < 24) {
+							  $i++?>
+							  <option value="<?=$i?>"><?=$i?></option>
+							  <?php } ?>
+							</select>
+						 <select id="mashMinutes" class="form-control">
+							  <option value="0">Minutes</option>
+							  <?php 
+							  $i = 0;
+							  while ($i < 60) {
+							  $i++?>
+							  <option value="<?=$i?>"><?=$i?></option>
+							  <?php } ?>
+							</select>
+					    </div><!-- /input-group -->
+					</div>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                    	<h3 class="panel-title">
+                    <div class="panel-heading clearfix">
+                    	<h3 class="panel-title pull-left">
                     		Boil Kettle
                     	</h3>
+                    	<button id="boilTimerButton" class="btn btn-default btn-xs pull-right" type="button">Timer Start</button>
                     </div>
                     <div class="panel-body">
+						<div class="row">
+							<div class="col-sm-12">
+								<div id="div_boilTimer"></div>
+							</div>
+						</div>
 						<div class="row">
 							<div class="col-sm-6">
 								<div id="div_kettleTemperature"></div>
@@ -341,6 +370,34 @@
 								</div>
 							</div>
 						</div>
+						<div class="row">
+						  <div class="col-md-12">
+						    <div class="input-group">
+						      <span class="input-group-btn">
+						        <button class="btn btn-default" type="button" onClick="Brewtroller.timer.click_setTimer('boil');">Set Timer</button>
+						      </span>
+						      <select id="boilHours" class="form-control">
+							      <option value="0">Hours</option>
+								  <?php 
+									  $i = 0;
+									  while ($i < 24) {
+									  $i++?>
+									  <option value="<?=$i?>"><?=$i?></option>
+								  <?php } ?>
+							  </select>
+						      <select id="boilMinutes" class="form-control">
+								  <option value="0">Minutes</option>
+								  <?php 
+									  $i = 0;
+									  while ($i < 60) {
+									  $i++?>
+									  <option value="<?=$i?>"><?=$i?></option>
+								  <?php } ?>
+							  </select>
+						    </div><!-- /input-group -->
+						  </div><!-- /.col-lg-6 -->
+						</div><!-- /.row -->
+						
 					</div>
                 </div>
             </div>
@@ -476,16 +533,9 @@
     <div class="modal fade" id="modal_Timeout" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Connection Issue</h4>
-                </div>
                 <div class="modal-body" id="recipeModalBody">
-                    <h3 class="text-danger">Connection Timeout - Please Wait</h3>
+                    <h3 class="text-danger">Establishing Connection - Please Wait</h3>
                     <i class="fa fa-spinner fa-spin fa-5x"></i>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>

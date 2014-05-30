@@ -29,7 +29,9 @@ Brewtroller.init = function () {
   $('.boilControl').on("change", function () {
 	  Brewtroller.boil.control(this.name);
   });
-//  $('.boilControl').on("change", function () {alert("hey!")});
+  $("#programModalButton").on("click", function () {
+	  Brewtroller.program.getProgramList();
+  })
   storedHost = localStorage.getItem('btHost');
   if (storedHost) {
     host = storedHost;
@@ -66,10 +68,12 @@ Brewtroller.init = function () {
   
   Brewtroller.timer.setup();
   Brewtroller.temp.setup();
-  $('#programSlot2').hide();
+  $("#button_nextStep").hide();
+  $("#button_reset").hide();
+  $('#boilZonePanel').hide();
   $("#beerXMLModalButton").attr("disabled", "disabled");
   $("#programModalButton").attr("disabled", "disabled");
-  $("#programSlot1").hide();
+  $("#mashZonePanel").hide();
   $("#powerControl").hide();
   $("#powerSlider").slider().on("slide", function(ev){
 	  $("#boilPower").text(ev.value);
@@ -91,7 +95,7 @@ Brewtroller.connected = {
         } else {
             connected = true;
             Brewtroller.connected.loop();
-            Brewtroller.program.getProgramList();
+            //Brewtroller.program.getProgramList();
             $("#beerXMLModalButton").removeAttr("disabled");
             $("#programModalButton").removeAttr("disabled");
         }
@@ -134,12 +138,13 @@ Brewtroller.program = {
     brewTrollerExecCommand(BTCMD_GetProgramList, null, null, host, username, password, function(data){
     	programList = data;
     	programNumber = 0;
+    	$('#recipeDetails table tbody').html("");
     	$.each(data, function(index,value) {
     		if (value != ">" && value != "") {
     			var recipeLine = '<tr><td class="text-muted">';
     			recipeLine += index;
     			recipeLine += '</td><td id="programID">';
-          recipeLine += programNumber;
+    			recipeLine += programNumber;
     			recipeLine += '</td><td>';
     			recipeLine += value;
     			recipeLine += '</td><td><button id="';
@@ -154,11 +159,11 @@ Brewtroller.program = {
     			$('#recipeDetails table tbody').append(recipeLine);
     			$('#' + recipeBtnId1).on("click", function () {
     				var reci = $(this).attr('id').split("_");
-    			  Brewtroller.program.startStep(reci[0], "0"); 
+    			  Brewtroller.program.startStep(reci[0] - 1, "0"); 
     			  });
     			$('#' + recipeBtnId2).on("click", function () {
     			  var reci = $(this).attr('id').split("_");
-    			  Brewtroller.program.startStep(reci[0], "0"); 
+    			  Brewtroller.program.startStep(reci[0] - 1, "0"); 
     			  });
     		}
     		if (index != "Response Code") {
@@ -168,7 +173,7 @@ Brewtroller.program = {
     });
   },
   startStep : function (program, step) {
-	  brewTrollerExecCommand(BTCMD_StartStep, program, step, host, username, password, function(data){});
+	  brewTrollerExecCommand(BTCMD_StartStep, step, {"Program_Index": program}, host, username, password, function(data){});
   },
   nextStep : function () {
 	  if (programStep1 != "255") {
@@ -388,7 +393,7 @@ Brewtroller.timer = {
       }else{
         rStatus = "On";
       }
-    $(id).html("Set Time: " + millisecondsToTime(value) + " seconds <br>Status: " + rStatus);
+    $(id).html("Timer: " + millisecondsToTime(value) + " / " + rStatus);
     },
     click_startTimer : function (vessel) {
       var timerStatus;
@@ -417,7 +422,29 @@ Brewtroller.timer = {
         }
       });
       
-    }
+    },
+    click_setTimer : function (vessel) {
+        var timerId,
+        	  setTime,
+        	  hours,
+        	  minutes;
+        if (vessel == "mash") {
+          timerId = 0;
+          hours = $("#mashHours").val();
+          minutes = $("#mashMinutes").val();
+          milliseconds = hoursMinutesToMilliseconds(hours, minutes);
+        } else if (vessel == "boil") {
+          timerId = 1;
+          hours = $("#boilHours").val();
+          minutes = $("#boilMinutes").val();
+          milliseconds = hoursMinutesToMilliseconds(hours, minutes);
+        } else {
+          alert("Unable To Set Timer");
+        }
+        brewTrollerExecCommand(BTCMD_SetTimerValue, timerId, {"TimerValue": milliseconds}, host, username, password, function(data){
+          });
+        
+      }
 };
 
 //Temp Functions
@@ -451,12 +478,34 @@ Brewtroller.reset = {
 //Status Functions
 Brewtroller.status = {
 	updateStatusBar : function () {
-		if(programStep2 != "255") {$('#programSlot2').show();}else{$('#programSlot2').hide();};
-		if(programStep1 != "255") {$('#programSlot1').show();}else{$('#programSlot1').hide();};
-		if(programName1 != "") {$('.program1Name').html(programName1);};
-		if(programName2 != "") {$('.program2Name').html(programName2);};
-		if(programStep1 == "255") {$('.program1Name').html('No Program Selected (1)');};
-		if(programStep2 == "255") {$('.program2Name').html('No Program Selected (2)');};
+		if(programName2 != "255" && programName2 != "") {
+			$('#boilZonePanel').show();
+			$('#button_nextStep').show();
+			$('#button_reset').show();
+		}else{
+			$('#boilZonePanel').hide();
+		};
+		if(programName1 != "255" && programName1 != "") {
+			$('#mashZonePanel').show();
+			$('#button_nextStep').show();
+			$('#button_reset').show();
+		}else{
+			$('#mashZonePanel').hide();
+			$('#button_nextStep').hide();
+			$('#button_reset').hide();
+		};
+		if(programName1 != "") {
+			$("#mashZonePanel .panel-title").html(programName1);
+		};
+		if(programName2 != "") {
+			$("#boilZonePanel .panel-title").html(programName2);
+		};
+		if(programStep1 == "255") {
+			$("#mashZonePanel .panel-title").html('No Program Selected');
+			};
+		if(programStep2 == "255") {
+			$("#boilZonePanel .panel-title").html('No Program Selected');
+			};
 		$('#currStatusProg1').html(Brewtroller.status.translateStepCode(programStep1));
 		$('#currStatusProg2').html(Brewtroller.status.translateStepCode(programStep2));
 	},
@@ -482,14 +531,14 @@ Brewtroller.status = {
 		return stepTranslate[step];
 	},
 	printUI : function (data) {
-		$('#tempStatus').html(data["ProgramThread1_Name"]);
-	  programName1 = data["ProgramThread1_Name"];
-		programName2 = data["ProgramThread2_Name"];
-		programStep1 = data["ProgramThread1_Step"];
-		programStep2 = data["ProgramThread2_Step"];
+		$('#tempStatus').html(data["Mash_Zone_Active_Program_Recipe"]);
+		programName1 = data["Program1_Name"];
+		programName2 = data["Program2_Name"];
+		programStep1 = data["Program1_Step"];
+		programStep2 = data["Program2_Step"];
 		$("#div_status").html("<pre>" + JSON.stringify(data, null, '\t') + "</pre>");
-        printProgramThread("#div_programThread1", data.ProgramThread1_Step, data.ProgramThread1_Recipe);
-        printProgramThread("#div_programThread2", data.ProgramThread2_Step, data.ProgramThread2_Recipe);
+        printProgramThread("#div_programThread1", data.Program1_Step, data.Program1_Name);
+        printProgramThread("#div_programThread2", data.Program2_Step, data.Program2_Name);
         Brewtroller.timer.printTimer("#div_mashTimer", data.Mash_TimerValue, data.Mash_TimerStatus);
         Brewtroller.timer.printTimer("#div_boilTimer", data.Boil_TimerValue, data.Boil_TimerStatus);
         printAlarm("#button_alarm", data.alarmStatus);
@@ -629,9 +678,21 @@ function brewTrollerParseResponse(result, cmdObject)
 
 function millisecondsToTime(milli)
 {
-      var milliseconds = milli % 1000;
-      var seconds = Math.floor((milli / 1000) % 60);
-      var minutes = Math.floor((milli / (60 * 1000)) % 60);
+//	var date = new Date(milli);
+//	var h = date.getHours();
+//	var m = date.getMinutes();
+//	var s = date.getSeconds();
+	
+  var h = Math.floor(milli / 3600000);
+  var m = Math.floor((milli - (h * 3600000)) / 60000);
+  var s = Math.floor((milli - (m * 60000) - (h*3600000)) / 1000);
 
-      return minutes + "m" + seconds + "s" + milliseconds + "ms";
+  return h + "h" + m + "m" + s + "s";
 };
+
+function hoursMinutesToMilliseconds(hours, minutes) {
+	hoursToMinutes = hours * 60;
+	minutesTotal = parseInt(minutes) + hoursToMinutes;
+	milliseconds = minutesTotal * 60000;
+	return milliseconds;
+}

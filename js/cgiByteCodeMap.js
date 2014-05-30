@@ -139,12 +139,16 @@ var BTCMD_GetStatus = {
       "Boil_TimerValue",
       "Boil_TimerStatus",
       "Boil_ControlState",
-      "ProgramThread1_Step",
-          "ProgramThread1_Name",
-      "ProgramThread1_Recipe",
-      "ProgramThread2_Step",
-          "ProgramThread2_Name",
-      "ProgramThread2_Recipe",
+      "Program1_Step",
+      "Program1_Name",
+      "Program1_Number",
+      "Program2_Step",
+      "Program2_Name",
+      "Program2_Number"
+//      "Mash_Zone_Active_Program_Step",
+//      "Mash_Zone_Active_Program_Recipe",
+//      "Boil_Zone_Active_Program_Step",
+//      "Boil_Zone_Active_Program_Recipe"
     ]
   };
 
@@ -169,21 +173,7 @@ var BTCMD_StartStep = {
       reqCode: 'U',
       reqIndex: true,
       reqParams: [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                  "5",
-                  "6",
-                  "7",
-                  "8",
-                  "9",
-                  "10",
-                  "11",
-                  "12",
-                  "13",
-                  "14"
+                  "Program_Index"
                   ],
       rspCode: 'n',
       rspParams: [
@@ -235,11 +225,11 @@ var BTCMD_GetActivePrograms = {
       reqParams: [],
       rspCode: 'n',
       rspParams: [
-          "Response Code",
-          "Program 1 Step",
-          "Program 1 Number",
-          "Program 2 Step",
-          "Program 2 Number"
+          "Response_Code",
+          "Program_1_Step",
+          "Program_1_Number",
+          "Program_2_Step",
+          "Program_2_Number"
           ]
 };
 var BTCMD_GetProgramList = {
@@ -248,7 +238,7 @@ var BTCMD_GetProgramList = {
       reqParams: [],
       rspCode: '>',
       rspParams: [
-          "Response Code",
+          "Response_Code",
           "Program1_Name",
           "Program2_Name",
           "Program3_Name",
@@ -267,7 +257,8 @@ var BTCMD_GetProgramList = {
           "Program16_Name",
           "Program17_Name",
           "Program18_Name",
-          "Program19_Name"
+          "Program19_Name",
+          "Program20_Name"
           ]
 };
 var BTCMD_SetBoilControl = {
@@ -295,7 +286,7 @@ var BTCMD_SetProgramName = {
 					 ]
 	};
 var BTCMD_SetProgramMashTemps = {
-	      reqCode: '%5E',
+	      reqCode: '%5C',
 	      reqIndex: true,
 	      reqParams: [
 	                  "Dough_In_Temp",
@@ -305,7 +296,7 @@ var BTCMD_SetProgramMashTemps = {
 	                  "Sacch2_Temp",
 	                  "Mash_Out_Temp"
 	                  ],
-	      rspCode: '#91',
+	      rspCode: '>',
 	      rspParams: [
 						"Dough_In_Temp",
 						"Acid_Temp",

@@ -18,3 +18,16 @@
 #boilZonePanel .panel-body {
 	padding: 0px;
 }
+
+#mashMinutes {
+	width: 100px;
+}
+#mashHours {
+	width: 90px;
+}
+#boilMinutes {
+	width: 100px;
+}
+#boilHours {
+	width: 90px;
+}
