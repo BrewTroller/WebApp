@@ -31,3 +31,48 @@
 #boilHours {
 	width: 90px;
 }
+.valveBtn .btn {
+	width: 125px;
+}
+#wrap {
+    display: block;
+    margin: 0 auto;
+    width: 250px;
+}
+.serial {
+    width: 40px;
+}
+#valveSelect {
+	width: 140px;
+	height: 30px;
+}
+.btn-Valves input[type="radio"]:checked+label {
+  color: #fff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+.btn-Valves {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+.vesselSet {
+	font-weight: bold;
+}
+.vesselTemp {
+	font-size: 1.7em;
+	font-weight: bold;
+}
+.vesselPanel {
+	min-height: 305px;
+}
+.vesselPanel .panel-heading {
+	height: 45px;
+}
+.timer-top {
+	min-height: 151px;
+}
+.timerText{
+	font-weight: bold;
+	font-size: 2em;
+}

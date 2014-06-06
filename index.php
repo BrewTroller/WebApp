@@ -4,9 +4,9 @@
 <title>WebAppTroller - A web interface for Brewtroller</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
 <!-- Optional theme -->
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="css/jquery.sidr.light.css">
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/slider.css">
@@ -15,11 +15,10 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script src="js/filereader.js"></script>
 <script src="js/jquery.xml2json.js"></script>
 <script src="js/bootstrap-slider.js"></script>
-
 
 <script>
 	function printAlarm(id, status)
@@ -36,32 +35,32 @@
     
     function printTemperature(id, temperature)
     {
-        $(id).html("Temperature: " + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + "F")));
+        $(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
     }
     
     function printSetpoint(id, setpoint)
     {
-        $(id).html("Setpoint: " + (setpoint == 0 ? "N/A" : (setpoint / 100.0 + "F")));
+        $(id).html('<small class="text-muted">set </small><span class="vesselSet">' + (setpoint == 0 ? "N/A " : (setpoint / 100.0 + '&deg;F</span> ')));
     }
     
     function printHeatPower(id, heatPower)
     {
-        $(id).html("Heat Power: " + (heatPower == 0 ? "Off" : heatPower == 100 ? '<span class="text text-danger">On</span>' : (heatPower + "%")));
+        $(id).html('<small class="text-muted">heat power </small>' + (heatPower == 0 ? "Off" : heatPower == 100 ? '<span class="text text-danger">On</span>' : (heatPower + "%")));
     }
     
 	function printVolume(id, volume)
     {
-        $(id).html("Volume: " + volume / 1000.0 + " Gal");
+        $(id).html('<small class="text-muted">volume </small>' + volume / 1000.0 + " Gal");
     }
     
     function printTargetVolume(id, target)
     {
-        $(id).html("Target Volume: " + target / 1000.0 + " Gal");
+        $(id).html('<small class="text-muted">target volume </small>' + target / 1000.0 + " Gal");
     }
     
     function printFlowRate(id, flowrate)
     {
-        $(id).html("Flow Rate: " + flowrate + " Gal/min");
+        $(id).html('<small class="text-muted">flow rate </small>' + flowrate + " Gal/min");
     }
 	function printBoilControl(id, data)
 	{
@@ -83,10 +82,10 @@
       $(id).html("Set Time: " + value/1000 + " seconds <br>Status: " + rStatus);
     } */
     
-    function printOutputProfiles(id, status)
-    {
-        $(id).html("Output Profiles: " + status);
-    }
+//     function printOutputProfiles(id, status)
+//     {
+//         $(id).html("Output Profiles: " + status);
+//     }
     
     function printOutputStatus(id, status)
     {
@@ -108,8 +107,6 @@
     }
     
     $(document).ready(function(){
-                      Brewtroller.connected.loop();
-                      $('#simple-menu').sidr();
                       });
 </script>
 </head>
@@ -125,14 +122,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">WebAppTroller - A web interface for Brewtroller<span id="tempStatus"></span></a>
+                <a class="navbar-brand" href="#">
+                	<img class="img-responsive" src="images/brewtroller-header.png">
+                	<span id="tempStatus"></span>
+                </a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Development <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controller <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                            <li><a href="#" id="button_reset">Reset</a></li>
+                            <li><a href="#" id="reboot">Reboot</a></li>
+                            <li class="divider"></li>
                             <li><a href="#" data-toggle="modal" data-target="#statusData">Status Data</a></li>
                             <li><a href="#" onClick="click_buttonAlarmOn();">Set Alarm</a></li>
                         </ul>
@@ -152,48 +155,42 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-    <div class="container">
-        <div class="row">
-        <div class="col-sm-5">
+    <div class="row">
+        <div class="col-sm-6">
           <div id="mashZonePanel" class="panel panel-default">
-          	<div class="panel-heading">
-           	  <h3 class="panel-title">
+          	<div class="panel-heading clearfix">
+           	  <h3 class="panel-title pull-left">
            		Mash Zone
            	  </h3>
+           	  <button id="button_nextStep1" type="button" class="btn btn-default btn-xs pull-right">Next Step</button>
            </div>
            <div class="panel-body">
   			 <p id="programSlot1" class="alert alert-success" style="padding:5px;"><span id="currStatusProg1"></span></p>
   		   </div>	
        	 </div>
        	</div>
-       	<div class="col-sm-5">
+       	<div class="col-sm-6">
        	  <div id="boilZonePanel" class="panel panel-default">
-          	<div class="panel-heading">
-           	  <h3 class="panel-title">
+          	<div class="panel-heading clearfix">
+           	  <h3 class="panel-title pull-left">
            		Boil Zone
            	  </h3>
+           	  <button id="button_nextStep2" type="button" class="btn btn-default btn-xs pull-right">Next Step</button>
            </div>
            <div class="panel-body">
   			 <p id="programSlot2" class="alert alert-success" style="padding:5px;"><span id="currStatusProg2"></span></p>
   		   </div>	
        	  </div>
         </div>
-        <div class="col-sm-2">
-        	<div class="btn-group">
-				  <button id="button_nextStep" type="button" class="btn btn-default">Next Step</button>
-				  <button id="button_reset" type="button" class="btn btn-default">Reset</button>
-					</div>
-        </div>
-        </div>
-        </div>
-        <div class="row">
+      </div>
+      <div class="row">
             <div class="col-sm-4">
-            	<div class="row">
-                <div class="panel panel-default">
+            	<div class="panel panel-default vesselPanel">
                     <div class="panel-heading"><h3 class="panel-title">Hot Liquor</h3></div>
                     <div class="panel-body">
-                        <div id="div_hltTemperature"></div>
-                        <div id="div_hltSetpoint"></div>
+                    	<div id="hltTempSet"><span id="div_hltTemperature"></span> <span id="div_hltSetpoint"></span></div>
+<!--                         <div id="div_hltTemperature"></div> -->
+<!--                         <div id="div_hltSetpoint"></div> -->
                         <div id="div_hltHeatPower"></div>
                         <div id="div_hltVolume"></div>
                         <div id="div_hltTargetVolume"></div>
@@ -206,18 +203,19 @@
 					    </div><!-- /input-group -->
 				</div>
                 </div>
-            	</div>
             </div>
             <div class="col-sm-4">
-                <div class="panel panel-default">
+                <div class="panel panel-default vesselPanel">
                     <div class="panel-heading clearfix">
                     	<h3 class="panel-title pull-left">Mash</h3>
                     	<button id="mashTimerButton" class="btn btn-default btn-xs pull-right" type="button">Timer Start</button>
                     </div>
                     <div class="panel-body">
-                        <div id="div_mashTimer"></div>
-                        <div id="div_mashTemperature"></div>
-                        <div id="div_mashSetpoint"></div>
+                        <div class="row timer-top">
+                        <div class="col-sm-12">
+                        <div id="mashTempSet"><span id="div_mashTemperature"></span> <span id="div_mashSetpoint"></span></div>
+<!--                         <div id="div_mashTemperature"></div> -->
+<!--                         <div id="div_mashSetpoint"></div> -->
                         <div id="div_mashHeatPower"></div>
                         <div id="div_mashVolume"></div>
                         <div id="div_mashTargetVolume"></div>
@@ -228,6 +226,9 @@
 					      </span>
 					      <input id="mashTempSet" type="text" class="form-control">
 					    </div><!-- /input-group -->
+					    </div>
+					    </div>
+					    <div id="div_mashTimer"></div>
 					    <div class="input-group">
 					      <span class="input-group-btn">
 					        <button class="btn btn-default" type="button" onClick="Brewtroller.timer.click_setTimer('mash');">Set Timer</button>
@@ -255,7 +256,7 @@
                 </div>
             </div>
             <div class="col-sm-4">
-                <div class="panel panel-default">
+                <div class="panel panel-default vesselPanel">
                     <div class="panel-heading clearfix">
                     	<h3 class="panel-title pull-left">
                     		Boil Kettle
@@ -263,78 +264,297 @@
                     	<button id="boilTimerButton" class="btn btn-default btn-xs pull-right" type="button">Timer Start</button>
                     </div>
                     <div class="panel-body">
-						<div class="row">
-							<div class="col-sm-12">
-								<div id="div_boilTimer"></div>
+						<div class="row timer-top">
+						<div class="col-sm-12">
+							<div class="row">
+								<div class="col-sm-6">
+									<div id="kettleTempSet"><span id="div_kettleTemperature"></span> <span id="div_kettleSetpoint"></span></div>
+	<!-- 								<div id="div_kettleTemperature"></div> -->
+	<!-- 								<div id="div_kettleSetpoint"></div> -->
+									<div id="div_kettleHeatPower"></div>
+									<div id="div_kettleVolume"></div>
+									<div id="div_kettleTargetVolume"></div>
+									<div id="div_kettleFlowRate"></div>
+								</div>
+								<div class="col-sm-6">
+									<div class="btn-group-vertical btn-group-sm" data-toggle="buttons">
+									  <label class="btn btn-default">
+									  	<input type="radio" class="boilControl" name="boilOff" id="boilOff">Kettle Off</input>
+									  </label>
+									   <label class="btn btn-default">
+									  	<input type="radio" class="boilControl" name="boilAuto" id="boilAuto">Auto Boil</input>
+									  </label>
+									   <label class="btn btn-default">
+									  	<input type="radio" class="boilControl" name="boilManual" id="boilManual">Manual Boil</input>
+									  </label>
+									</div>
+								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-6">
-								<div id="div_kettleTemperature"></div>
-								<div id="div_kettleSetpoint"></div>
-								<div id="div_kettleHeatPower"></div>
-								<div id="div_kettleVolume"></div>
-								<div id="div_kettleTargetVolume"></div>
-								<div id="div_kettleFlowRate"></div>
-							</div>
-							<div class="col-sm-6">
-								<div class="btn-group-vertical btn-group-sm" data-toggle="buttons">
-								  <label class="btn btn-default">
-								  	<input type="radio" class="boilControl" name="boilOff" id="boilOff">Kettle Off</input>
-								  </label>
-								   <label class="btn btn-default">
-								  	<input type="radio" class="boilControl" name="boilAuto" id="boilAuto">Auto Boil</input>
-								  </label>
-								   <label class="btn btn-default">
-								  	<input type="radio" class="boilControl" name="boilManual" id="boilManual">Manual Boil</input>
-								  </label>
+							<div class="row">
+								<div class="col-sm-12">
+									<div id="powerControl">
+										<p>Power: <span id="boilPower">0</span>%</p>
+										<input id="powerSlider" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-sm-12">
-								<div id="powerControl">
-									<p>Power: <span id="boilPower">0</span>%</p>
-									<input id="powerSlider" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
+						</div>
+						<div class="row timer-bottom">
+						<div class="col-sm-12">
+							<div class="row">
+								<div class="col-sm-12">
+									<div id="div_boilTimer"></div>
 								</div>
 							</div>
+							<div class="row">
+							  <div class="col-md-12">
+							    <div class="input-group">
+							      <span class="input-group-btn">
+							        <button class="btn btn-default" type="button" onClick="Brewtroller.timer.click_setTimer('boil');">Set Timer</button>
+							      </span>
+							      <select id="boilHours" class="form-control">
+								      <option value="0">Hours</option>
+									  <?php 
+										  $i = 0;
+										  while ($i < 24) {
+										  $i++?>
+										  <option value="<?=$i?>"><?=$i?></option>
+									  <?php } ?>
+								  </select>
+							      <select id="boilMinutes" class="form-control">
+									  <option value="0">Minutes</option>
+									  <?php 
+										  $i = 0;
+										  while ($i < 60) {
+										  $i++?>
+										  <option value="<?=$i?>"><?=$i?></option>
+									  <?php } ?>
+								  </select>
+							    </div><!-- /input-group -->
+							  </div><!-- /.col-lg-6 -->
+							</div><!-- /.row -->
 						</div>
-						<div class="row">
-						  <div class="col-md-12">
-						    <div class="input-group">
-						      <span class="input-group-btn">
-						        <button class="btn btn-default" type="button" onClick="Brewtroller.timer.click_setTimer('boil');">Set Timer</button>
-						      </span>
-						      <select id="boilHours" class="form-control">
-							      <option value="0">Hours</option>
-								  <?php 
-									  $i = 0;
-									  while ($i < 24) {
-									  $i++?>
-									  <option value="<?=$i?>"><?=$i?></option>
-								  <?php } ?>
-							  </select>
-						      <select id="boilMinutes" class="form-control">
-								  <option value="0">Minutes</option>
-								  <?php 
-									  $i = 0;
-									  while ($i < 60) {
-									  $i++?>
-									  <option value="<?=$i?>"><?=$i?></option>
-								  <?php } ?>
-							  </select>
-						    </div><!-- /input-group -->
-						  </div><!-- /.col-lg-6 -->
-						</div><!-- /.row -->
-						
+						</div>
 					</div>
                 </div>
             </div>
         </div>
+        <div class="row">
+        	<div class="col-sm-12">
+        		<div class="panel panel-default">
+				  <div class="panel-heading clearfix">
+				  	<h3 class="panel-title pull-left">Valve Status</h3>
+				  	<small id="activeValveProfile" class="pull-right"></small>
+				  </div>
+				  <div class="valveBtn panel-body">
+				  	<div class="row">
+				  		<div class="col-sm-3">
+					  		<div class="btn-group">
+							  <button type="button" class="btn btn-default">Fill HLT</button>
+							  <button type="button" class="btn btn-default">Fill Mash</button>
+							</div>
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default">Add Grain</button>
+							</div>
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default">Mash Heat</button>
+							  <button type="button" class="btn btn-default">Mash Idle</button>
+							</div>
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default">Sparge In</button>
+							  <button type="button" class="btn btn-default">Sparge Out</button>
+							</div>
+				  		</div>
+				  		<div class="col-sm-3">
+				  			<div class="btn-group">
+							  <button type="button" class="btn btn-default">HLT Heat</button>
+							  <button type="button" class="btn btn-default">HLT Idle</button>
+							</div>
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default">Kettle Heat</button>
+							  <button type="button" class="btn btn-default">Kettle Idle</button>
+							</div>
+				  		</div>
+				  		<div class="col-sm-3">
+				  			<div class="btn-group">
+							  <button type="button" class="btn btn-default">Boil Additions</button>
+							  <button type="button" class="btn btn-default">Kettle Lid</button>
+							</div>
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default">Chiller H20</button>
+							  <button type="button" class="btn btn-default">Chiller Beer</button>
+							  <button type="button" class="btn btn-default">Boil Recirc</button>
+							</div>
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default">Drain</button>
+							</div>
+						</div>
+				  		<div class="col-sm-3">
+				  			<div class="btn-group-vertical">
+							  <button type="button" class="btn btn-default">User 1</button>
+							  <button type="button" class="btn btn-default">User 2</button>
+							  <button type="button" class="btn btn-default">User 3</button>
+							</div>
+				  		</div>
+				  	</div>
+				  </div>
+				</div>
+        	</div>
+        </div>
         <div  class="row">
             <div class="col-sm-12">
                 <div id="div_outputProfiles" class="well well-sm"></div>
-				<div id="div_outputStatus" class="well well-sm"></div>
+<!-- 				<div id="div_outputStatus" class="well well-sm"> -->
+				<div class="panel panel-default">
+				  <div class="panel-heading clearfix">
+				  	<h3 class="panel-title pull-left">Output Status</h3>
+				  	<select id="valveSelect" class="pull-right form-control"></select>
+				  </div>
+				  <div id="outPutStatus"class="panel-body">
+				  	<div class="row">
+				  		<div class="col-sm-12">
+						    <div class="row">
+						    <div class="col-sm-12">
+						    <div id="valve1" class="btn-group-vertical">
+							  <button type="radio" class="btn btn-default btn-sm">On</button>
+							  <button type="radio" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve2" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve3" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve4" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve5" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve6" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve7" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve8" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve9" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve10" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve11" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve12" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve13" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve14" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve15" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve16" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							</div>
+							</div>
+							<div class="row">
+							<div class="col-sm-12">
+							<div id="valve17" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve18" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve19" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve20" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve21" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve22" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve23" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve24" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve25" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve26" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve27" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve28" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve29" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve30" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve31" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							<div id="valve32" class="btn-group-vertical">
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
+							</div>
+							</div>
+							</div>
+						  </div>
+						</div>
+					  </div>
+					</div>
+<!-- 				</div> -->
             </div>
         </div>
     </div>

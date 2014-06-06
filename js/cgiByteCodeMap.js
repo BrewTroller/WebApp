@@ -363,3 +363,13 @@ var BTCMD_SetProgramSettings = {
 	                  "Mash_Liquor_Heat_Source"
 	                  ]
 	};
+var BTCMD_GetValveProfileConfig = {
+	reqCode: 'd',
+	reqIndex: true,
+	reqParams: [],
+	rspCode: 'd',
+	rspParams: [
+	            "Response_Code",
+	            "Valves"
+	            ]
+};

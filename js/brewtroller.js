@@ -24,21 +24,42 @@ Brewtroller.init = function () {
     Brewtroller.connected.saveConnectionSettings();
   });
   $('#button_reset').on("click", function() {
-	Brewtroller.reset.resetPrograms(); 
+	Brewtroller.reset.resetPrograms(0); 
   });
-  $('#button_nextStep').on("click", function () {
-	 Brewtroller.program.nextStep(); 
+  $('#reboot').on("click", function() {
+		Brewtroller.reset.resetPrograms(1); 
+	  });
+  $('#button_nextStep1').on("click", function () {
+	 Brewtroller.program.nextStep("1"); 
   });
+  $('#button_nextStep2').on("click", function () {
+		 Brewtroller.program.nextStep("2"); 
+	  });
   $('.boilControl').on("change", function () {
 	  Brewtroller.boil.control(this.name);
   });
   $("#programModalButton").on("click", function () {
 	  Brewtroller.program.getProgramList();
   })
+  $("[id^=valve]").each(function () {
+	 var idNum = $(this).attr("id").substr(5);
+	 $(this).prepend(idNum);
+  });
+  $("[id^=valve] button").on("click", function () {
+	  $("button", $(this).parent()).removeClass("btn-danger").addClass("btn-default");
+	  $(this).removeClass("btn-default").addClass("btn-danger");
+  });
+  Brewtroller.valve.buildValveSelectBox();
+  $("#valveSelect").on("change", function() {
+	  var valveAddress = $("option:selected", $(this)).val();
+	  $("[id^=valve] button:nth-child(2)").removeClass("btn-default").addClass("btn-danger");
+	  var valveProfileDetails = Brewtroller.valve.getValveProfileConfig(valveAddress);
+	});
   storedHost = localStorage.getItem('btHost');
   if (storedHost) {
     host = storedHost;
     $('#settingsHost').attr('placeholder', host);
+    Brewtroller.connected.click_buttonConnect();
   };
 //  $("#boilTimerGraphical").TimeCircles(
 //	{
@@ -71,12 +92,13 @@ Brewtroller.init = function () {
   
   Brewtroller.timer.setup();
   Brewtroller.temp.setup();
-  $("#button_nextStep").hide();
-  $("#button_reset").hide();
+//  $("#button_nextStep").hide();
+//  $("#button_reset").hide();
   $('#boilZonePanel').hide();
-  $("#beerXMLModalButton").attr("disabled", "disabled");
-  $("#programModalButton").attr("disabled", "disabled");
   $("#mashZonePanel").hide();
+//  $("#mashZonePanel").show()
+//  $("#beerXMLModalButton").attr("disabled", "disabled");
+//  $("#programModalButton").attr("disabled", "disabled");
   $("#powerControl").hide();
   $("#powerSlider").slider().on("slide", function(ev){
 	  $("#boilPower").text(ev.value);
@@ -99,8 +121,8 @@ Brewtroller.connected = {
             connected = true;
             Brewtroller.connected.loop();
             //Brewtroller.program.getProgramList();
-            $("#beerXMLModalButton").removeAttr("disabled");
-            $("#programModalButton").removeAttr("disabled");
+//            $("#beerXMLModalButton").removeAttr("disabled");
+//            $("#programModalButton").removeAttr("disabled");
         }
     },    
     loop : function () {
@@ -144,18 +166,13 @@ Brewtroller.program = {
     	$('#recipeDetails table tbody').html("");
     	$.each(data, function(index,value) {
     		if (value != ">" && value != "") {
-    			var recipeLine = '<tr><td class="text-muted">';
-    			recipeLine += index;
-    			recipeLine += '</td><td id="programID">';
+    			var recipeLine = '<tr><td id="programID">';
     			recipeLine += programNumber;
     			recipeLine += '</td><td>';
     			recipeLine += value;
     			recipeLine += '</td><td><button id="';
     			recipeLine += programNumber;
-    			recipeLine += '_1" type="button" class="btn btn-default" data-dismiss="modal">Start Program 1</button>';
-    			recipeLine += '</td><td><button id="';
-    			recipeLine += programNumber;
-    			recipeLine += '_2" type="button" class="btn btn-default" data-dismiss="modal">Start Program 2</button>';
+    			recipeLine += '_1" type="button" class="btn btn-default" data-dismiss="modal">Start Program</button>';
     			recipeLine += '</td></tr>';
     			recipeBtnId1 = programNumber + "_1";
     			recipeBtnId2 = programNumber + "_2";
@@ -178,11 +195,11 @@ Brewtroller.program = {
   startStep : function (program, step) {
 	  brewTrollerExecCommand(BTCMD_StartStep, step, {"Program_Index": program}, host, username, password, function(data){});
   },
-  nextStep : function () {
-	  if (programStep1 != "255") {
+  nextStep : function (zone) {
+	  if (programStep1 != "255" && zone==="1") {
 		  brewTrollerExecCommand(BTCMD_NextStep, programStep1, null, host, username, password, function(data){});
 		}
-	  if (programStep2 != "255") {
+	  if (programStep2 != "255" && zone==="2") {
 		  brewTrollerExecCommand(BTCMD_NextStep, programStep2, null, host, username, password, function(data){});	  
 		}
 	},
@@ -396,7 +413,7 @@ Brewtroller.timer = {
       }else{
         rStatus = "On";
       }
-    $(id).html("Timer: " + millisecondsToTime(value) + " / " + rStatus);
+    $(id).html('<small class="text-muted">timer </small><span class="timerText">' + millisecondsToTime(value) + "</span> / " + rStatus);
     },
     click_startTimer : function (vessel) {
       var timerStatus;
@@ -470,11 +487,11 @@ Brewtroller.temp = {
 
 //Reset Functions
 Brewtroller.reset = {
-	resetPrograms : function() {
-		brewTrollerExecCommand(BTCMD_Reset, "0", null, host, username, password, function(data){
+	resetPrograms : function(type) {
+		brewTrollerExecCommand(BTCMD_Reset, type, null, host, username, password, function(data){
 	    });
-		$('.program1Name').html('No Program Selected (1)');
-		$('.program2Name').html('No Program Selected (2)');
+		$('.program1Name').html('No Program Selected');
+		$('.program2Name').html('No Program Selected');
 	}
 }
 
@@ -483,19 +500,19 @@ Brewtroller.status = {
 	updateStatusBar : function () {
 		if(programName2 != "255" && programName2 != "") {
 			$('#boilZonePanel').show();
-			$('#button_nextStep').show();
-			$('#button_reset').show();
+//			$('#button_nextStep').show();
+//			$('#button_reset').show();
 		}else{
 			$('#boilZonePanel').hide();
 		};
 		if(programName1 != "255" && programName1 != "") {
 			$('#mashZonePanel').show();
-			$('#button_nextStep').show();
-			$('#button_reset').show();
+//			$('#button_nextStep').show();
+//			$('#button_reset').show();
 		}else{
 			$('#mashZonePanel').hide();
-			$('#button_nextStep').hide();
-			$('#button_reset').hide();
+//			$('#button_nextStep').hide();
+//			$('#button_reset').hide();
 		};
 		if(programName1 != "") {
 			$("#mashZonePanel .panel-title").html(programName1);
@@ -564,7 +581,7 @@ Brewtroller.status = {
 		printTargetVolume("#div_kettleTargetVolume", data.Kettle_TargetVolume);
 		printFlowRate("#div_kettleFlowRate", data.Kettle_FlowRate);
 		printBoilControl("#div_boilControl", data.Boil_ControlState);
-	    printOutputProfiles("#div_outputProfiles", data.profileStatus);
+	    Brewtroller.valve.printOutputProfiles("#div_outputProfiles", data.profileStatus);
 		printOutputStatus("#div_outputStatus", data.outputStatus);
 		if (data.Boil_ControlState === "2") {
 			$("#powerControl").show();
@@ -609,6 +626,120 @@ Brewtroller.boil = {
 			
 		});
 	}
+};
+
+// Valve Control Functions
+Brewtroller.valve = {
+		profileTranslate : function (profileBitmask) {
+		bitmaskName = {
+				"1": "Fill HLT",
+				"2": "Fill Mash",
+				"4": "Add Grain",
+				"8": "Mash Heat",
+				"16": "Mash Idle",
+				"32": "Sparge In",
+				"64": "Sparge Out",
+				"128": "Boil Additions",
+				"256": "Kettle Lid",
+				"512": "Chiller H20",
+				"1024":"Chiller Beer",
+				"2048": "Boil Recirc",
+				"4096": "Drain",
+				"81920": "HLT Heat",
+				"16384": "HLT Idle",
+				"32768": "Kettle Heat",
+				"65536": "Kettle Idle",
+				"131072": "User 1",
+				"262144": "User 2",
+				"524288": "User 3"
+				};
+		return bitmaskName[profileBitmask];
+	},
+    
+	valveProfileAddressTranslate : function (address) {
+		translateTable = {
+				"1": "0",
+				"2": "1",
+				"4": "2",
+				"8": "3",
+				"16": "4",
+				"32": "5",
+				"64": "6",
+				"128": "7",
+				"256": "8",
+				"512": "9",
+				"1024":"10",
+				"2048": "11",
+				"4096": "12",
+				"81920": "13",
+				"16384": "14",
+				"32768": "15",
+				"65536": "16",
+				"131072": "17",
+				"262144": "18",
+				"524288": "19"
+				};
+		return translateTable[address];
+	},
+	
+	printOutputProfiles : function(id, status)
+    {
+        status = Brewtroller.valve.profileTranslate(status);
+		$(id).html("Output Profiles: " + status);
+    },
+    buildValveSelectBox : function () 
+    {
+    	var bitmaskName = {
+				"1": "Fill HLT",
+				"2": "Fill Mash",
+				"4": "Add Grain",
+				"8": "Mash Heat",
+				"16": "Mash Idle",
+				"32": "Sparge In",
+				"64": "Sparge Out",
+				"128": "Boil Additions",
+				"256": "Kettle Lid",
+				"512": "Chiller H20",
+				"1024":"Chiller Beer",
+				"2048": "Boil Recirc",
+				"4096": "Drain",
+				"81920": "HLT Heat",
+				"16384": "HLT Idle",
+				"32768": "Kettle Heat",
+				"65536": "Kettle Idle",
+				"131072": "User 1",
+				"262144": "User 2",
+				"524288": "User 3"
+				},
+    	valveSelectList = [];
+    	$.each(bitmaskName, function ( index, value ) {
+    		$("#valveSelect").append('<option value="' + index + '">' + value + '</option>');
+    	});
+    },
+    getValveProfileConfig : function (valveProfile) {
+    	var profileNumber = Brewtroller.valve.valveProfileAddressTranslate(valveProfile),
+    		currValveProfile;
+    	currValveProfile = brewTrollerExecCommand(BTCMD_GetValveProfileConfig,
+    						   profileNumber,
+    						   null,
+    							host,
+    							username,
+    							password,
+    							function(data){
+    								var mask = data.Valves.split('');
+    								$.each(mask, function (index, value) {
+    									if (value === "1") {
+    										index++;
+    										$("#valve" + index + " button:first").removeClass("btn-default").addClass("btn-danger");
+    										$("#valve" + index + " button:nth-child(2)").removeClass("btn-danger").addClass("btn-default");
+    									} else {
+    										index++;
+    										$("#valve" + index + " button:first").removeClass("btn-danger").addClass("btn-default");
+    										$("#valve" + index + " button:nth-child(2)").removeClass("btn-default").addClass("btn-danger");
+    									}
+    								});
+    							});
+    }
 };
 
 //Command Helper Functions
