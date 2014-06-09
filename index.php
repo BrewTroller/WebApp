@@ -352,7 +352,7 @@
 				  	</h3>
 				  	<small id="activeValveProfile" class="pull-right"></small>
 				  </div>
-				  <div id="activeVP" class="panel-collapse collapse">
+				  <div id="activeVP" class="panel-collapse collapse in">
 				  <div class="valveBtn panel-body">
 				  	<div class="row">
 				  		<div class="col-sm-3">
