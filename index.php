@@ -11,10 +11,11 @@
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/slider.css">
 
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<!--  Pulled Font-Awesome for NHC with no Internet Access -->
+<!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
 
 <!-- Latest compiled and minified JavaScript -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/filereader.js"></script>
 <script src="js/jquery.xml2json.js"></script>
@@ -351,50 +352,50 @@
 				  	<div class="row">
 				  		<div class="col-sm-3">
 					  		<div class="btn-group">
-							  <button type="button" class="btn btn-default">Fill HLT</button>
-							  <button type="button" class="btn btn-default">Fill Mash</button>
+							  <button id="fillHLT" type="button" class="btn btn-default">Fill HLT</button>
+							  <button id="fillMash" type="button" class="btn btn-default">Fill Mash</button>
 							</div>
 							<div class="btn-group">
-							  <button type="button" class="btn btn-default">Add Grain</button>
+							  <button id="addGrain" type="button" class="btn btn-default">Add Grain</button>
 							</div>
 							<div class="btn-group">
-							  <button type="button" class="btn btn-default">Mash Heat</button>
-							  <button type="button" class="btn btn-default">Mash Idle</button>
+							  <button id="mashHeat" type="button" class="btn btn-default">Mash Heat</button>
+							  <button id="mashIdle" type="button" class="btn btn-default">Mash Idle</button>
 							</div>
 							<div class="btn-group">
-							  <button type="button" class="btn btn-default">Sparge In</button>
-							  <button type="button" class="btn btn-default">Sparge Out</button>
+							  <button id="spargeIn" type="button" class="btn btn-default">Sparge In</button>
+							  <button id="spargeOut" type="button" class="btn btn-default">Sparge Out</button>
 							</div>
 				  		</div>
 				  		<div class="col-sm-3">
 				  			<div class="btn-group">
-							  <button type="button" class="btn btn-default">HLT Heat</button>
-							  <button type="button" class="btn btn-default">HLT Idle</button>
+							  <button id="hltHeat" type="button" class="btn btn-default">HLT Heat</button>
+							  <button id="hltIdle" type="button" class="btn btn-default">HLT Idle</button>
 							</div>
 							<div class="btn-group">
-							  <button type="button" class="btn btn-default">Kettle Heat</button>
-							  <button type="button" class="btn btn-default">Kettle Idle</button>
+							  <button id="kettleHeat" type="button" class="btn btn-default">Kettle Heat</button>
+							  <button id="kettleIdle" type="button" class="btn btn-default">Kettle Idle</button>
 							</div>
 				  		</div>
 				  		<div class="col-sm-3">
 				  			<div class="btn-group">
-							  <button type="button" class="btn btn-default">Boil Additions</button>
-							  <button type="button" class="btn btn-default">Kettle Lid</button>
+							  <button id="boilAdditions" type="button" class="btn btn-default">Boil Additions</button>
+							  <button id="kettleLid" type="button" class="btn btn-default">Kettle Lid</button>
 							</div>
 							<div class="btn-group">
-							  <button type="button" class="btn btn-default">Chiller H20</button>
-							  <button type="button" class="btn btn-default">Chiller Beer</button>
-							  <button type="button" class="btn btn-default">Boil Recirc</button>
+							  <button id="chillerH20" type="button" class="btn btn-default">Chiller H20</button>
+							  <button id="chillerBeer" type="button" class="btn btn-default">Chiller Beer</button>
+							  <button id="boilRecirc" type="button" class="btn btn-default">Boil Recirc</button>
 							</div>
 							<div class="btn-group">
-							  <button type="button" class="btn btn-default">Drain</button>
+							  <button id="drain" type="button" class="btn btn-default">Drain</button>
 							</div>
 						</div>
 				  		<div class="col-sm-3">
 				  			<div class="btn-group-vertical">
-							  <button type="button" class="btn btn-default">User 1</button>
-							  <button type="button" class="btn btn-default">User 2</button>
-							  <button type="button" class="btn btn-default">User 3</button>
+							  <button id="user1" type="button" class="btn btn-default">User 1</button>
+							  <button id="user2" type="button" class="btn btn-default">User 2</button>
+							  <button id="user3" type="button" class="btn btn-default">User 3</button>
 							</div>
 				  		</div>
 				  	</div>
@@ -409,7 +410,10 @@
 				<div class="panel panel-default">
 				  <div class="panel-heading clearfix">
 				  	<h3 class="panel-title pull-left">Output Status</h3>
-				  	<select id="valveSelect" class="pull-right form-control"></select>
+				  	<button id="outputSave" type="button" class="btn btn-default pull-right">Save Output Settings</button>
+				  	<select id="valveSelect" class="pull-right form-control">
+				  		<option value="Select Profile">Select Profile</option>
+				  	</select>
 				  </div>
 				  <div id="outPutStatus"class="panel-body">
 				  	<div class="row">
@@ -417,8 +421,8 @@
 						    <div class="row">
 						    <div class="col-sm-12">
 						    <div id="valve1" class="btn-group-vertical">
-							  <button type="radio" class="btn btn-default btn-sm">On</button>
-							  <button type="radio" class="btn btn-default btn-sm">Off</button>
+							  <button type="button" class="btn btn-default btn-sm">On</button>
+							  <button type="button" class="btn btn-default btn-sm">Off</button>
 							</div>
 							<div id="valve2" class="btn-group-vertical">
 							  <button type="button" class="btn btn-default btn-sm">On</button>
@@ -681,7 +685,8 @@
             <div class="modal-content">
                 <div class="modal-body" id="recipeModalBody">
                     <h3 class="text-danger">Establishing Connection - Please Wait</h3>
-                    <i class="fa fa-spinner fa-spin fa-5x"></i>
+	<!--  Commented out Font Awesome for NHC -->
+    <!--                     <i class="fa fa-spinner fa-spin fa-5x"></i> -->
                 </div>
                 <div class="modal-footer">
                 <button id="connectionModalCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

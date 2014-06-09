@@ -372,4 +372,17 @@ var BTCMD_GetValveProfileConfig = {
 	            "Response_Code",
 	            "Valves"
 	            ]
-};
+	};
+
+var BTCMD_SetValveProfileConfig = {
+		reqCode: 'Q',
+		reqIndex: true,
+		reqParams: [
+		            "Valve_Bits"
+		            ],
+		rspCode: 'd',
+		rspParams: [
+		            "Response_Code",
+		            "Valves"
+		            ]
+	};

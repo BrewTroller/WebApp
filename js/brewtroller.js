@@ -41,6 +41,21 @@ Brewtroller.init = function () {
   $("#programModalButton").on("click", function () {
 	  Brewtroller.program.getProgramList();
   })
+  $("#outputSave").on("click", function () {
+	  var outputBitmask = [],
+  	  bit;
+  $("[id^=valve] .btn-danger").each(function () {
+	  $a="wfwefw";
+	  if ($(this).text() === "On") {
+		  bit = "1";
+	  }else{
+		  bit = "0";
+	  }
+	  outputBitmask += bit;
+  });
+  var profileId = Brewtroller.valve.valveProfileAddressTranslate($("#valveSelect").val())
+  Brewtroller.valve.setValveProfileConfig(profileId, outputBitmask);
+  });
   $("[id^=valve]").each(function () {
 	 var idNum = $(this).attr("id").substr(5);
 	 $(this).prepend(idNum);
@@ -53,6 +68,7 @@ Brewtroller.init = function () {
   $("#valveSelect").on("change", function() {
 	  var valveAddress = $("option:selected", $(this)).val();
 	  $("[id^=valve] button:nth-child(2)").removeClass("btn-default").addClass("btn-danger");
+	  $("[id^=valve] button:first").removeClass("btn-danger").addClass("btn-default");
 	  var valveProfileDetails = Brewtroller.valve.getValveProfileConfig(valveAddress);
 	});
   storedHost = localStorage.getItem('btHost');
@@ -129,7 +145,7 @@ Brewtroller.connected = {
       if(connected == true) {
         Brewtroller.connected.checkWatchdog();
         brewTrollerExecCommand(BTCMD_GetStatus, null, {}, host, username, password, Brewtroller.status.printUI);
-        setTimeout(Brewtroller.connected.loop, 500);
+        setTimeout(Brewtroller.connected.loop, 750);
         Brewtroller.status.updateStatusBar();
       }
     },
@@ -655,6 +671,32 @@ Brewtroller.valve = {
 				};
 		return bitmaskName[profileBitmask];
 	},
+	
+	profileTranslateId : function (profileBitmask) {
+		bitmaskIdName = {
+				"1": "fillHLT",
+				"2": "fillMash",
+				"4": "addGrain",
+				"8": "mashHeat",
+				"16": "mashIdle",
+				"32": "spargeIn",
+				"64": "spargeOut",
+				"128": "boilAdditions",
+				"256": "kettleLid",
+				"512": "chillerH20",
+				"1024":"chillerBeer",
+				"2048": "boilRecirc",
+				"4096": "drain",
+				"81920": "hltHeat",
+				"16384": "hltIdle",
+				"32768": "kettleHeat",
+				"65536": "kettleIdle",
+				"131072": "user1",
+				"262144": "user2",
+				"524288": "user3"
+				};
+		return bitmaskIdName[profileBitmask];
+	},
     
 	valveProfileAddressTranslate : function (address) {
 		translateTable = {
@@ -684,8 +726,12 @@ Brewtroller.valve = {
 	
 	printOutputProfiles : function(id, status)
     {
-        status = Brewtroller.valve.profileTranslate(status);
+		$(".valveBtn button").removeClass("btn-danger").addClass("btn-default");
+		statusid = Brewtroller.valve.profileTranslateId(status);
+		status = Brewtroller.valve.profileTranslate(status);
 		$(id).html("Output Profiles: " + status);
+		$("#" + statusid).removeClass("btn-default").addClass("btn-danger");
+		
     },
     buildValveSelectBox : function () 
     {
@@ -739,6 +785,17 @@ Brewtroller.valve = {
     									}
     								});
     							});
+    },
+    setValveProfileConfig : function (profileId, bitmask) {
+    	brewTrollerExecCommand(
+    			BTCMD_SetValveProfileConfig,
+    			profileId,
+    			{"Valve_Bits" : bitmask},
+    			host,
+    			username,
+    			password,
+    			function(data){}
+    			);
     }
 };
 
