@@ -488,11 +488,11 @@ Brewtroller.timer = {
 Brewtroller.temp = {
     setup : function() {
       $('#hltTempSetBtn').on("click", function () {
-        temp = $('#hltTempSet').val();
+        temp = $('#hltSetTemp').val();
         Brewtroller.temp.setTemp(0, temp);
       });
       $('#mashTempSetBtn').on("click", function () {
-        temp = $('#mashTempSet').val();
+        temp = $('#mashSetTemp').val();
         Brewtroller.temp.setTemp(1, temp);
       });
     },

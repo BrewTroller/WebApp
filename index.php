@@ -200,7 +200,7 @@
 					      <span class="input-group-btn">
 					        <button id="hltTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
 					      </span>
-					      <input id="hltTempSet" type="text" class="form-control">
+					      <input id="hltSetTemp" type="text" class="form-control">
 					    </div><!-- /input-group -->
 				</div>
                 </div>
@@ -225,7 +225,7 @@
 					      <span class="input-group-btn">
 					        <button id="mashTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
 					      </span>
-					      <input id="mashTempSet" type="text" class="form-control">
+					      <input id="mashSetTemp" type="text" class="form-control">
 					    </div><!-- /input-group -->
 					    </div>
 					    </div>
