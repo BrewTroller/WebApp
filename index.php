@@ -345,9 +345,14 @@
         	<div class="col-sm-12">
         		<div class="panel panel-default">
 				  <div class="panel-heading clearfix">
-				  	<h3 class="panel-title pull-left">Active Valve Profiles</h3>
+				  	<h3 class="panel-title pull-left">
+				  		<a data-toggle="collapse" href="#activeVP">
+				  		Active Valve Profiles
+				  		</a>
+				  	</h3>
 				  	<small id="activeValveProfile" class="pull-right"></small>
 				  </div>
+				  <div id="activeVP" class="panel-collapse collapse">
 				  <div class="valveBtn panel-body">
 				  	<div class="row">
 				  		<div class="col-sm-3">
@@ -400,6 +405,7 @@
 				  		</div>
 				  	</div>
 				  </div>
+				  </div>
 				</div>
         	</div>
         </div>
@@ -407,12 +413,17 @@
             <div class="col-sm-12">
                 <div class="panel panel-default">
 				  <div class="panel-heading clearfix">
-				  	<h3 class="panel-title pull-left">Individual Valve Output Status</h3>
+				  	<h3 class="panel-title pull-left">
+				  		<a data-toggle="collapse" href="#outputStat">
+				  		Individual Valve Output Status
+				  		</a>
+				  	</h3>
 				  	<button id="outputSave" type="button" class="btn btn-default pull-right">Save Output Settings</button>
 				  	<select id="valveSelect" class="pull-right form-control">
 				  		<option value="Select Profile">Select Profile</option>
 				  	</select>
 				  </div>
+				  <div id="outputStat" class="panel-collapse collapse">
 				  <div id="outPutStatus"class="panel-body">
 				  	<div class="row">
 				  		<div class="col-sm-12">
@@ -554,6 +565,7 @@
 							</div>
 						  </div>
 						</div>
+					  </div>
 					  </div>
 					</div>
 <!-- 				</div> -->
