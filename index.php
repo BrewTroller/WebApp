@@ -345,7 +345,7 @@
         	<div class="col-sm-12">
         		<div class="panel panel-default">
 				  <div class="panel-heading clearfix">
-				  	<h3 class="panel-title pull-left">Valve Status</h3>
+				  	<h3 class="panel-title pull-left">Active Valve Profiles</h3>
 				  	<small id="activeValveProfile" class="pull-right"></small>
 				  </div>
 				  <div class="valveBtn panel-body">
@@ -405,11 +405,9 @@
         </div>
         <div  class="row">
             <div class="col-sm-12">
-                <div id="div_outputProfiles" class="well well-sm"></div>
-<!-- 				<div id="div_outputStatus" class="well well-sm"> -->
-				<div class="panel panel-default">
+                <div class="panel panel-default">
 				  <div class="panel-heading clearfix">
-				  	<h3 class="panel-title pull-left">Output Status</h3>
+				  	<h3 class="panel-title pull-left">Individual Valve Output Status</h3>
 				  	<button id="outputSave" type="button" class="btn btn-default pull-right">Save Output Settings</button>
 				  	<select id="valveSelect" class="pull-right form-control">
 				  		<option value="Select Profile">Select Profile</option>
