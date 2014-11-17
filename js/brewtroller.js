@@ -40,7 +40,7 @@ Brewtroller.init = function () {
   });
   $("#programModalButton").on("click", function () {
 	  Brewtroller.program.getProgramList();
-  })
+  });
   $("#outputSave").on("click", function () {
 	  var outputBitmask = [],
   	  bit;
@@ -77,7 +77,7 @@ Brewtroller.init = function () {
     host = storedHost;
     $('#settingsHost').attr('placeholder', host);
     Brewtroller.connected.click_buttonConnect();
-  };
+  }
 //  $("#boilTimerGraphical").TimeCircles(
 //	{
 //		time: {
@@ -143,7 +143,7 @@ Brewtroller.connected = {
         }
     },    
     loop : function () {
-      if(connected == true) {
+      if(connected === true) {
         Brewtroller.connected.checkWatchdog();
         brewTrollerExecCommand(BTCMD_GetStatus, null, {}, host, username, password, Brewtroller.status.printUI);
         setTimeout(Brewtroller.connected.loop, 750);
@@ -182,7 +182,7 @@ Brewtroller.program = {
     	programNumber = 0;
     	$('#recipeDetails table tbody').html("");
     	$.each(data, function(index,value) {
-    		if (value != ">" && value != "") {
+    		if (value !== ">" && value !== "") {
     			var recipeLine = '<tr><td id="programID">';
     			recipeLine += programNumber;
     			recipeLine += '</td><td>';
@@ -263,7 +263,9 @@ Brewtroller.program = {
 	  	              "0",
 	  	              ],
 	  	  $i = 1,
-	  	  name = beerJSON["RECIPE"]["NAME"],
+	  	  recipe = beerJSON.recipe,
+	  	  name = recipe.name,
+	  	  //name = beerJSON["RECIPE"]["NAME"],
 	  	  batchSize = beerJSON["RECIPE"]["BATCH_SIZE"],
 	  	  grainWeight = 0;
 	  	  grainRatio = parseFloat(beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"]["WATER_GRAIN_RATIO"]),
@@ -319,7 +321,7 @@ Brewtroller.program = {
   	  } else {
   		bitMaskSplit = beerJSON["RECIPE"]["HOPS"]["HOP"]["TIME"].split(".");
 		bitMaskHash[bitMaskSplit[0]] = "1";  
-  	  };
+  	  }
 	  $.each(hopTimes, function (index, value) {
 		  if(bitMaskHash[value]) {
 			  hopBitMask = hopBitMask + "1";
@@ -409,8 +411,8 @@ Brewtroller.timer = {
       Brewtroller.timer.click_startTimer("boil");
     });
     $.each([ 0 , 1 ], function( index, timerId ){ 
-    if (timerId == 0) {vessel = "mash";};
-    if (timerId == 1) {vessel = "boil";};
+    if (timerId === 0) {vessel = "mash";}
+    if (timerId === 1) {vessel = "boil";}
     brewTrollerExecCommand(BTCMD_GetTimerStatus, timerId, null, host, username, password, function(data){
       timerStatus = data.TimerStatus;
       if (timerStatus == "0") {
@@ -425,7 +427,7 @@ Brewtroller.timer = {
   },
   printTimer : function (id, value, status) {
     var rStatus;
-    if(status == 0) {
+    if(status === 0) {
         rStatus = "Off";
       }else{
         rStatus = "On";
@@ -433,13 +435,12 @@ Brewtroller.timer = {
     $(id).html('<small class="text-muted">timer </small><span class="timerText">' + millisecondsToTime(value) + "</span> / " + rStatus);
     },
     click_startTimer : function (vessel) {
-      var timerStatus;
-      var timerId = "";
-      var setTime = "";
-      var vessel = vessel;
+      var timerStatus,
+      timerId = "",
+      setTime = "";
       if (vessel == "mash") {
         timerId = 0;
-      } else if (vessel == "boil") {
+      } else if (vessel === "boil") {
         timerId = 1;
       }
       brewTrollerExecCommand(BTCMD_GetTimerStatus, timerId, null, host, username, password, function(data){
@@ -510,19 +511,19 @@ Brewtroller.reset = {
 		$('.program1Name').html('No Program Selected');
 		$('.program2Name').html('No Program Selected');
 	}
-}
+};
 
 //Status Functions
 Brewtroller.status = {
 	updateStatusBar : function () {
-		if(programName2 != "255" && programName2 != "") {
+		if(programName2 !== "255" && programName2 !== "") {
 			$('#boilZonePanel').show();
 //			$('#button_nextStep').show();
 //			$('#button_reset').show();
 		}else{
 			$('#boilZonePanel').hide();
-		};
-		if(programName1 != "255" && programName1 != "") {
+		}
+		if(programName1 !== "255" && programName1 !== "") {
 			$('#mashZonePanel').show();
 //			$('#button_nextStep').show();
 //			$('#button_reset').show();
@@ -530,19 +531,19 @@ Brewtroller.status = {
 			$('#mashZonePanel').hide();
 //			$('#button_nextStep').hide();
 //			$('#button_reset').hide();
-		};
-		if(programName1 != "") {
+		}
+		if(programName1 !== "") {
 			$("#mashZonePanel .panel-title").html(programName1);
-		};
-		if(programName2 != "") {
+		}
+		if(programName2 !== "") {
 			$("#boilZonePanel .panel-title").html(programName2);
-		};
+		}
 		if(programStep1 == "255") {
 			$("#mashZonePanel .panel-title").html('No Program Selected');
-			};
+			}
 		if(programStep2 == "255") {
 			$("#boilZonePanel .panel-title").html('No Program Selected');
-			};
+			}
 		$('#currStatusProg1').html(Brewtroller.status.translateStepCode(programStep1));
 		$('#currStatusProg2').html(Brewtroller.status.translateStepCode(programStep2));
 	},
@@ -564,7 +565,7 @@ Brewtroller.status = {
 							"13": "Boil",
 							"14": "Chill",
 							"255": "Idle"
-							}
+							};
 		return stepTranslate[step];
 	},
 	printUI : function (data) {
@@ -864,7 +865,7 @@ function brewTrollerParseResponse(result, cmdObject)
 		returnObject[cmdObject.rspParams[i]] = result[i];
 	}
 	return returnObject;
-};
+}
 
 
 function millisecondsToTime(milli)
@@ -879,7 +880,7 @@ function millisecondsToTime(milli)
   var s = Math.floor((milli - (m * 60000) - (h*3600000)) / 1000);
 
   return h + "h" + m + "m" + s + "s";
-};
+}
 
 function hoursMinutesToMilliseconds(hours, minutes) {
 	hoursToMinutes = hours * 60;

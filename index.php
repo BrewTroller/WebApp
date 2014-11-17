@@ -17,11 +17,11 @@
 <!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
 
 <!-- Latest compiled and minified JavaScript -->
-<script src="js/jquery-1.11.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/filereader.js"></script>
-<script src="js/jquery.xml2json.js"></script>
-<script src="js/bootstrap-slider.js"></script>
+<script src="framework/jquery-1.11.1.min.js"></script>
+<script src="framework/bootstrap.min.js"></script>
+<script src="framework/filereader.js"></script>
+<script src="framework/jquery.xml2json.js"></script>
+<script src="framework/bootstrap-slider.js"></script>
 
 <script>
 	function printAlarm(id, status)
