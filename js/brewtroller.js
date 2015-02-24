@@ -1,5 +1,5 @@
 Brewtroller = {};
-var host;
+var hosts;
 var username = "admin";
 var password = "password";
 var connected = false;

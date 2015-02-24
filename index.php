@@ -22,6 +22,8 @@
 <script src="framework/filereader.js"></script>
 <script src="framework/jquery.xml2json.js"></script>
 <script src="framework/bootstrap-slider.js"></script>
+<script src="framework/gauge.js"></script>
+<script src="framework/jquery.gauge.js"></script>
 
 <script>
 	function printAlarm(id, status)
