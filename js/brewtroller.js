@@ -285,8 +285,6 @@ Brewtroller.program = {
   sendRecipeToBrewtroller : function (beerJSON) {
 	  var recipeSlot = $("#loadProgramNumber").val(),
 	  	  doughIn,
-	  	  proteinRest,
-	  	  proteinTime,
 	  	  acidRest,
 	  	  saccRest,
 	  	  saccRest2,
@@ -310,9 +308,8 @@ Brewtroller.program = {
 	  	  $i = 1,
 	  	  recipe = beerJSON.recipe,
 	  	  name = recipe.name,
-	  	  //name = beerJSON["RECIPE"]["NAME"],
 	  	  batchSize = beerJSON["RECIPE"]["BATCH_SIZE"],
-	  	  grainWeight = 0;
+	  	  grainWeight = 0,
 	  	  grainRatio = parseFloat(beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"]["WATER_GRAIN_RATIO"]),
 	  	  doughInTemp = 0, //beerJSON["RECIPE"]["DOUGHINTEMP"],
 	  	  doughInTime = "0", //beerJSON["RECIPE"]["DOUGHINMINUTES"],
