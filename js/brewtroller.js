@@ -15,7 +15,6 @@ var programName2;
 Brewtroller.init = function () {
   $('#button_connect').on("click", function() {
     Brewtroller.connected.click_buttonConnect();
-    //Brewtroller.program.getProgramList();
   });
   $('#connectionModalCancel').on("click", function() {
 	Brewtroller.connected.click_buttonConnect();
@@ -123,29 +122,6 @@ Brewtroller.init = function () {
     $('#settingsHost').attr('placeholder', host);
     Brewtroller.connected.click_buttonConnect();
   }
-//  $("#boilTimerGraphical").TimeCircles(
-//	{
-//		time: {
-//			Days: { show: false },
-//			Hours: { show: true },
-//			Minutes: { show: true },
-//			Seconds: { show: true }
-//		}	  
-//	}
-//  );
-//  Brewtroller.timer.display = new SegmentDisplay("mashTimerGraphical");
-//  Brewtroller.timer.display.pattern         = "##:##:##";
-//  Brewtroller.timer.display.displayAngle    = 6;
-//  Brewtroller.timer.display.digitHeight     = 5;
-//  Brewtroller.timer.display.digitWidth      = 5;
-//  Brewtroller.timer.display.digitDistance   = 0.40;
-//  Brewtroller.timer.display.segmentWidth    = 0.70;
-//  Brewtroller.timer.display.segmentDistance = 0.10;
-//  Brewtroller.timer.display.segmentCount    = 7;
-//  Brewtroller.timer.display.cornerType      = 3;
-//  Brewtroller.timer.display.colorOn         = "#090909";
-//  Brewtroller.timer.display.colorOff        = "#afcbaf";
-//  Brewtroller.timer.display.draw();
   
   //display file contents
   $('#loadBeerXMLButton').on("click", function() {
@@ -154,13 +130,8 @@ Brewtroller.init = function () {
   
   Brewtroller.timer.setup();
   Brewtroller.temp.setup();
-//  $("#button_nextStep").hide();
-//  $("#button_reset").hide();
   $('#boilZonePanel').hide();
   $("#mashZonePanel").hide();
-//  $("#mashZonePanel").show()
-//  $("#beerXMLModalButton").attr("disabled", "disabled");
-//  $("#programModalButton").attr("disabled", "disabled");
   $("#powerControl").hide();
   $("#powerSlider").slider().on("slide", function(ev){
 	  $("#boilPower").text(ev.value);
@@ -306,8 +277,8 @@ Brewtroller.program = {
 	  	              "0",
 	  	              ],
 	  	  $i = 1,
-	  	  recipe = beerJSON.recipe,
-	  	  name = recipe.name,
+	  	  recipe = beerJSON.RECIPE,
+	  	  name = recipe.NAME,
 	  	  batchSize = beerJSON["RECIPE"]["BATCH_SIZE"],
 	  	  grainWeight = 0,
 	  	  grainRatio = parseFloat(beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"]["WATER_GRAIN_RATIO"]),
@@ -317,6 +288,7 @@ Brewtroller.program = {
 	  	  acidTime = "0", //beerJSON["RECIPE"]["ACIDMINUTES"],
 	  	  proteinTemp = 0,
 	  	  proteinTime = "0",
+	  	  proteinRest,
 	  	  saccTemp = 0,
 	  	  saccTime = "0",
 	  	  saccTemp2 = 0,
@@ -622,19 +594,19 @@ Brewtroller.status = {
         Brewtroller.timer.printTimer("#div_mashTimer", data.Mash_TimerValue, data.Mash_TimerStatus);
         Brewtroller.timer.printTimer("#div_boilTimer", data.Boil_TimerValue, data.Boil_TimerStatus);
         printAlarm("#button_alarm", data.alarmStatus);
-        printTemperature("#div_hltTemperature", data.HLT_Temperature);
+        Brewtroller.status.printTemperature("#hltGauge", data.HLT_Temperature);
         printSetpoint("#div_hltSetpoint", data.HLT_Setpoint);
         printHeatPower("#div_hltHeatPower", data.HLT_HeatPower);
 		printVolume("#div_hltVolume", data.HLT_Volume);
 		printTargetVolume("#div_hltTargetVolume", data.HLT_TargetVolume);
 		printFlowRate("#div_hltFlowRate", data.HLT_FlowRate);
-        printTemperature("#div_mashTemperature", data.Mash_Temperature);
+		Brewtroller.status.printTemperature("#mashGauge", data.Mash_Temperature);
         printSetpoint("#div_mashSetpoint", data.Mash_Setpoint);
         printHeatPower("#div_mashHeatPower", data.Mash_HeatPower);
 		printVolume("#div_mashVolume", data.Mash_Volume);
 		printTargetVolume("#div_mashTargetVolume", data.Mash_TargetVolume);
 		printFlowRate("#div_mashFlowRate", data.Mash_FlowRate);
-        printTemperature("#div_kettleTemperature", data.Kettle_Temperature);
+		Brewtroller.status.printTemperature("#boilGauge", data.Kettle_Temperature);
         printSetpoint("#div_kettleSetpoint", data.Kettle_Setpoint);
         printHeatPower("#div_kettleHeatPower", data.Kettle_HeatPower);
 		printVolume("#div_kettleVolume", data.Kettle_Volume);
@@ -654,6 +626,13 @@ Brewtroller.status = {
 			$("#boilOff").parent().button("toggle");
 		}
         Brewtroller.connected.connectWatchdog();
+    },
+    
+    printTemperature : function (id, temperature)
+    {
+    	temperature = temperature / 100.0;
+    	$(id).gauge('setValue', temperature);
+    	//$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
     }
 	};
 
