@@ -40,51 +40,51 @@ Brewtroller.init = function () {
   $("#programModalButton").on("click", function () {
 	  Brewtroller.program.getProgramList();
   });
-  if ($("#hltGauge")) {
-	  $("#hltGauge").gauge({
-		  min: 32,
-		  max: 180,
-		  label: "164",
-		  unitsLabel: '' + String.fromCharCode(186),
-		  majorTicks: 10,
-		  minorTicks: 10,
-		  bands: [
-		          {color: '#F00', from: 163, to: 166}
-		          ],
-		  majorTickLabel: true,
-		  colorOfCenterCircleFill: "#FF0040"
-	  }).gauge('setValue', 162);
-  }
-  if ($("#mashGauge")) {
-	  $("#mashGauge").gauge({
-		  min: 100,
-		  max: 200,
-		  label: "156",
-		  unitsLabel: '' + String.fromCharCode(186),
-		  majorTicks: 10,
-		  minorTicks: 10,
-		  bands: [
-		          {color: '#F00', from: 153, to: 156}
-		          ],
-		  majorTickLabel: true,
-		  colorOfCenterCircleFill: "#750823"
-	  }).gauge('setValue', 154);
-  }
-  if ($("#boilGauge")) {
-	  $("#boilGauge").gauge({
-		  min: 120,
-		  max: 220,
-		  label: "212",
-		  unitsLabel: '' + String.fromCharCode(186),
-		  majorTicks: 10,
-		  minorTicks: 10,
-		  bands: [
-		          {color: '#F00', from: 211, to: 213}
-		          ],
-		  majorTickLabel: true,
-		  colorOfCenterCircleFill: "#FF0040"
-	  }).gauge('setValue', 200);
-  }
+//  if ($("#hltGauge")) {
+//	  $("#hltGauge").gauge({
+//		  min: 32,
+//		  max: 180,
+//		  label: "164",
+//		  unitsLabel: '' + String.fromCharCode(186),
+//		  majorTicks: 10,
+//		  minorTicks: 10,
+//		  bands: [
+//		          {color: '#F00', from: 163, to: 166}
+//		          ],
+//		  majorTickLabel: true,
+//		  colorOfCenterCircleFill: "#FF0040"
+//	  }).gauge('setValue', 162);
+//  }
+//  if ($("#mashGauge")) {
+//	  $("#mashGauge").gauge({
+//		  min: 100,
+//		  max: 200,
+//		  label: "156",
+//		  unitsLabel: '' + String.fromCharCode(186),
+//		  majorTicks: 10,
+//		  minorTicks: 10,
+//		  bands: [
+//		          {color: '#F00', from: 153, to: 156}
+//		          ],
+//		  majorTickLabel: true,
+//		  colorOfCenterCircleFill: "#750823"
+//	  }).gauge('setValue', 154);
+//  }
+//  if ($("#boilGauge")) {
+//	  $("#boilGauge").gauge({
+//		  min: 120,
+//		  max: 220,
+//		  label: "212",
+//		  unitsLabel: '' + String.fromCharCode(186),
+//		  majorTicks: 10,
+//		  minorTicks: 10,
+//		  bands: [
+//		          {color: '#F00', from: 211, to: 213}
+//		          ],
+//		  majorTickLabel: true,
+//		  colorOfCenterCircleFill: "#FF0040"
+//	  }).gauge('setValue', 200);
+//  }
   $("#outputSave").on("click", function () {
 	  var outputBitmask = [],
   	  bit;
