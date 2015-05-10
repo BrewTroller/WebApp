@@ -631,8 +631,8 @@ Brewtroller.status = {
     printTemperature : function (id, temperature)
     {
     	temperature = temperature / 100.0;
-    	$(id).gauge('setValue', temperature);
-    	//$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
+    	//$(id).gauge('setValue', temperature);
+    	$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
     }
 	};
 
