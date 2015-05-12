@@ -594,19 +594,22 @@ Brewtroller.status = {
         Brewtroller.timer.printTimer("#div_mashTimer", data.Mash_TimerValue, data.Mash_TimerStatus);
         Brewtroller.timer.printTimer("#div_boilTimer", data.Boil_TimerValue, data.Boil_TimerStatus);
         printAlarm("#button_alarm", data.alarmStatus);
-        Brewtroller.status.printTemperature("#hltGauge", data.HLT_Temperature);
+        //Brewtroller.status.printTemperature("#hltGauge", data.HLT_Temperature);
+        Brewtroller.status.printTemperature("#div_hltTemperature", data.HLT_Temperature);
         printSetpoint("#div_hltSetpoint", data.HLT_Setpoint);
         printHeatPower("#div_hltHeatPower", data.HLT_HeatPower);
 		printVolume("#div_hltVolume", data.HLT_Volume);
 		printTargetVolume("#div_hltTargetVolume", data.HLT_TargetVolume);
 		printFlowRate("#div_hltFlowRate", data.HLT_FlowRate);
-		Brewtroller.status.printTemperature("#mashGauge", data.Mash_Temperature);
+		//Brewtroller.status.printTemperature("#mashGauge", data.Mash_Temperature);
+		Brewtroller.status.printTemperature("#div_mashTemperature", data.Mash_Temperature);
         printSetpoint("#div_mashSetpoint", data.Mash_Setpoint);
         printHeatPower("#div_mashHeatPower", data.Mash_HeatPower);
 		printVolume("#div_mashVolume", data.Mash_Volume);
 		printTargetVolume("#div_mashTargetVolume", data.Mash_TargetVolume);
 		printFlowRate("#div_mashFlowRate", data.Mash_FlowRate);
-		Brewtroller.status.printTemperature("#boilGauge", data.Kettle_Temperature);
+		//Brewtroller.status.printTemperature("#boilGauge", data.Kettle_Temperature);
+		Brewtroller.status.printTemperature("#div_kettleTemperature", data.Kettle_Temperature);
         printSetpoint("#div_kettleSetpoint", data.Kettle_Setpoint);
         printHeatPower("#div_kettleHeatPower", data.Kettle_HeatPower);
 		printVolume("#div_kettleVolume", data.Kettle_Volume);
@@ -630,7 +633,7 @@ Brewtroller.status = {
     
     printTemperature : function (id, temperature)
     {
-    	temperature = temperature / 100.0;
+    	//temperature = temperature / 100.0;
     	//$(id).gauge('setValue', temperature);
     	$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
     }
