@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="css/jquery.sidr.light.css">
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/slider.css">
+<link rel="stylesheet" href="css/bootstrap-formhelpers.min.css">
 <!-- User Defined CSS Preferences  -->
 <link rel="stylesheet" href="css/userprefs.css">
 
@@ -24,6 +25,7 @@
 <script src="framework/bootstrap-slider.js"></script>
 <script src="framework/gauge.js"></script>
 <script src="framework/jquery.gauge.js"></script>
+<script src="framework/bootstrap-formhelpers.js</script>
 
 <script>
 	function printAlarm(id, status)
@@ -231,6 +233,7 @@
                         <div id="div_mashVolume"></div>
                         <div id="div_mashTargetVolume"></div>
                         <div id="div_mashFlowRate"></div>
+                        <div class="bfh-timepicker"></div>
                         <div class="input-group">
 					      <span class="input-group-btn">
 					        <button id="mashTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>

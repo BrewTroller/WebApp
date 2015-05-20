@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="css/jquery.sidr.light.css">
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/slider.css">
+<link rel="stylesheet" href="css/bootstrap-formhelpers.min.css">
 <!-- User Defined CSS Preferences  -->
 <link rel="stylesheet" href="css/userprefs.css">
 
@@ -22,9 +23,9 @@
 <script src="framework/filereader.js"></script>
 <script src="framework/jquery.xml2json.js"></script>
 <script src="framework/bootstrap-slider.js"></script>
-<script src="framework/gauge.js"></script>
-<script src="framework/jquery.gauge.js"></script>
-
+<script type="text/javascript" src="framework/segment-display.js"></script>
+<script src="framework/gauge.min.js"></script>
+<script src="framework/bootstrap-formhelpers.js"></script>
 <script>
 	function printAlarm(id, status)
     {
@@ -38,21 +39,8 @@
         }
     }
     
-    function printTemperature(id, temperature)
-    {
-        $(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
-    }
-    
-    function printSetpoint(id, setpoint)
-    {
-        $(id).html('<small class="text-muted">set </small><span class="vesselSet">' + (setpoint == 0 ? "N/A " : (setpoint / 100.0 + '&deg;F</span> ')));
-    }
-    
-    function printHeatPower(id, heatPower)
-    {
-        $(id).html('<small class="text-muted">heat power </small>' + (heatPower == 0 ? "Off" : heatPower == 100 ? '<span class="text text-danger">On</span>' : (heatPower + "%")));
-    }
-    
+ 
+
 	function printVolume(id, volume)
     {
         $(id).html('<small class="text-muted">volume </small>' + volume / 1000.0 + " Gal");
@@ -65,7 +53,7 @@
     
     function printFlowRate(id, flowrate)
     {
-        $(id).html('<small class="text-muted">flow rate </small>' + flowrate + " Gal/min");
+        $(id).html('<small class="text-muted">flow rate </small>' +  flowrate / 1000 + " Gal/min");
     }
 	function printBoilControl(id, data)
 	{
@@ -191,164 +179,110 @@
       <div class="row">
             <div class="col-sm-4">
             	<div class="panel panel-default vesselPanel">
-                    <div class="panel-heading"><h3 class="panel-title">Hot Liquor</h3></div>
+                    <div class="panel-heading">
+                    	<span id="hltLED" class="pull-left">
+                    		<img src="images/redOffLED.png" width="20" height="20">
+                    	</span>
+                    	<h3 class="panel-title">Hot Liquor</h3>
+                    </div>
                     <div class="panel-body">
-                    	<div id="hltTempSet"><span id="div_hltTemperature"></span> <span id="div_hltSetpoint"></span></div>
-<!--                         <div id="div_hltTemperature"></div> -->
-<!--                         <div id="div_hltSetpoint"></div> -->
-                        <div id="div_hltHeatPower"></div>
-                        <div id="div_hltVolume"></div>
-                        <div id="div_hltTargetVolume"></div>
-                        <div id="div_hltFlowRate"></div>
-                        <div class="input-group">
-					      <span class="input-group-btn">
-					        <button id="hltTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
-					      </span>
-					      <input id="hltSetTemp" type="text" class="form-control">
-					    </div><!-- /input-group -->
-				</div>
+                    	<div id="hltTempSet">
+	                    	<span id="div_hltTemperature">
+	                    		<canvas id="hltGauge" width="200" height="200"></span> 
+	                    	<span id="div_hltSetpoint"></span>
+                    	</div>
+                      <div id="div_hltVolume"></div>
+                      <div id="div_hltTargetVolume"></div>
+                      <div id="div_hltFlowRate"></div>
+                      <div class="row">
+                        	<div class="col-md-8">
+                        		<div class="input-group">
+														  <span class="input-group-addon" id="sizing-addon2"><i class="glyphicon glyphicon-fire"></i></span>
+														  <input id="hltSetTemp" type="text" class="form-control" placeholder="Temp Set" aria-describedby="sizing-addon2" size="200">
+														</div>
+                        	</div>
+                        	<div class="col-md-4">
+                        		<button id="hltTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
+												  </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="panel panel-default vesselPanel">
                     <div class="panel-heading clearfix">
+                    	<span id="mashLED" class="pull-left">
+                    		<img src="images/redOffLED.png" width="20" height="20">
+                    	</span>
                     	<h3 class="panel-title pull-left">Mash</h3>
                     	<button id="mashTimerButton" class="btn btn-default btn-xs pull-right" type="button">Timer Start</button>
                     </div>
                     <div class="panel-body">
                         <div class="row timer-top">
                         <div class="col-sm-12">
-                        <div id="mashTempSet"><span id="div_mashTemperature"></span> <span id="div_mashSetpoint"></span></div>
-<!--                         <div id="div_mashTemperature"></div> -->
-<!--                         <div id="div_mashSetpoint"></div> -->
-                        <div id="div_mashHeatPower"></div>
+                        <div id="mashTempSet">
+                        	<span id="div_mashTemperature">
+                        		<canvas id="mashGauge" width="200" height="200"></canvas>
+                        	</span>
+                        	<canvas id="mashDisplay" width="200" height="50" style="background-color: #000000; border:1px solid black">
+													  Your browser is unfortunately not supported.
+													</canvas> 
+                        	<span id="div_mashSetpoint">
+                        	</span>
+                        </div>
                         <div id="div_mashVolume"></div>
                         <div id="div_mashTargetVolume"></div>
                         <div id="div_mashFlowRate"></div>
-                        <div class="input-group">
-					      <span class="input-group-btn">
-					        <button id="mashTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
-					      </span>
-					      <input id="mashSetTemp" type="text" class="form-control">
-					    </div><!-- /input-group -->
-					    </div>
-					    </div>
-					    <div id="div_mashTimer"></div>
-					    <div class="input-group">
-					      <span class="input-group-btn">
-					        <button class="btn btn-default" type="button" onClick="Brewtroller.timer.click_setTimer('mash');">Set Timer</button>
-					      </span>
-					      <select id="mashHours" class="form-control">
-							  <option value="0">Hours</option>
-  							  <option value="1">1</option>
-  							  <option value="2">2</option>
-  							  <option value="3">3</option>
-  							  <option value="4">4</option>
-  							  <option value="5">5</option>
-  							  <option value="6">6</option>
-  							  <option value="7">7</option>
-  							  <option value="8">8</option>
-  							  <option value="9">9</option>
-  							  <option value="10">10</option>
-  							  <option value="11">11</option>
-  							  <option value="12">12</option>
-  							  <option value="13">13</option>
-  							  <option value="14">14</option>
-  							  <option value="15">15</option>
-  							  <option value="16">16</option>
-  							  <option value="17">17</option>
-  							  <option value="18">18</option>
-  							  <option value="19">19</option>
-  							  <option value="20">20</option>
-  							  <option value="21">21</option>
-  							  <option value="22">22</option>
-  							  <option value="23">23</option>
-  							  <option value="24">24</option>
-  							</select>
-						 <select id="mashMinutes" class="form-control">
-							  <option value="0">Minutes</option>
-  							  <option value="1">1</option>
-  							  <option value="2">2</option>
-  							  <option value="3">3</option>
-  							  <option value="4">4</option>
-  							  <option value="5">5</option>
-  							  <option value="6">6</option>
-  							  <option value="7">7</option>
-  							  <option value="8">8</option>
-  							  <option value="9">9</option>
-  							  <option value="10">10</option>
-  							  <option value="11">11</option>
-  							  <option value="12">12</option>
-  							  <option value="13">13</option>
-  							  <option value="14">14</option>
-  							  <option value="15">15</option>
-  							  <option value="16">16</option>
-  							  <option value="17">17</option>
-  							  <option value="18">18</option>
-  							  <option value="19">19</option>
-  							  <option value="20">20</option>
-  							  <option value="21">21</option>
-  							  <option value="22">22</option>
-  							  <option value="23">23</option>
-  							  <option value="24">24</option>
-  							  <option value="25">25</option>
-  							  <option value="26">26</option>
-  							  <option value="27">27</option>
-  							  <option value="28">28</option>
-  							  <option value="29">29</option>
-  							  <option value="30">30</option>
-  							  <option value="31">31</option>
-  							  <option value="32">32</option>
-  							  <option value="33">33</option>
-  							  <option value="34">34</option>
-  							  <option value="35">35</option>
-  							  <option value="36">36</option>
-  							  <option value="37">37</option>
-  							  <option value="38">38</option>
-  							  <option value="39">39</option>
-  							  <option value="40">40</option>
-  							  <option value="41">41</option>
-  							  <option value="42">42</option>
-  							  <option value="43">43</option>
-  							  <option value="44">44</option>
-  							  <option value="45">45</option>
-  							  <option value="46">46</option>
-  							  <option value="47">47</option>
-  							  <option value="48">48</option>
-  							  <option value="49">49</option>
-  							  <option value="50">50</option>
-  							  <option value="51">51</option>
-  							  <option value="52">52</option>
-  							  <option value="53">53</option>
-  							  <option value="54">54</option>
-  							  <option value="55">55</option>
-  							  <option value="56">56</option>
-  							  <option value="57">57</option>
-  							  <option value="58">58</option>
-  							  <option value="59">59</option>
-  							  <option value="60">60</option>
-  							</select>
-					    </div><!-- /input-group -->
+                        <div class="row">
+                        	<div class="col-md-8">
+                        		<div class="input-group">
+														  <span class="input-group-addon" id="sizing-addon2"><i class="glyphicon glyphicon-fire"></i></span>
+														  <input id="mashSetTemp" type="text" class="form-control" placeholder="Temp Set" aria-describedby="sizing-addon2" size="200">
+														</div>
+                        	</div>
+                        	<div class="col-md-4">
+                        		<button id="mashTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
+												  </div>
+                        </div>
+                        <div class="row">
+                        	<div class="col-md-8">
+                        		<div id="mashTimePicker" class="bfh-timepicker"></div>
+                        	</div>
+                        	<div class="col-md-4">
+                        		<button id="mashSetTimer" class="btn btn-default" type="button">Set Timer</button>
+                        	</div>
+                        </div>
+                      </div>
+					    			</div>
 					</div>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="panel panel-default vesselPanel">
                     <div class="panel-heading clearfix">
+                    	<span id="boilLED" class="pull-left">
+                    		<img src="images/redOffLED.png" width="20" height="20">
+                    	</span>
                     	<h3 class="panel-title pull-left">
                     		Boil Kettle
                     	</h3>
                     	<button id="boilTimerButton" class="btn btn-default btn-xs pull-right" type="button">Timer Start</button>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body" style="background-color: #000000;">
 						<div class="row timer-top">
 						<div class="col-sm-12">
 							<div class="row">
 								<div class="col-sm-6">
-									<div id="kettleTempSet"><span id="div_kettleTemperature"></span> <span id="div_kettleSetpoint"></span></div>
-	<!-- 								<div id="div_kettleTemperature"></div> -->
-	<!-- 								<div id="div_kettleSetpoint"></div> -->
-									<div id="div_kettleHeatPower"></div>
+									<div id="kettleTempSet">
+										<span id="div_kettleTemperature">
+											<canvas id="boilGauge" width="200" height="200"></canvas>
+										</span>
+										<canvas id="boilDisplay" width="200" height="50" style="background-color: #000000; border:3px inset #CCCCCC">
+										  Your browser is unfortunately not supported.
+										</canvas>
+										<span id="div_kettleSetpoint">
+										</span>
+								  </div>
 									<div id="div_kettleVolume"></div>
 									<div id="div_kettleTargetVolume"></div>
 									<div id="div_kettleFlowRate"></div>
@@ -381,108 +315,17 @@
 						<div class="col-sm-12">
 							<div class="row">
 								<div class="col-sm-12">
-									<div id="div_boilTimer"></div>
+									
 								</div>
 							</div>
 							<div class="row">
-							  <div class="col-md-12">
-							    <div class="input-group">
-							      <span class="input-group-btn">
-							        <button class="btn btn-default" type="button" onClick="Brewtroller.timer.click_setTimer('boil');">Set Timer</button>
-							      </span>
-							      <select id="boilHours" class="form-control">
-								      <option value="0">Hours</option>
-		  							  <option value="1">1</option>
-		  							  <option value="2">2</option>
-		  							  <option value="3">3</option>
-		  							  <option value="4">4</option>
-		  							  <option value="5">5</option>
-		  							  <option value="6">6</option>
-		  							  <option value="7">7</option>
-		  							  <option value="8">8</option>
-		  							  <option value="9">9</option>
-		  							  <option value="10">10</option>
-		  							  <option value="11">11</option>
-		  							  <option value="12">12</option>
-		  							  <option value="13">13</option>
-		  							  <option value="14">14</option>
-		  							  <option value="15">15</option>
-		  							  <option value="16">16</option>
-		  							  <option value="17">17</option>
-		  							  <option value="18">18</option>
-		  							  <option value="19">19</option>
-		  							  <option value="20">20</option>
-		  							  <option value="21">21</option>
-		  							  <option value="22">22</option>
-		  							  <option value="23">23</option>
-		  							  <option value="24">24</option>
-								  </select>
-							      <select id="boilMinutes" class="form-control">
-									  <option value="0">Minutes</option>
-		  							  <option value="1">1</option>
-		  							  <option value="2">2</option>
-		  							  <option value="3">3</option>
-		  							  <option value="4">4</option>
-		  							  <option value="5">5</option>
-		  							  <option value="6">6</option>
-		  							  <option value="7">7</option>
-		  							  <option value="8">8</option>
-		  							  <option value="9">9</option>
-		  							  <option value="10">10</option>
-		  							  <option value="11">11</option>
-		  							  <option value="12">12</option>
-		  							  <option value="13">13</option>
-		  							  <option value="14">14</option>
-		  							  <option value="15">15</option>
-		  							  <option value="16">16</option>
-		  							  <option value="17">17</option>
-		  							  <option value="18">18</option>
-		  							  <option value="19">19</option>
-		  							  <option value="20">20</option>
-		  							  <option value="21">21</option>
-		  							  <option value="22">22</option>
-		  							  <option value="23">23</option>
-		  							  <option value="24">24</option>
-		  							  <option value="25">25</option>
-		  							  <option value="26">26</option>
-		  							  <option value="27">27</option>
-		  							  <option value="28">28</option>
-		  							  <option value="29">29</option>
-		  							  <option value="30">30</option>
-		  							  <option value="31">31</option>
-		  							  <option value="32">32</option>
-		  							  <option value="33">33</option>
-		  							  <option value="34">34</option>
-		  							  <option value="35">35</option>
-		  							  <option value="36">36</option>
-		  							  <option value="37">37</option>
-		  							  <option value="38">38</option>
-		  							  <option value="39">39</option>
-		  							  <option value="40">40</option>
-		  							  <option value="41">41</option>
-		  							  <option value="42">42</option>
-		  							  <option value="43">43</option>
-		  							  <option value="44">44</option>
-		  							  <option value="45">45</option>
-		  							  <option value="46">46</option>
-		  							  <option value="47">47</option>
-		  							  <option value="48">48</option>
-		  							  <option value="49">49</option>
-		  							  <option value="50">50</option>
-		  							  <option value="51">51</option>
-		  							  <option value="52">52</option>
-		  							  <option value="53">53</option>
-		  							  <option value="54">54</option>
-		  							  <option value="55">55</option>
-		  							  <option value="56">56</option>
-		  							  <option value="57">57</option>
-		  							  <option value="58">58</option>
-		  							  <option value="59">59</option>
-		  							  <option value="60">60</option>
-								  </select>
-							    </div><!-- /input-group -->
-							  </div><!-- /.col-lg-6 -->
-							</div><!-- /.row -->
+                <div class="col-md-8">
+                <div id="boilTimePicker" class="bfh-timepicker"></div>
+                </div>
+                <div class="col-md-4">
+                <button id="boilSetTimer" class="btn btn-default" type="button">Set Timer</button>
+                </div>
+              </div>
 						</div>
 						</div>
 					</div>
@@ -856,6 +699,7 @@
 </body>
 <script src="js/brewtroller.js"></script>
 <script src="js/cgiByteCodeMap.js"></script>
+<script src="js/programData.js"></script>
 <script>
 	Brewtroller.init();
 </script>
