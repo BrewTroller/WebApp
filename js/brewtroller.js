@@ -756,7 +756,11 @@ Brewtroller.status = {
     {
     	temperature = temperature / 100.0;
     	if (id === "#mashGauge") {
-    	mashGauge.setValue(temperature);
+    		mashGauge.setValue(temperature);
+    	} else if (id === "#hltGauge") {
+    		hltGauge.setValue(temperature);
+    	} else {
+    		boilGauge.setValue(temperature);
     	}
     	//$(id).gauge('setValue', temperature);
     	//$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
