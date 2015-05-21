@@ -85,7 +85,7 @@ Brewtroller.init = function () {
   hltGauge = new Gauge({
 	  						renderTo : 'hltGauge',
 	  						maxValue : 250,
-	  						majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
+	  						//majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
 	  						glow : true,
 	  						title : "Set: ",
 	  						colors : {
@@ -104,7 +104,7 @@ Brewtroller.init = function () {
   mashGauge = new Gauge({
 		renderTo : 'mashGauge',
 		maxValue : 250,
-		majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
+		//majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
 		glow : true,
 		title : "Set: ",
 		colors : {
@@ -123,7 +123,7 @@ Brewtroller.init = function () {
   boilGauge = new Gauge({
 		renderTo : 'boilGauge',
 		maxValue : 250,
-		majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
+		//majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
 		glow : true,
 		title : " ",
 		colors : {
@@ -755,11 +755,11 @@ Brewtroller.status = {
     printTemperature : function (id, temperature)
     {
     	temperature = temperature / 100.0;
-    	if (id === "#mashGauge") {
+    	if (id === "#mashGauge" && temperature < 1000) {
     		mashGauge.setValue(temperature);
-    	} else if (id === "#hltGauge") {
+    	} else if (id === "#hltGauge" && temperature < 1000) {
     		hltGauge.setValue(temperature);
-    	} else {
+    	} else if (temperature < 1000) {
     		boilGauge.setValue(temperature);
     	}
     	//$(id).gauge('setValue', temperature);
