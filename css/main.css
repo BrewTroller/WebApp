@@ -63,9 +63,39 @@
 	font-size: 1.7em;
 	font-weight: bold;
 }
+
 .vesselPanel {
 	min-height: 305px;
+	background-color: #000000;
+	color: #EDEDED
 }
+
+#mashTimePicker input {
+	background-color: #FFFFFF;
+}
+
+#boilTimePicker input {
+  background-color: #FFFFFF;
+}
+
+.seg {
+	background-color: #000000;
+	//border:3px inset #CCCCCC;
+} 
+
+#hltLED {
+	padding-right: 5px;
+}
+#mashLED {
+  padding-right: 5px;
+}
+#boilLED {
+  padding-right: 5px;
+}
+.panel .panel-heading {
+	background-color: #000000;
+}
+
 .vesselPanel .panel-heading {
 	height: 45px;
 }

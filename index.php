@@ -8,9 +8,9 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="css/jquery.sidr.light.css">
-<link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/slider.css">
 <link rel="stylesheet" href="css/bootstrap-formhelpers.min.css">
+<link rel="stylesheet" href="css/main.css">
 <!-- User Defined CSS Preferences  -->
 <link rel="stylesheet" href="css/userprefs.css">
 
@@ -224,7 +224,7 @@
                         	<span id="div_mashTemperature">
                         		<canvas id="mashGauge" width="200" height="200"></canvas>
                         	</span>
-                        	<canvas id="mashDisplay" width="200" height="50" style="background-color: #000000; border:1px solid black">
+                        	<canvas class="seg" id="mashDisplay" width="200" height="50">
 													  Your browser is unfortunately not supported.
 													</canvas> 
                         	<span id="div_mashSetpoint">
@@ -277,7 +277,7 @@
 										<span id="div_kettleTemperature">
 											<canvas id="boilGauge" width="200" height="200"></canvas>
 										</span>
-										<canvas id="boilDisplay" width="200" height="50" style="background-color: #000000; border:3px inset #CCCCCC">
+										<canvas class="seg" id="boilDisplay" width="200" height="50">
 										  Your browser is unfortunately not supported.
 										</canvas>
 										<span id="div_kettleSetpoint">

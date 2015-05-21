@@ -90,13 +90,13 @@ Brewtroller.init = function () {
 	  						title : "Set: ",
 	  						colors : {
 	  									plate : "#000000",
-	  									majorTicks : "#FF9900",
+	  									majorTicks : "#000000",
 	  									numbers : "#FF9900",
 	  									needle     : { start : '#FF9900', end : '#E68A00' }
 	  								 },
 	  						highlights : [
 	  						              { from: 0, to: 60, color: '#0000FF' },
-	  						              { from: 60, to: 160, color: '#E68A00' },
+	  						              { from: 60, to: 160, color: '#FFFFFF' },
 	  						              { from: 160, to: 250, color: '#FF3300' }
 	  						             ]
 	  						
@@ -109,13 +109,13 @@ Brewtroller.init = function () {
 		title : "Set: ",
 		colors : {
 					plate : "#000000",
-					majorTicks : "#FF9900",
+					majorTicks : "#000000",
 					numbers : "#FF9900",
 					needle     : { start : '#FF9900', end : '#E68A00' }
 				 },
 		highlights : [
 		              { from: 0, to: 60, color: '#0000FF' },
-		              { from: 60, to: 160, color: '#E68A00' },
+		              { from: 60, to: 160, color: '#FFFFFF' },
 		              { from: 160, to: 250, color: '#FF3300' }
 		             ]
 		
@@ -125,16 +125,16 @@ Brewtroller.init = function () {
 		maxValue : 250,
 		majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
 		glow : true,
-		title : "",
+		title : " ",
 		colors : {
 					plate : "#000000",
-					majorTicks : "#FF9900",
+					majorTicks : "#000000",
 					numbers : "#FF9900",
 					needle     : { start : '#FF9900', end : '#E68A00' }
 				 },
 		highlights : [
 		              { from: 0, to: 60, color: '#0000FF' },
-		              { from: 60, to: 160, color: '#E68A00' },
+		              { from: 60, to: 160, color: '#FFFFFF' },
 		              { from: 160, to: 250, color: '#FF3300' }
 		             ]
 		
@@ -755,6 +755,9 @@ Brewtroller.status = {
     printTemperature : function (id, temperature)
     {
     	temperature = temperature / 100.0;
+    	if (id === "#mashGauge") {
+    	mashGauge.setValue(temperature);
+    	}
     	//$(id).gauge('setValue', temperature);
     	//$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
     },
