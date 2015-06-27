@@ -128,27 +128,27 @@ var BTCMD_GetStatus = {
       "Kettle_TargetVolume",
       "Kettle_Volume",
       "Kettle_FlowRate",
-      "H2OIn_Temperature",
-      "H2OOut_Temperature",
-      "WortOut_Temperature",
-      "AUX1_Temperature",
-      "AUX2_Temperature",
-      "AUX3_Temperature",
+//      "H2OIn_Temperature",
+//      "H2OOut_Temperature",
+//      "WortOut_Temperature",
+//      "AUX1_Temperature",
+//      "AUX2_Temperature",
+//      "AUX3_Temperature",
       "Mash_TimerValue",
       "Mash_TimerStatus",
       "Boil_TimerValue",
       "Boil_TimerStatus",
       "Boil_ControlState",
-      "Program1_Step",
-      "Program1_Name",
-      "Program1_Number",
-      "Program2_Step",
-      "Program2_Name",
-      "Program2_Number"
-//      "Mash_Zone_Active_Program_Step",
-//      "Mash_Zone_Active_Program_Recipe",
-//      "Boil_Zone_Active_Program_Step",
-//      "Boil_Zone_Active_Program_Recipe"
+//      "Program1_Step",
+//      "Program1_Name",
+//     "Program1_Number",
+//      "Program2_Step",
+//      "Program2_Name",
+//      "Program2_Number"
+      "Mash_Zone_Active_Program_Step",
+      "Mash_Zone_Active_Program_Recipe",
+      "Boil_Zone_Active_Program_Step",
+      "Boil_Zone_Active_Program_Recipe"
     ]
   };
 
