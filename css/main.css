@@ -5,7 +5,7 @@
 	text-align: center;
 	display: inline-block;
 	margin: 0px 25% 25% 25%;
-	
+
 }
 #div_hltHeatPower .alert {
 	height: 10px;
@@ -81,7 +81,7 @@
 .seg {
 	background-color: #000000;
 	//border:3px inset #CCCCCC;
-} 
+}
 
 #hltLED {
 	padding-right: 5px;
@@ -105,4 +105,7 @@
 .timerText{
 	font-weight: bold;
 	font-size: 2em;
+}
+#connectionStatus {
+	color : red;
 }
