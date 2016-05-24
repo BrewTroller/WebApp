@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="css/slider.css">
 <link rel="stylesheet" href="css/bootstrap-formhelpers.min.css">
 <link rel="stylesheet" href="css/main.css">
-<link rel="stylesheet" href="css/mbExtruder.css">
+<!-- <link rel="stylesheet" href="css/mbExtruder.css"> -->
 <!-- User Defined CSS Preferences  -->
 <link rel="stylesheet" href="css/userprefs.css">
 
@@ -27,9 +27,9 @@
 <script type="text/javascript" src="framework/segment-display.js"></script>
 <script src="framework/gauge.min.js"></script>
 <script src="framework/bootstrap-formhelpers.js"></script>
-<script src="framework/mbExtruder.js"></script>
+<!-- <script src="framework/mbExtruder.js"></script>
 <script src="framework/jquery.mb.flipText.js"></script>
-<script src="framework/jquery.hoverIntent.min.js"></script>
+<script src="framework/jquery.hoverIntent.min.js"></script> -->
 <script>
 	function printAlarm(id, status)
     {
@@ -59,10 +59,10 @@
     {
         $(id).html('<small class="text-muted">flow rate </small>' +  flowrate / 1000 + " Gal/min");
     }
-	function printBoilControl(id, data)
-	{
-		$(id).html("Boil Control: " + data);
-	}
+	//function printBoilControl(id, data)
+	//{
+	//	$(id).html("Boil Control: " + data);
+	//}
 
     function printProgramThread(id, step, recipe)
     {
@@ -121,13 +121,13 @@
                 </button>
                 <a class="navbar-brand" href="#">
                 	<img class="img-responsive" src="images/brewtroller-header.png">
-                	<span id="tempStatus"></span>
                 </a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
+										<li><a href="#" id="connectionStatus">No Connection</a></li>
+										<li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controller <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="#" id="button_reset">Reset</a></li>
@@ -292,7 +292,7 @@
 									<div id="div_kettleFlowRate"></div>
 								</div>
 								<div class="col-sm-6">
-									<div class="btn-group-vertical btn-group-sm" data-toggle="buttons">
+									<!-- <div class="btn-group-vertical btn-group-sm" data-toggle="buttons">
 									  <label class="btn btn-default">
 									  	<input type="radio" class="boilControl" name="boilOff" id="boilOff">Kettle Off</input>
 									  </label>
@@ -302,7 +302,7 @@
 									   <label class="btn btn-default">
 									  	<input type="radio" class="boilControl" name="boilManual" id="boilManual">Manual Boil</input>
 									  </label>
-									</div>
+									</div> -->
 								</div>
 							</div>
 							<div class="row">
