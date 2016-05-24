@@ -1,15 +1,51 @@
 Brewtroller = {};
-var hosts;
-var username = "admin";
-var password = "password";
-var connected = false;
-var lastUpdate = 0;
-var storedHost;
-var programList = [];
-var programStep1;
-var programStep2;
-var programName1;
-var programName2;
+var hosts,
+	username = "admin",
+	password = "password",
+	connected = false,
+	lastUpdate = 0,
+	storedHost,
+	programList = [],
+	programStep1,
+	programStep2,
+	programName1,
+	programName2,
+	hltGauge,
+	mashGauge,
+	boilGauge,
+	hltTempSetPoint = "0",
+	mashTempSetPoint = "0",
+	boilTempSetPoint = "0",
+	btVersion = "0.0",
+	btUnits = "imperial";
+
+//Setup Segment Display
+var mashdisplay = new SegmentDisplay("mashDisplay");
+mashdisplay.pattern         = "##:##:##";
+mashdisplay.displayAngle    = 6;
+mashdisplay.digitHeight     = 20;
+mashdisplay.digitWidth      = 14;
+mashdisplay.digitDistance   = 2.5;
+mashdisplay.segmentWidth    = 2;
+mashdisplay.segmentDistance = 0.3;
+mashdisplay.segmentCount    = 7;
+mashdisplay.cornerType      = 3;
+mashdisplay.colorOn         = "#e95d0f";
+mashdisplay.colorOff        = "#4b1e05";
+mashdisplay.draw();
+var display = new SegmentDisplay("boilDisplay");
+display.pattern         = "##:##:##";
+display.displayAngle    = 6;
+display.digitHeight     = 20;
+display.digitWidth      = 14;
+display.digitDistance   = 2.5;
+display.segmentWidth    = 2;
+display.segmentDistance = 0.3;
+display.segmentCount    = 7;
+display.cornerType      = 3;
+display.colorOn         = "#e95d0f";
+display.colorOff        = "#4b1e05";
+display.draw();
 
 //Brewtroller Web Init
 Brewtroller.init = function () {
@@ -34,56 +70,128 @@ Brewtroller.init = function () {
   $('#button_nextStep2').on("click", function () {
 		 Brewtroller.program.nextStep("2"); 
 	  });
+  $("#boilSetTimer").on("click", function () {
+	  Brewtroller.timer.click_setTimer('boil');
+  });
+  $("#mashSetTimer").on("click", function () {
+	  Brewtroller.timer.click_setTimer('mash');
+  });
   $('.boilControl').on("change", function () {
 	  Brewtroller.boil.control(this.name);
   });
   $("#programModalButton").on("click", function () {
 	  Brewtroller.program.getProgramList();
   });
+  hltGauge = new Gauge({
+	  						renderTo : 'hltGauge',
+	  						maxValue : 250,
+	  						//majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
+	  						glow : true,
+	  						title : "Set: ",
+	  						colors : {
+	  									plate : "#000000",
+	  									majorTicks : "#000000",
+	  									numbers : "#FF9900",
+	  									needle     : { start : '#FF9900', end : '#E68A00' }
+	  								 },
+	  						highlights : [
+	  						              { from: 0, to: 60, color: '#0000FF' },
+	  						              { from: 60, to: 160, color: '#FFFFFF' },
+	  						              { from: 160, to: 250, color: '#FF3300' }
+	  						             ]
+	  						
+						});
+  mashGauge = new Gauge({
+		renderTo : 'mashGauge',
+		maxValue : 250,
+		//majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
+		glow : true,
+		title : "Set: ",
+		colors : {
+					plate : "#000000",
+					majorTicks : "#000000",
+					numbers : "#FF9900",
+					needle     : { start : '#FF9900', end : '#E68A00' }
+				 },
+		highlights : [
+		              { from: 0, to: 60, color: '#0000FF' },
+		              { from: 60, to: 160, color: '#FFFFFF' },
+		              { from: 160, to: 250, color: '#FF3300' }
+		             ]
+		
+	});
+  boilGauge = new Gauge({
+		renderTo : 'boilGauge',
+		maxValue : 250,
+		//majorTicks : ['0', '30', '60', '90', '120', '160', '212', '250'],
+		glow : true,
+		title : " ",
+		colors : {
+					plate : "#000000",
+					majorTicks : "#000000",
+					numbers : "#FF9900",
+					needle     : { start : '#FF9900', end : '#E68A00' }
+				 },
+		highlights : [
+		              { from: 0, to: 60, color: '#0000FF' },
+		              { from: 60, to: 160, color: '#FFFFFF' },
+		              { from: 160, to: 250, color: '#FF3300' }
+		             ]
+		
+	});
+  hltGauge.draw();
+  mashGauge.draw();
+  boilGauge.draw();
 //  if ($("#hltGauge")) {
-//	  $("#hltGauge").gauge({
-//		  min: 32,
-//		  max: 180,
-//		  label: "164",
-//		  unitsLabel: '' + String.fromCharCode(186),
-//		  majorTicks: 10,
-//		  minorTicks: 10,
-//		  bands: [
-//		          {color: '#F00', from: 163, to: 166}
-//		          ],
-//		  majorTickLabel: true,
-//		  colorOfCenterCircleFill: "#FF0040"
-//	  }).gauge('setValue', 162);
+//	  drawGauge("#hltGauge", hltTempSetPoint);
+//	  $("#hltGauge").gauge("setValue", 150);
+////	  $("#hltGauge").gauge({
+////		  min: 32,
+////		  max: 180,
+////		  unitsLabel: '' + String.fromCharCode(186),
+////		  majorTicks: 10,
+////		  minorTicks: 10,
+////		  bands: [
+////		          {color: '#F00', from: 163, to: 166}
+////		          ],
+////		  label: hltTempSetPoint,
+////		  majorTickLabel: true,
+////		  colorOfCenterCircleFill: "#CCCCCC"
+////	  }).gauge('setValue', 162);
 //  }
 //  if ($("#mashGauge")) {
-//	  $("#mashGauge").gauge({
-//		  min: 100,
-//		  max: 200,
-//		  label: "156",
-//		  unitsLabel: '' + String.fromCharCode(186),
-//		  majorTicks: 10,
-//		  minorTicks: 10,
-//		  bands: [
-//		          {color: '#F00', from: 153, to: 156}
-//		          ],
-//		  majorTickLabel: true,
-//		  colorOfCenterCircleFill: "#750823"
-//	  }).gauge('setValue', 154);
+//	  drawGauge("#mashGauge", mashTempSetPoint);
+//	  $("#mashGauge").gauge("setValue", 150);
+////	  $("#mashGauge").gauge({
+////		  min: 100,
+////		  max: 200,
+////		  unitsLabel: '' + String.fromCharCode(186),
+////		  majorTicks: 10,
+////		  minorTicks: 10,
+////		  bands: [
+////		          {color: '#F00', from: 153, to: 156}
+////		          ],
+////		  label: mashTempSetPoint,
+////		  majorTickLabel: true,
+////		  colorOfCenterCircleFill: "#CCCCCC"
+////	  }).gauge('setValue', 154);
 //  }
 //  if ($("#boilGauge")) {
-//	  $("#boilGauge").gauge({
-//		  min: 120,
-//		  max: 220,
-//		  label: "212",
-//		  unitsLabel: '' + String.fromCharCode(186),
-//		  majorTicks: 10,
-//		  minorTicks: 10,
-//		  bands: [
-//		          {color: '#F00', from: 211, to: 213}
-//		          ],
-//		  majorTickLabel: true,
-//		  colorOfCenterCircleFill: "#FF0040"
-//	  }).gauge('setValue', 200);
+//	  drawGauge("#boilGauge", boilTempSetPoint);
+//	  $("#boilGauge").gauge("setValue", 150);
+////	  $("#boilGauge").gauge({
+////		  min: 120,
+////		  max: 220,
+////		  unitsLabel: '' + String.fromCharCode(186),
+////		  majorTicks: 10,
+////		  minorTicks: 10,
+////		  bands: [
+////		          {color: '#F00', from: 211, to: 213}
+////		          ],
+////		  label: boilTempSetPoint,
+////		  majorTickLabel: true,
+////		  colorOfCenterCircleFill: "#CCCCCC"
+////	  }).gauge('setValue', 200);
 //  }
   $("#outputSave").on("click", function () {
 	  var outputBitmask = [],
@@ -126,7 +234,7 @@ Brewtroller.init = function () {
   //display file contents
   $('#loadBeerXMLButton').on("click", function() {
 	  Brewtroller.program.loadBeerXML();
-  });
+  });  
   
   Brewtroller.timer.setup();
   Brewtroller.temp.setup();
@@ -236,7 +344,7 @@ Brewtroller.program = {
 		  brewTrollerExecCommand(BTCMD_NextStep, programStep2, null, host, username, password, function(data){});	  
 		}
 	},
-  loadBeerXML : function() {
+	loadBeerXML : function() {
 		//get file object
 	      var file = $("#file").get(0).files;
 	      if (file) {
@@ -246,20 +354,24 @@ Brewtroller.program = {
 	          reader.onload = function(e) {
 	              // browser completed reading file - display it
 	        	    var beerXML = e.target.result;
+	        	    var btProg = new Brewtroller.progData($("#loadProgramNumber").val() - 1);
+	        	    btProg.loadFromBeerXML(beerXML);
+	        	    brewTrollerExecCommand(BTCMD_SetProgramName, btProg.getPSlot(), btProg.genSetProgramName(), host, username, password, function (data) {}); //TODO: Check response
+	        	    brewTrollerExecCommand(BTCMD_SetProgramSettings, btProg.getPSlot(), btProg.genSetProgramSettings(), host, username, password, function (data) {});
+	        	    brewTrollerExecCommand(BTCMD_SetProgramVolumes, btProg.getPSlot(), btProg.genSetProgramVolumes(), host, username, password, function (data) {});
+	        	    brewTrollerExecCommand(BTCMD_SetProgramMashTemps, btProg.getPSlot(), btProg.genSetProgramMashTemps(), host, username, password, function (data) {});
+	        	    brewTrollerExecCommand(BTCMD_SetProgramMashMins, btProg.getPSlot(), btProg.genSetProgramMashMins(), host, username, password, function (data) {});
+	        	    /*
 	        	    var beerJSON = $.xml2json(beerXML);
 	        	    Brewtroller.program.sendRecipeToBrewtroller(beerJSON);
+	        	    */
 	          };
 		   $("#modal_beerXMLLoader").modal("hide"); 
-		   Brewtroller.program.getProgramList();
+		   //Brewtroller.program.getProgramList(); This is being run before the new program is sent. Why?
 	      }
   },
   sendRecipeToBrewtroller : function (beerJSON) {
-	  var recipeSlot = $("#loadProgramNumber").val(),
-	  	  doughIn,
-	  	  acidRest,
-	  	  saccRest,
-	  	  saccRest2,
-	  	  mashOut,
+	  var recipeSlot = $("#loadProgramNumber").val() - 1,
 	  	  hopBitMask = "",
 	  	  bitMaskHash = [],
 	  	  bitMaskSplit,
@@ -279,54 +391,60 @@ Brewtroller.program = {
 	  	  $i = 1,
 	  	  recipe = beerJSON.RECIPE,
 	  	  name = recipe.NAME,
-	  	  batchSize = beerJSON["RECIPE"]["BATCH_SIZE"],
+	  	  batchSize = Number(correctUnits(parseFloat(beerJSON["RECIPE"]["BATCH_SIZE"]), "volume", "metric", btUnits)).toFixed(1),
 	  	  grainWeight = 0,
-	  	  grainRatio = parseFloat(beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"]["WATER_GRAIN_RATIO"]),
+		  grainRatio = 0,
+		  ratio = "",
 	  	  doughInTemp = 0, //beerJSON["RECIPE"]["DOUGHINTEMP"],
 	  	  doughInTime = "0", //beerJSON["RECIPE"]["DOUGHINMINUTES"],
 	  	  acidTemp = 0, //beerJSON["RECIPE"]["ACIDTEMP"],
 	  	  acidTime = "0", //beerJSON["RECIPE"]["ACIDMINUTES"],
 	  	  proteinTemp = 0,
 	  	  proteinTime = "0",
-	  	  proteinRest,
 	  	  saccTemp = 0,
 	  	  saccTime = "0",
 	  	  saccTemp2 = 0,
 	  	  saccTime2 = "0",
 	  	  mashOutTemp = 0,
 	  	  mashOutTime = "0",
-	  	  spargeTemp = beerJSON["RECIPE"]["MASH"]["SPARGE_TEMP"],
-	  	  boilTime = beerJSON["RECIPE"]["BOIL_TIME"],
-		  chillTemp = beerJSON["RECIPE"]["PRIMARY_TEMP"];
+	  	  mashArray = [],
+	  	  spargeTemp = Number(correctUnits(parseFloat(beerJSON["RECIPE"]["MASH"]["SPARGE_TEMP"]),"temperature","metric", btUnits)).toFixed(0),
+	  	  boilTime = parseInt(beerJSON["RECIPE"]["BOIL_TIME"]),
+		  chillTemp = Number(correctUnits(parseFloat(beerJSON["RECIPE"]["PRIMARY_TEMP"]),"temperature","metric", btUnits)).toFixed(0);	  
+
 	  $.each(beerJSON["RECIPE"]["FERMENTABLES"]["FERMENTABLE"], function(index, value) {
 		  grainWeight = grainWeight + parseFloat(value["AMOUNT"]);
 		});
-	  $.each(beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"], function(index, value) {
-		if(value["NAME"] == "Protein Rest") {
-			proteinRest = value;
-		}else if (value["NAME"] == "Saccharification") {
-			saccRest = value;
-		}else if (value["NAME"] == "mashOut") {
-			mashOut = value;
+		grainWeight = Number(correctUnits(grainWeight,"weight","metric",btUnits)).toFixed(2);
+		
+		if (beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"].isArray) { //If MASH_STEP is not array, convert it to one (for further processing).
+			mashArray = beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"];
+		} else {
+			mashArray[0] = beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"];
 		}
+		$.each(mashArray, function(index, value) {
+			if (ratio === "") ratio = value["WATER_GRAIN_RATIO"]; //Use first entry. Need to confirm.
+			var stepTime = parseInt(value["STEP_TIME"]);
+			var stepTemp = Number(correctUnits(parseFloat(value["STEP_TEMP"]),"temperature","metric", btUnits)).toFixed(0);
+			if(value["NAME"] == "Protein Rest") {
+				proteinTime = stepTime;
+				proteinTemp = stepTemp;
+			}else if (value["NAME"] == "Saccharification" || mashArray.length == 1) { //If only one entry use as Saach
+				saccTime = stepTime;
+				saccTemp = stepTemp;
+			}else if (value["NAME"] == "Mash Out") {
+				mashOutTemp = stepTemp;
+				mashOutTime = stepTime;
+			}
 	  });
-	  if (proteinRest) {
-		  proteinTemp = proteinRest["STEP_TEMP"];
-		  proteinTime = proteinRest["STEP_TIME"];
-	  	  }	
-	  if (saccRest) {
-		  saccTemp = saccRest["STEP_TEMP"];
-		  saccTime = saccRest["STEP_TIME"];
-		  }
-	  if (saccRest2) {
-		  saccTemp2 = saccRest2["STEP_TEMP"];
-		  saccTime2 = saccRest2["STEP_TIME"];
-		  }
-	  if (mashOut) {
-		  mashOutTemp = mashOut["STEP_TEMP"];
-		  mashOutTime = mashOut["STEP_TIME"];
-		  }
-	  
+	  if (ratio.lastIndexOf('qt/lb') != -1){
+		  ratio = parseFloat(ratio);
+		  grainRatio = Number(correctUnits(ratio, "ratio", "imperial", btUnits).toFixed(2));
+	  } else if (ratio.lastIndexOf('l/kg')){
+		  ratio = parseFloat(ratio);
+		  grainRatio = Number(correctUnits(ratio, "ratio", "imperial", btUnits).toFixed(2));
+	  }
+
 	  if(beerJSON["RECIPE"]["HOPS"]["HOP"][0]) {
 	  $.each(beerJSON["RECIPE"]["HOPS"]["HOP"], function(index, value){
 		bitMaskSplit = value["TIME"].split(".");
@@ -347,7 +465,7 @@ Brewtroller.program = {
 			  recipeSlot,
 			  {
 			      "Sparge_Temp": spargeTemp,
-				  "HLT_Setpoint": "0", //HLT Setpoint
+				  "HLT_Setpoint": spargeTemp, //HLT Setpoint
 				  "Boil_Mins": boilTime,
 				  "Pitch_Temp": chillTemp,
 				  "Boil_Additions": hopBitMask,
@@ -413,8 +531,7 @@ Brewtroller.program = {
 	  
   }  
 };
-
-
+	
 //Timer Functions
 Brewtroller.timer = {
   setup : function () {
@@ -446,7 +563,8 @@ Brewtroller.timer = {
       }else{
         rStatus = "On";
       }
-    $(id).html('<small class="text-muted">timer </small><span class="timerText">' + millisecondsToTime(value) + "</span> / " + rStatus);
+    //$(id).html('<small class="text-muted">timer </small><span class="timerText">' + millisecondsToTime(value) + "</span> / " + rStatus);
+    if (id) {id.setValue(millisecondsToTimerDisplay(value));}
     },
     click_startTimer : function (vessel) {
       var timerStatus,
@@ -482,13 +600,13 @@ Brewtroller.timer = {
         	  minutes;
         if (vessel == "mash") {
           timerId = 0;
-          hours = $("#mashHours").val();
-          minutes = $("#mashMinutes").val();
+          hours = $("#mashTimePicker").val().split(":")[0];
+          minutes = $("#mashTimePicker").val().split(":")[1];
           milliseconds = hoursMinutesToMilliseconds(hours, minutes);
         } else if (vessel == "boil") {
           timerId = 1;
-          hours = $("#boilHours").val();
-          minutes = $("#boilMinutes").val();
+          hours = $("#boilTimePicker").val().split(":")[0];
+          minutes = $("#boilTimePicker").val().split(":")[1];
           milliseconds = hoursMinutesToMilliseconds(hours, minutes);
         } else {
           alert("Unable To Set Timer");
@@ -514,7 +632,13 @@ Brewtroller.temp = {
     setTemp : function (vessel, temp) {
             brewTrollerExecCommand(BTCMD_SetSetpoint, vessel, {"Setpoint":temp}, host, username, password, function(data){
       });
-    }  
+    },
+    
+    printHeatPower : function (id, heatPower)
+    {
+        //$(id).html('<small class="text-muted">heat power </small>' + (heatPower == 0 ? "Off" : heatPower == 100 ? '<span class="text text-danger">On</span>' : (heatPower + "%")));
+        $(id).html((heatPower == 0 ? '<img src="images/redOffLED.png" width="20" height="20">' : heatPower == 100 ? '<img src="images/redOnLED.png" width="20" height="20">' : '<img src="images/redOnLED.png" width="20" height="20">' + (heatPower + "%")));
+    }
 };
 
 //Reset Functions
@@ -589,10 +713,10 @@ Brewtroller.status = {
 		programStep1 = data["Program1_Step"];
 		programStep2 = data["Program2_Step"];
 		$("#div_status").html("<pre>" + JSON.stringify(data, null, '\t') + "</pre>");
-        printProgramThread("#div_programThread1", data.Program1_Step, data.Program1_Name);
-        printProgramThread("#div_programThread2", data.Program2_Step, data.Program2_Name);
-        Brewtroller.timer.printTimer("#div_mashTimer", data.Mash_TimerValue, data.Mash_TimerStatus);
-        Brewtroller.timer.printTimer("#div_boilTimer", data.Boil_TimerValue, data.Boil_TimerStatus);
+        Brewtroller.status.printProgramThread("#div_programThread1", data.Program1_Step, data.Program1_Name);
+        Brewtroller.status.printProgramThread("#div_programThread2", data.Program2_Step, data.Program2_Name);
+        Brewtroller.timer.printTimer(mashdisplay, data.Mash_TimerValue, data.Mash_TimerStatus);
+        Brewtroller.timer.printTimer(display, data.Boil_TimerValue, data.Boil_TimerStatus);
         printAlarm("#button_alarm", data.alarmStatus);
         //Brewtroller.status.printTemperature("#hltGauge", data.HLT_Temperature);
         Brewtroller.status.printTemperature("#div_hltTemperature", data.HLT_Temperature);
@@ -635,7 +759,26 @@ Brewtroller.status = {
     {
     	//temperature = temperature / 100.0;
     	//$(id).gauge('setValue', temperature);
-    	$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
+    	//$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
+    },
+    
+    printSetpoint : function(id, gauge, setpoint)
+    {
+        //$(id).html('<small class="text-muted">set </small><span class="vesselSet">' + (setpoint == 0 ? "N/A " : (setpoint / 100.0 + '&deg;F</span> ')));
+        if (gauge === "#hltGauge") {
+        	hltGauge.config.title = "Set: " + setpoint / 100 + "\xB0F";
+        	hltGauge.updateConfig();
+        } else if (gauge === "#mashGauge") {
+        	mashGauge.config.title = "Set: " + setpoint / 100 + "\xB0F";
+        	mashGauge.updateConfig();
+        }
+        //drawGauge();
+    	
+    },
+    
+    printProgramThread : function (id, step, recipe)
+    {
+        $(id).html("Step: " + step + " Recipe: " + recipe);
     }
 	};
 
@@ -904,6 +1047,20 @@ function millisecondsToTime(milli)
   var s = Math.floor((milli - (m * 60000) - (h*3600000)) / 1000);
 
   return h + "h" + m + "m" + s + "s";
+}
+
+function millisecondsToTimerDisplay(milli)
+{
+	
+  var h = Math.floor(milli / 3600000),
+  	  m = Math.floor((milli - (h * 3600000)) / 60000),
+  	  s = Math.floor((milli - (m * 60000) - (h*3600000)) / 1000);
+
+  if (h < 10) {h = "0" + h;}
+  if (m < 10) {m = "0" + m;}
+  if (s < 10) {s = "0" + s;}
+  
+  return h + ":" + m + ":" + s;
 }
 
 function hoursMinutesToMilliseconds(hours, minutes) {

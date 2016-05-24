@@ -128,27 +128,27 @@ var BTCMD_GetStatus = {
       "Kettle_TargetVolume",
       "Kettle_Volume",
       "Kettle_FlowRate",
-      "H2OIn_Temperature",
-      "H2OOut_Temperature",
-      "WortOut_Temperature",
-      "AUX1_Temperature",
-      "AUX2_Temperature",
-      "AUX3_Temperature",
+//      "H2OIn_Temperature",
+//      "H2OOut_Temperature",
+//      "WortOut_Temperature",
+//      "AUX1_Temperature",
+//      "AUX2_Temperature",
+//      "AUX3_Temperature",
       "Mash_TimerValue",
       "Mash_TimerStatus",
       "Boil_TimerValue",
       "Boil_TimerStatus",
       "Boil_ControlState",
-      "Program1_Step",
-      "Program1_Name",
-      "Program1_Number",
-      "Program2_Step",
-      "Program2_Name",
-      "Program2_Number"
-//      "Mash_Zone_Active_Program_Step",
-//      "Mash_Zone_Active_Program_Recipe",
-//      "Boil_Zone_Active_Program_Step",
-//      "Boil_Zone_Active_Program_Recipe"
+//      "Program1_Step",
+//      "Program1_Name",
+//     "Program1_Number",
+//      "Program2_Step",
+//      "Program2_Name",
+//      "Program2_Number"
+      "Mash_Zone_Active_Program_Step",
+      "Mash_Zone_Active_Program_Recipe",
+      "Boil_Zone_Active_Program_Step",
+      "Boil_Zone_Active_Program_Recipe"
     ]
   };
 
@@ -286,7 +286,7 @@ var BTCMD_SetProgramName = {
 					 ]
 	};
 var BTCMD_SetProgramMashTemps = {
-	      reqCode: '%5C',
+	      reqCode: '^',
 	      reqIndex: true,
 	      reqParams: [
 	                  "Dough_In_Temp",
@@ -296,7 +296,7 @@ var BTCMD_SetProgramMashTemps = {
 	                  "Sacch2_Temp",
 	                  "Mash_Out_Temp"
 	                  ],
-	      rspCode: '>',
+	      rspCode: ']',
 	      rspParams: [
 						"Dough_In_Temp",
 						"Acid_Temp",
@@ -363,6 +363,68 @@ var BTCMD_SetProgramSettings = {
 	                  "Mash_Liquor_Heat_Source"
 	                  ]
 	};
+
+var BTCMD_SetProgram = {
+	      reqCode: '%3F',
+	      reqIndex: true,
+	      reqParams: [
+		            "name",
+	                "Batch_Volume",
+	                "Grain_Weight",
+	                "Mash_Ratio",
+		            "mashDoughIn_Temperature",
+		            "mashDoughIn_Minutes",
+		            "mashAcid_Temperature",
+		            "mashAcid_Minutes",
+		            "mashProtein_Temperature",
+		            "mashProtein_Minutes",
+		            "mashSacch_Temperature",
+		            "mashSacch_Minutes",
+		            "mashSacch2_Temperature",
+		            "mashSacch2_Minutes",
+		            "mashMashOut_Temperature",
+		            "mashMashOut_Minutes",
+	                "Sparge_Temp",
+	                "HLT_Setpoint",
+	                "Boil_Mins",
+	                "Pitch_Temp",
+	                "Boil_Additions",
+	                "Mash_Liquor_Heat_Source"
+	                  ],
+          rspCode: '@',
+          rspParams: [
+	            "name",
+	            "batchVolume",
+	            "grainWeight",
+	            "mashRatio",
+	            "mashDoughIn_Temperature",
+	            "mashDoughIn_Minutes",
+	            "mashAcid_Temperature",
+	            "mashAcid_Minutes",
+	            "mashProtein_Temperature",
+	            "mashProtein_Minutes",
+	            "mashSacch_Temperature",
+	            "mashSacch_Minutes",
+	            "mashSacch2_Temperature",
+	            "mashSacch2_Minutes",
+	            "mashMashOut_Temperature",
+	            "mashMashOut_Minutes",
+                "Sparge_Temp",
+                "HLT_Setpoint",
+                "Boil_Mins",
+                "Pitch_Temp",
+                "Boil_Additions",
+                "Mash_Liquor_Heat_Source",
+	            "calcStrikeTemperature",
+	            "firstStepTemperature",
+	            "calcPreboilVolume",
+	            "calcStrikeVolume",
+	            "calcSpargeVolume",
+	            "calcGrainVolume",
+	            "calcGrainLiquorLoss"
+          ]
+	};
+
 var BTCMD_GetValveProfileConfig = {
 	reqCode: 'd',
 	reqIndex: true,
