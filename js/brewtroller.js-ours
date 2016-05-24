@@ -718,24 +718,21 @@ Brewtroller.status = {
         Brewtroller.timer.printTimer(mashdisplay, data.Mash_TimerValue, data.Mash_TimerStatus);
         Brewtroller.timer.printTimer(display, data.Boil_TimerValue, data.Boil_TimerStatus);
         printAlarm("#button_alarm", data.alarmStatus);
-        //Brewtroller.status.printTemperature("#hltGauge", data.HLT_Temperature);
-        Brewtroller.status.printTemperature("#div_hltTemperature", data.HLT_Temperature);
-        printSetpoint("#div_hltSetpoint", data.HLT_Setpoint);
-        printHeatPower("#div_hltHeatPower", data.HLT_HeatPower);
+        Brewtroller.status.printTemperature("#hltGauge", data.HLT_Temperature);
+        Brewtroller.status.printSetpoint("#div_hltSetpoint", "#hltGauge", data.HLT_Setpoint);
+        Brewtroller.temp.printHeatPower("#hltLED", data.HLT_HeatPower);
 		printVolume("#div_hltVolume", data.HLT_Volume);
 		printTargetVolume("#div_hltTargetVolume", data.HLT_TargetVolume);
 		printFlowRate("#div_hltFlowRate", data.HLT_FlowRate);
-		//Brewtroller.status.printTemperature("#mashGauge", data.Mash_Temperature);
-		Brewtroller.status.printTemperature("#div_mashTemperature", data.Mash_Temperature);
-        printSetpoint("#div_mashSetpoint", data.Mash_Setpoint);
-        printHeatPower("#div_mashHeatPower", data.Mash_HeatPower);
+		Brewtroller.status.printTemperature("#mashGauge", data.Mash_Temperature);
+        Brewtroller.status.printSetpoint("#div_mashSetpoint", "#mashGauge", data.Mash_Setpoint);
+        Brewtroller.temp.printHeatPower("#mashLED", data.Mash_HeatPower);
 		printVolume("#div_mashVolume", data.Mash_Volume);
 		printTargetVolume("#div_mashTargetVolume", data.Mash_TargetVolume);
 		printFlowRate("#div_mashFlowRate", data.Mash_FlowRate);
-		//Brewtroller.status.printTemperature("#boilGauge", data.Kettle_Temperature);
-		Brewtroller.status.printTemperature("#div_kettleTemperature", data.Kettle_Temperature);
-        printSetpoint("#div_kettleSetpoint", data.Kettle_Setpoint);
-        printHeatPower("#div_kettleHeatPower", data.Kettle_HeatPower);
+		Brewtroller.status.printTemperature("#boilGauge", data.Kettle_Temperature);
+		Brewtroller.status.printSetpoint("#div_kettleSetpoint", "#boilGauge", data.Kettle_Setpoint);
+		Brewtroller.temp.printHeatPower("#boilLED", data.Kettle_HeatPower);
 		printVolume("#div_kettleVolume", data.Kettle_Volume);
 		printTargetVolume("#div_kettleTargetVolume", data.Kettle_TargetVolume);
 		printFlowRate("#div_kettleFlowRate", data.Kettle_FlowRate);
@@ -757,7 +754,14 @@ Brewtroller.status = {
     
     printTemperature : function (id, temperature)
     {
-    	//temperature = temperature / 100.0;
+    	temperature = temperature / 100.0;
+    	if (id === "#mashGauge" && temperature < 1000) {
+    		mashGauge.setValue(temperature);
+    	} else if (id === "#hltGauge" && temperature < 1000) {
+    		hltGauge.setValue(temperature);
+    	} else if (temperature < 1000) {
+    		boilGauge.setValue(temperature);
+    	}
     	//$(id).gauge('setValue', temperature);
     	//$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
     },
@@ -1068,4 +1072,32 @@ function hoursMinutesToMilliseconds(hours, minutes) {
 	minutesTotal = parseInt(minutes) + hoursToMinutes;
 	milliseconds = minutesTotal * 60000;
 	return milliseconds;
+}
+
+//Taken from BT Live project
+function correctUnits(input, type, currentSystem, targetSystem) {
+ if (currentSystem == targetSystem) return input;
+  if (currentSystem == "metric"){
+    switch (type){
+      case "temperature":
+        return input * (9/5) + 32;
+      case "volume":
+        return input * 0.264;
+      case "weight":
+        return input * 2.204;
+      case "ratio":
+        return input / 0.9464;
+    }
+  } else {
+    switch (type){
+      case "temperature":
+        return (input - 32)/(9.5);
+      case "volume":
+        return input / 0.264;
+      case "weight":
+        return input / 2.204;
+      case "ratio":
+	      return input * 0.9464;
+    }
+  }
 }
