@@ -49,21 +49,6 @@ display.draw();
 
 //Brewtroller Web Init
 Brewtroller.init = function () {
-	$("#extruderLeft").buildMbExtruder({
-        //positionFixed:true,
-        //width:350,
-        sensibility:800,
-        position:"left", // left, right, bottom
-        extruderOpacity:1,
-        flapDim:50,
-        textOrientation:"bt", // or "tb" (top-bottom or bottom-top)
-        onExtOpen:function(){},
-        onExtContentLoad:function(){},
-        onExtClose:function(){},
-        hidePanelsOnClose:true,
-        autoCloseTime:0, // 0=never
-        slideTimer:300
-    });
   $('#button_connect').on("click", function() {
     Brewtroller.connected.click_buttonConnect();
   });
@@ -74,16 +59,16 @@ Brewtroller.init = function () {
     Brewtroller.connected.saveConnectionSettings();
   });
   $('#button_reset').on("click", function() {
-	Brewtroller.reset.resetPrograms(0);
+	Brewtroller.reset.resetPrograms(0); 
   });
   $('#reboot').on("click", function() {
-		Brewtroller.reset.resetPrograms(1);
+		Brewtroller.reset.resetPrograms(1); 
 	  });
   $('#button_nextStep1').on("click", function () {
-	 Brewtroller.program.nextStep("1");
+	 Brewtroller.program.nextStep("1"); 
   });
   $('#button_nextStep2').on("click", function () {
-		 Brewtroller.program.nextStep("2");
+		 Brewtroller.program.nextStep("2"); 
 	  });
   $("#boilSetTimer").on("click", function () {
 	  Brewtroller.timer.click_setTimer('boil');
@@ -92,7 +77,7 @@ Brewtroller.init = function () {
 	  Brewtroller.timer.click_setTimer('mash');
   });
   $('.boilControl').on("change", function () {
-	  //Brewtroller.boil.control(this.name);
+	  Brewtroller.boil.control(this.name);
   });
   $("#programModalButton").on("click", function () {
 	  Brewtroller.program.getProgramList();
@@ -114,7 +99,7 @@ Brewtroller.init = function () {
 	  						              { from: 60, to: 160, color: '#FFFFFF' },
 	  						              { from: 160, to: 250, color: '#FF3300' }
 	  						             ]
-
+	  						
 						});
   mashGauge = new Gauge({
 		renderTo : 'mashGauge',
@@ -133,7 +118,7 @@ Brewtroller.init = function () {
 		              { from: 60, to: 160, color: '#FFFFFF' },
 		              { from: 160, to: 250, color: '#FF3300' }
 		             ]
-
+		
 	});
   boilGauge = new Gauge({
 		renderTo : 'boilGauge',
@@ -152,7 +137,7 @@ Brewtroller.init = function () {
 		              { from: 60, to: 160, color: '#FFFFFF' },
 		              { from: 160, to: 250, color: '#FF3300' }
 		             ]
-
+		
 	});
   hltGauge.draw();
   mashGauge.draw();
@@ -245,12 +230,12 @@ Brewtroller.init = function () {
     $('#settingsHost').attr('placeholder', host);
     Brewtroller.connected.click_buttonConnect();
   }
-
+  
   //display file contents
   $('#loadBeerXMLButton').on("click", function() {
 	  Brewtroller.program.loadBeerXML();
-  });
-
+  });  
+  
   Brewtroller.timer.setup();
   Brewtroller.temp.setup();
   $('#boilZonePanel').hide();
@@ -280,7 +265,7 @@ Brewtroller.connected = {
 //            $("#beerXMLModalButton").removeAttr("disabled");
 //            $("#programModalButton").removeAttr("disabled");
         }
-    },
+    },    
     loop : function () {
       if(connected === true) {
         Brewtroller.connected.checkWatchdog();
@@ -310,7 +295,7 @@ Brewtroller.connected = {
       $('#settingsHost').text("host");
       localStorage.setItem('btHost',host);
     }
-
+    
 };
 
 //Program Functions
@@ -335,11 +320,11 @@ Brewtroller.program = {
     			$('#recipeDetails table tbody').append(recipeLine);
     			$('#' + recipeBtnId1).on("click", function () {
     				var reci = $(this).attr('id').split("_");
-    			  Brewtroller.program.startStep(reci[0] - 1, "0");
+    			  Brewtroller.program.startStep(reci[0] - 1, "0"); 
     			  });
     			$('#' + recipeBtnId2).on("click", function () {
     			  var reci = $(this).attr('id').split("_");
-    			  Brewtroller.program.startStep(reci[0] - 1, "0");
+    			  Brewtroller.program.startStep(reci[0] - 1, "0"); 
     			  });
     		}
     		if (index != "Response Code") {
@@ -356,7 +341,7 @@ Brewtroller.program = {
 		  brewTrollerExecCommand(BTCMD_NextStep, programStep1, null, host, username, password, function(data){});
 		}
 	  if (programStep2 != "255" && zone==="2") {
-		  brewTrollerExecCommand(BTCMD_NextStep, programStep2, null, host, username, password, function(data){});
+		  brewTrollerExecCommand(BTCMD_NextStep, programStep2, null, host, username, password, function(data){});	  
 		}
 	},
 	loadBeerXML : function() {
@@ -381,7 +366,7 @@ Brewtroller.program = {
 	        	    Brewtroller.program.sendRecipeToBrewtroller(beerJSON);
 	        	    */
 	          };
-		   $("#modal_beerXMLLoader").modal("hide");
+		   $("#modal_beerXMLLoader").modal("hide"); 
 		   //Brewtroller.program.getProgramList(); This is being run before the new program is sent. Why?
 	      }
   },
@@ -425,13 +410,13 @@ Brewtroller.program = {
 	  	  mashArray = [],
 	  	  spargeTemp = Number(correctUnits(parseFloat(beerJSON["RECIPE"]["MASH"]["SPARGE_TEMP"]),"temperature","metric", btUnits)).toFixed(0),
 	  	  boilTime = parseInt(beerJSON["RECIPE"]["BOIL_TIME"]),
-		  chillTemp = Number(correctUnits(parseFloat(beerJSON["RECIPE"]["PRIMARY_TEMP"]),"temperature","metric", btUnits)).toFixed(0);
+		  chillTemp = Number(correctUnits(parseFloat(beerJSON["RECIPE"]["PRIMARY_TEMP"]),"temperature","metric", btUnits)).toFixed(0);	  
 
 	  $.each(beerJSON["RECIPE"]["FERMENTABLES"]["FERMENTABLE"], function(index, value) {
 		  grainWeight = grainWeight + parseFloat(value["AMOUNT"]);
 		});
 		grainWeight = Number(correctUnits(grainWeight,"weight","metric",btUnits)).toFixed(2);
-
+		
 		if (beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"].isArray) { //If MASH_STEP is not array, convert it to one (for further processing).
 			mashArray = beerJSON["RECIPE"]["MASH"]["MASH_STEPS"]["MASH_STEP"];
 		} else {
@@ -467,7 +452,7 @@ Brewtroller.program = {
 	  });
   	  } else {
   		bitMaskSplit = beerJSON["RECIPE"]["HOPS"]["HOP"]["TIME"].split(".");
-		bitMaskHash[bitMaskSplit[0]] = "1";
+		bitMaskHash[bitMaskSplit[0]] = "1";  
   	  }
 	  $.each(hopTimes, function (index, value) {
 		  if(bitMaskHash[value]) {
@@ -485,22 +470,22 @@ Brewtroller.program = {
 				  "Pitch_Temp": chillTemp,
 				  "Boil_Additions": hopBitMask,
 				  "Mash_Liquor_Heat_Source": "0"
-			  },
+			  },			  
 			  host,
 			  username,
 			  password,
 			  function(data){});
-
+    
 	  brewTrollerExecCommand(BTCMD_SetProgramName,
 			  recipeSlot,
 			  {
 		  		"Program_Name": name
-			  },
+			  },			  
 			  host,
 			  username,
 			  password,
 			  function(data){});
-
+	  
 	  brewTrollerExecCommand(BTCMD_SetProgramMashTemps,
 			  recipeSlot,
 			  {
@@ -510,12 +495,12 @@ Brewtroller.program = {
 			  "Sacch_Temp": saccTemp,
 			  "Sacch2_Temp": saccTemp2,
 			  "Mash_Out_Temp": mashOutTemp
-			  },
+			  },			  
 			  host,
 			  username,
 			  password,
 			  function(data){});
-
+	  
 	  brewTrollerExecCommand(BTCMD_SetProgramMashMins,
 			  recipeSlot,
 			  {
@@ -525,28 +510,28 @@ Brewtroller.program = {
 			  "Sacch_Mins": saccTime,
 			  "Sacch2_Mins": saccTime2,
 			  "Mash_Out_Mins": mashOutTime
-			  },
+			  },			  
 			  host,
 			  username,
 			  password,
 			  function(data){});
-
-
+	  
+	  
 	  brewTrollerExecCommand(BTCMD_SetProgramVolumes,
 			  recipeSlot,
 			  {
 			  "Batch_Volume": batchSize,
 			  "Grain_Weight": grainWeight,
 			  "Mash_Ratio": grainRatio
-			  },
+			  },			  
 			  host,
 			  username,
 			  password,
 			  function(data){});
-
-  }
+	  
+  }  
 };
-
+	
 //Timer Functions
 Brewtroller.timer = {
   setup : function () {
@@ -556,7 +541,7 @@ Brewtroller.timer = {
     $('#boilTimerButton').on("click", function() {
       Brewtroller.timer.click_startTimer("boil");
     });
-    $.each([ 0 , 1 ], function( index, timerId ){
+    $.each([ 0 , 1 ], function( index, timerId ){ 
     if (timerId === 0) {vessel = "mash";}
     if (timerId === 1) {vessel = "boil";}
     brewTrollerExecCommand(BTCMD_GetTimerStatus, timerId, null, host, username, password, function(data){
@@ -606,7 +591,7 @@ Brewtroller.timer = {
           Brewtroller.timer.printTimer("div_" + vessel + "Timer", "", "0");
         }
       });
-
+      
     },
     click_setTimer : function (vessel) {
         var timerId,
@@ -628,7 +613,7 @@ Brewtroller.timer = {
         }
         brewTrollerExecCommand(BTCMD_SetTimerValue, timerId, {"TimerValue": milliseconds}, host, username, password, function(data){
           });
-
+        
       }
 };
 
@@ -648,11 +633,11 @@ Brewtroller.temp = {
             brewTrollerExecCommand(BTCMD_SetSetpoint, vessel, {"Setpoint":temp}, host, username, password, function(data){
       });
     },
-
+    
     printHeatPower : function (id, heatPower)
     {
         //$(id).html('<small class="text-muted">heat power </small>' + (heatPower == 0 ? "Off" : heatPower == 100 ? '<span class="text text-danger">On</span>' : (heatPower + "%")));
-        $(id).html((heatPower === 0 ? '<img src="images/redOffLED.png" width="20" height="20">' : heatPower == 100 ? '<img src="images/redOnLED.png" width="20" height="20">' : '<img src="images/redOnLED.png" width="20" height="20">' + (heatPower + "%")));
+        $(id).html((heatPower == 0 ? '<img src="images/redOffLED.png" width="20" height="20">' : heatPower == 100 ? '<img src="images/redOnLED.png" width="20" height="20">' : '<img src="images/redOnLED.png" width="20" height="20">' + (heatPower + "%")));
     }
 };
 
@@ -766,7 +751,7 @@ Brewtroller.status = {
 		}
         Brewtroller.connected.connectWatchdog();
     },
-
+    
     printTemperature : function (id, temperature)
     {
     	temperature = temperature / 100.0;
@@ -780,7 +765,7 @@ Brewtroller.status = {
     	//$(id).gauge('setValue', temperature);
     	//$(id).html('<small class="text-muted">temp </small><span class="vesselTemp">' + (temperature == 4294934528 ? "N/A" : (temperature / 100.0 + '&deg;F</span> ')));
     },
-
+    
     printSetpoint : function(id, gauge, setpoint)
     {
         //$(id).html('<small class="text-muted">set </small><span class="vesselSet">' + (setpoint == 0 ? "N/A " : (setpoint / 100.0 + '&deg;F</span> ')));
@@ -792,9 +777,9 @@ Brewtroller.status = {
         	mashGauge.updateConfig();
         }
         //drawGauge();
-
+    	
     },
-
+    
     printProgramThread : function (id, step, recipe)
     {
         $(id).html("Step: " + step + " Recipe: " + recipe);
@@ -817,17 +802,17 @@ Brewtroller.boil = {
 			$("#powerControl").hide();
 		}else{
 			controlMode = 2;
-			if (percentage) {
+			if (percentage) { 
 				controlPercentage = percentage;
 			}else{
 			controlPercentage = 100;
-			}
+			}	
 			$("#powerControl").show();
 		}
 		brewTrollerExecCommand(BTCMD_SetBoilControl, null, {"Control_Mode":controlMode, "Percentage":controlPercentage}, host, username, password, function(data){
 			$("#powerSlider").slider('setValue', controlPercentage);
 			$("#boilPower").text(controlPercentage);
-
+			
 		});
 	}
 };
@@ -838,12 +823,12 @@ Brewtroller.valve = {
 			var binary = parseInt(bitmask, 10).toString(2);
 			return binary;
 		},
-
+		
 		bitmaskBinaryDecimalConvert : function (bitmask) {
 			var decimal = parseInt(bitmask, 2);
 			return decimal;
 		},
-
+		
 		binaryToProfileTranslate : function (binary) {
 			var binaryArray = binary.split(""),
 			activeProfiles = [];
@@ -856,7 +841,7 @@ Brewtroller.valve = {
 			});
 			return activeProfiles;
 		},
-
+		
 		profileTranslateNme : function (profileBitmask) {
 		bitmaskName = {
 				"1": "Fill HLT",
@@ -882,7 +867,7 @@ Brewtroller.valve = {
 				};
 		return bitmaskName[profileBitmask];
 	},
-
+	
 	profileTranslateDivId : function (profileBitmask) {
 		bitmaskIdName = {
 				"0": "fillHLT",
@@ -908,8 +893,8 @@ Brewtroller.valve = {
 				};
 		return bitmaskIdName[profileBitmask];
 	},
-
-	buildValveSelectBox : function ()
+    
+	buildValveSelectBox : function () 
     {
     	var bitmaskName = {
 				"0": "Fill HLT",
@@ -938,7 +923,7 @@ Brewtroller.valve = {
     		$("#valveSelect").append('<option value="' + index + '">' + value + '</option>');
     	});
     },
-
+	
 	printOutputProfiles : function(id, status)
     {
 		$(".valveBtn button").removeClass("btn-danger").addClass("btn-default");
@@ -948,7 +933,7 @@ Brewtroller.valve = {
 			$("#" + value).removeClass("btn-default").addClass("btn-danger");
 		});
 	},
-
+    
     getValveProfileConfig : function (valveProfile) {
     	var currValveProfile;
     	currValveProfile = brewTrollerExecCommand(BTCMD_GetValveProfileConfig,
@@ -1004,7 +989,7 @@ function brewTrollerExecCommand(cmdObj, index, params, host, user, pwd, callback
 //           }
 //		},
 		data: command,
-		dataType: "jsonp",
+		dataType: "json",
 		success:function(result){
 			var object = brewTrollerParseResponse(result, cmdObj);
 			callback(object);
@@ -1060,7 +1045,7 @@ function millisecondsToTime(milli)
 //	var h = date.getHours();
 //	var m = date.getMinutes();
 //	var s = date.getSeconds();
-
+	
   var h = Math.floor(milli / 3600000);
   var m = Math.floor((milli - (h * 3600000)) / 60000);
   var s = Math.floor((milli - (m * 60000) - (h*3600000)) / 1000);
@@ -1070,7 +1055,7 @@ function millisecondsToTime(milli)
 
 function millisecondsToTimerDisplay(milli)
 {
-
+	
   var h = Math.floor(milli / 3600000),
   	  m = Math.floor((milli - (h * 3600000)) / 60000),
   	  s = Math.floor((milli - (m * 60000) - (h*3600000)) / 1000);
@@ -1078,7 +1063,7 @@ function millisecondsToTimerDisplay(milli)
   if (h < 10) {h = "0" + h;}
   if (m < 10) {m = "0" + m;}
   if (s < 10) {s = "0" + s;}
-
+  
   return h + ":" + m + ":" + s;
 }
 
