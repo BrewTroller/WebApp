@@ -154,7 +154,7 @@
                             <li><a href="#"id="programModalButton" data-toggle="modal" data-target="#modal_programPicker">Load Recipe</a></li>
                         </ul>
                     </li>
-                    <li><a href="#" class="btn-lg" data-toggle="modal" data-target="#modal_settings"><span class="glyphicon glyphicon-cog"></a></li>
+                    <li><a href="#" class="btn-lg" data-toggle="modal" data-target="#modal_settings"><span class="glyphicon glyphicon-cog"></span></a></li>
                 	<li><button id="button_alarm" class="btn btn-default btn-lg" onClick="click_buttonAlarm('mash');"><span class="glyphicon glyphicon-warning-sign"></span></button></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -202,7 +202,7 @@
                         <div id="div_hltFlowRate"></div>
                         <div class="input-group">
 					      <span class="input-group-btn">
-					        <button id="hltTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
+					        <button id="hltTempSetBtn" class="btn btn-default" type="button">Set Temp</button>
 					      </span>
 					      <input id="hltSetTemp" type="text" class="form-control">
 					    </div><!-- /input-group -->
@@ -221,13 +221,13 @@
 								<div class="col-sm-6">
 									<div class="btn-group-vertical btn-group-sm" data-toggle="buttons">
 									  <label class="btn btn-default">
-									  	<input type="radio" class="boilControl" name="boilOff" id="boilOff">Kettle Off</input>
+									  	<input type="radio" class="boilControl" name="boilOff" id="boilOff">Kettle Off
 									  </label>
 									   <label class="btn btn-default">
-									  	<input type="radio" class="boilControl" name="boilAuto" id="boilAuto">Auto Boil</input>
+									  	<input type="radio" class="boilControl" name="boilAuto" id="boilAuto">Auto Boil
 									  </label>
 									   <label class="btn btn-default">
-									  	<input type="radio" class="boilControl" name="boilManual" id="boilManual">Manual Boil</input>
+									  	<input type="radio" class="boilControl" name="boilManual" id="boilManual">Manual Boil
 									  </label>
 									</div>
 								</div>
@@ -376,7 +376,7 @@
                         <div id="div_mashFlowRate"></div>
                         <div class="input-group">
 					      <span class="input-group-btn">
-					        <button id="mashTempSetBtn" class="btn btn-default" type="button"">Set Temp</button>
+					        <button id="mashTempSetBtn" class="btn btn-default" type="button">Set Temp</button>
 					      </span>
 					      <input id="mashSetTemp" type="text" class="form-control">
 					    </div><!-- /input-group -->
@@ -846,7 +846,6 @@
             </div>
         </div>
     </div>
-  </div>
 </body>
 <script src="js/brewtroller.js"></script>
 <script src="js/cgiByteCodeMap.js"></script>

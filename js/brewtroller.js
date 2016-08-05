@@ -56,9 +56,6 @@ Brewtroller.init = function () {
   $('#connectionModalCancel').on("click", function() {
 	Brewtroller.connected.click_buttonConnect();
   });
-  $('#settingsSaveBtn').on("click", function() {
-    Brewtroller.connected.saveConnectionSettings();
-  });
   $('#button_reset').on("click", function() {
 	Brewtroller.reset.resetPrograms(0);
   });
@@ -228,7 +225,7 @@ Brewtroller.init = function () {
   storedHost = localStorage.getItem('btHost');
   if (storedHost) {
     host = storedHost;
-    $('#sidr-host-settings #settingsHost').attr('placeholder', host);
+    $('#bt-host-settings #settingsHost').attr('placeholder', host);
     Brewtroller.connected.click_buttonConnect();
   }
 
@@ -294,9 +291,10 @@ Brewtroller.connected = {
         $("#button_connect").html("Disconnect");
     },
     saveConnectionSettings : function () {
-      host = $('#settingsHost').val();
-      $('#settingsHost').text("host");
-      localStorage.setItem('btHost',host);
+      host = $('#sidr-host-settings #settingsHost').val();
+//      Not sure why we would use text() instead of val() here.
+//      $('#sidr-host-settings #settingsHost').val("host");
+      localStorage.setItem('btHost', host);
     }
 
 };
@@ -567,7 +565,7 @@ Brewtroller.timer = {
         rStatus = "On";
       }
     //$(id).html('<small class="text-muted">timer </small><span class="timerText">' + millisecondsToTime(value) + "</span> / " + rStatus);
-    if (id) { id.setValue(millisecondsToTimerDisplay(value)); }
+    if (value) {id.setValue(millisecondsToTimerDisplay(value));}
     },
     click_startTimer : function (vessel) {
       var timerStatus,
