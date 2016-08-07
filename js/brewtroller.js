@@ -56,9 +56,6 @@ Brewtroller.init = function () {
   $('#connectionModalCancel').on("click", function() {
 	Brewtroller.connected.click_buttonConnect();
   });
-  $('#settingsSaveBtn').on("click", function() {
-    Brewtroller.connected.saveConnectionSettings();
-  });
   $('#button_reset').on("click", function() {
 	Brewtroller.reset.resetPrograms(0);
   });
@@ -83,6 +80,10 @@ Brewtroller.init = function () {
   $("#programModalButton").on("click", function () {
 	  Brewtroller.program.getProgramList();
   });
+  $("#button_alarm").on("click", function () {
+      Brewtroller.alarm.click_buttonAlarm();
+  });
+  
   hltGauge = new Gauge({
 	  						renderTo : 'hltGauge',
 	  						maxValue : 250,
@@ -228,7 +229,7 @@ Brewtroller.init = function () {
   storedHost = localStorage.getItem('btHost');
   if (storedHost) {
     host = storedHost;
-    $('#settingsHost').attr('placeholder', host);
+    $('#bt-host-settings #settingsHost').attr('placeholder', host);
     Brewtroller.connected.click_buttonConnect();
   }
 
@@ -294,9 +295,10 @@ Brewtroller.connected = {
         $("#button_connect").html("Disconnect");
     },
     saveConnectionSettings : function () {
-      host = $('#settingsHost').val();
-      $('#settingsHost').text("host");
-      localStorage.setItem('btHost',host);
+      host = $('#sidr-host-settings #settingsHost').val();
+//      Not sure why we would use text() instead of val() here.
+//      $('#sidr-host-settings #settingsHost').val("host");
+      localStorage.setItem('btHost', host);
     }
 
 };
@@ -429,13 +431,13 @@ Brewtroller.program = {
 			if (ratio === "") ratio = value["WATER_GRAIN_RATIO"]; //Use first entry. Need to confirm.
 			var stepTime = parseInt(value["STEP_TIME"]);
 			var stepTemp = Number(correctUnits(parseFloat(value["STEP_TEMP"]),"temperature","metric", btUnits)).toFixed(0);
-			if(value["NAME"] == "Protein Rest") {
+			if(value["NAME"] === "Protein Rest") {
 				proteinTime = stepTime;
 				proteinTemp = stepTemp;
-			}else if (value["NAME"] == "Saccharification" || mashArray.length == 1) { //If only one entry use as Saach
+			}else if (value["NAME"] === "Saccharification" || mashArray.length === 1) { //If only one entry use as Saach
 				saccTime = stepTime;
 				saccTemp = stepTemp;
-			}else if (value["NAME"] == "Mash Out") {
+			}else if (value["NAME"] === "Mash Out") {
 				mashOutTemp = stepTemp;
 				mashOutTime = stepTime;
 			}
@@ -549,7 +551,7 @@ Brewtroller.timer = {
     if (timerId === 1) {vessel = "boil";}
     brewTrollerExecCommand(BTCMD_GetTimerStatus, timerId, null, host, username, password, function(data){
       timerStatus = data.TimerStatus;
-      if (timerStatus == "0") {
+      if (timerStatus === "0") {
         $("#" + vessel + "TimerButton").text("Manual Start");
         Brewtroller.timer.printTimer();
       }else{
@@ -567,20 +569,20 @@ Brewtroller.timer = {
         rStatus = "On";
       }
     //$(id).html('<small class="text-muted">timer </small><span class="timerText">' + millisecondsToTime(value) + "</span> / " + rStatus);
-    if (id) {id.setValue(millisecondsToTimerDisplay(value));}
+    if (value) {id.setValue(millisecondsToTimerDisplay(value));}
     },
     click_startTimer : function (vessel) {
       var timerStatus,
       timerId = "",
       setTime = "";
-      if (vessel == "mash") {
+      if (vessel === "mash") {
         timerId = 0;
       } else if (vessel === "boil") {
         timerId = 1;
       }
       brewTrollerExecCommand(BTCMD_GetTimerStatus, timerId, null, host, username, password, function(data){
         timerStatus = data.TimerStatus;
-        if (timerStatus == "0") {
+        if (timerStatus === "0") {
           $timer = "werwe";
           brewTrollerExecCommand(BTCMD_StartTimer, timerId, {"TimerStatus": 1}, host, username, password, function(data){
           });
@@ -601,12 +603,12 @@ Brewtroller.timer = {
         	  setTime,
         	  hours,
         	  minutes;
-        if (vessel == "mash") {
+        if (vessel === "mash") {
           timerId = 0;
           hours = $("#mashTimePicker").val().split(":")[0];
           minutes = $("#mashTimePicker").val().split(":")[1];
           milliseconds = hoursMinutesToMilliseconds(hours, minutes);
-        } else if (vessel == "boil") {
+        } else if (vessel === "boil") {
           timerId = 1;
           hours = $("#boilTimePicker").val().split(":")[0];
           minutes = $("#boilTimePicker").val().split(":")[1];
@@ -639,8 +641,8 @@ Brewtroller.temp = {
 
     printHeatPower : function (id, heatPower)
     {
-        //$(id).html('<small class="text-muted">heat power </small>' + (heatPower == 0 ? "Off" : heatPower == 100 ? '<span class="text text-danger">On</span>' : (heatPower + "%")));
-        $(id).html((heatPower == 0 ? '<img src="images/redOffLED.png" width="20" height="20">' : heatPower == 100 ? '<img src="images/redOnLED.png" width="20" height="20">' : '<img src="images/redOnLED.png" width="20" height="20">' + (heatPower + "%")));
+        //$(id).html('<small class="text-muted">heat power </small>' + (heatPower === 0 ? "Off" : heatPower === 100 ? '<span class="text text-danger">On</span>' : (heatPower + "%")));
+        $(id).html((heatPower === 0 ? '<img src="images/redOffLED.png" width="20" height="20">' : heatPower === 100 ? '<img src="images/redOnLED.png" width="20" height="20">' : '<img src="images/redOnLED.png" width="20" height="20">' + (heatPower + "%")));
     }
 };
 
@@ -679,10 +681,10 @@ Brewtroller.status = {
 		if(programName2 !== "") {
 			$("#boilZonePanel .panel-title").html(programName2);
 		}
-		if(programStep1 == "255") {
+		if(programStep1 === "255") {
 			$("#mashZonePanel .panel-title").html('No Program Selected');
 			}
-		if(programStep2 == "255") {
+		if(programStep2 === "255") {
 			$("#boilZonePanel .panel-title").html('No Program Selected');
 			}
 		$('#currStatusProg1').html(Brewtroller.status.translateStepCode(programStep1));
@@ -720,31 +722,31 @@ Brewtroller.status = {
         Brewtroller.status.printProgramThread("#div_programThread2", data.Program2_Step, data.Program2_Name);
         Brewtroller.timer.printTimer(mashdisplay, data.Mash_TimerValue, data.Mash_TimerStatus);
         Brewtroller.timer.printTimer(display, data.Boil_TimerValue, data.Boil_TimerStatus);
-        printAlarm("#button_alarm", data.alarmStatus);
+        Brewtroller.alarm.printAlarm("#button_alarm", data.alarmStatus);
     		Brewtroller.status.printTemperature("#hltGauge", data.HLT_Temperature);
         //Brewtroller.status.printTemperature("#div_hltTemperature", data.HLT_Temperature);
         Brewtroller.status.printSetpoint("#div_hltSetpoint", data.HLT_Setpoint);
         Brewtroller.temp.printHeatPower("#div_hltHeatPower", data.HLT_HeatPower);
-		printVolume("#div_hltVolume", data.HLT_Volume);
-		printTargetVolume("#div_hltTargetVolume", data.HLT_TargetVolume);
-		printFlowRate("#div_hltFlowRate", data.HLT_FlowRate);
+		Brewtroller.status.printVolume("#div_hltVolume", data.HLT_Volume);
+		Brewtroller.status.printTargetVolume("#div_hltTargetVolume", data.HLT_TargetVolume);
+		Brewtroller.status.printFlowRate("#div_hltFlowRate", data.HLT_FlowRate);
 		Brewtroller.status.printTemperature("#mashGauge", data.Mash_Temperature);
 		//Brewtroller.status.printTemperature("#div_mashTemperature", data.Mash_Temperature);
         Brewtroller.status.printSetpoint("#div_mashSetpoint", data.Mash_Setpoint);
         Brewtroller.temp.printHeatPower("#div_mashHeatPower", data.Mash_HeatPower);
-		printVolume("#div_mashVolume", data.Mash_Volume);
-		printTargetVolume("#div_mashTargetVolume", data.Mash_TargetVolume);
-		printFlowRate("#div_mashFlowRate", data.Mash_FlowRate);
+		Brewtroller.status.printVolume("#div_mashVolume", data.Mash_Volume);
+		Brewtroller.status.printTargetVolume("#div_mashTargetVolume", data.Mash_TargetVolume);
+		Brewtroller.status.printFlowRate("#div_mashFlowRate", data.Mash_FlowRate);
 		Brewtroller.status.printTemperature("#boilGauge", data.Kettle_Temperature);
 		//Brewtroller.status.printTemperature("#div_kettleTemperature", data.Kettle_Temperature);
         Brewtroller.status.printSetpoint("#div_kettleSetpoint", data.Kettle_Setpoint);
         Brewtroller.temp.printHeatPower("#div_kettleHeatPower", data.Kettle_HeatPower);
-		printVolume("#div_kettleVolume", data.Kettle_Volume);
-		printTargetVolume("#div_kettleTargetVolume", data.Kettle_TargetVolume);
-		printFlowRate("#div_kettleFlowRate", data.Kettle_FlowRate);
+		Brewtroller.status.printVolume("#div_kettleVolume", data.Kettle_Volume);
+		Brewtroller.status.printTargetVolume("#div_kettleTargetVolume", data.Kettle_TargetVolume);
+		Brewtroller.status.printFlowRate("#div_kettleFlowRate", data.Kettle_FlowRate);
 		//printBoilControl("#div_boilControl", data.Boil_ControlState);
 	    Brewtroller.valve.printOutputProfiles("#div_outputProfiles", data.profileStatus);
-		printOutputStatus("#div_outputStatus", data.outputStatus);
+	    Brewtroller.status.printOutputStatus("#div_outputStatus", data.outputStatus);
 		if (data.Boil_ControlState === "2") {
 			$("#powerControl").show();
 			$("#boilManual").parent().button("toggle");
@@ -771,7 +773,7 @@ Brewtroller.status = {
 
     printSetpoint : function(id, gauge, setpoint)
     {
-        //$(id).html('<small class="text-muted">set </small><span class="vesselSet">' + (setpoint == 0 ? "N/A " : (setpoint / 100.0 + '&deg;F</span> ')));
+        //$(id).html('<small class="text-muted">set </small><span class="vesselSet">' + (setpoint === 0 ? "N/A " : (setpoint / 100.0 + '&deg;F</span> ')));
         if (gauge === "#hltGauge") {
         	hltGauge.config.title = "Set: " + setpoint / 100 + "\xB0F";
         	hltGauge.updateConfig();
@@ -782,12 +784,30 @@ Brewtroller.status = {
         //drawGauge();
 
     },
-
     printProgramThread : function (id, step, recipe)
     {
         $(id).html("Step: " + step + " Recipe: " + recipe);
+    },
+    
+    printOutputStatus: function (id, status) {
+        $(id).html("Output Status: " + status);
+    },
+    
+    printVolume: function (id, volume)
+    {
+        $(id).html('<small class="text-muted">volume </small>' + volume / 1000.0 + " Gal");
+    },
+    
+    printTargetVolume: function (id, target)
+    {
+        $(id).html('<small class="text-muted">target volume </small>' + target / 1000.0 + " Gal");
+    },
+    
+    printFlowRate: function (id, flowrate)
+    {
+        $(id).html('<small class="text-muted">flow rate </small>' +  flowrate / 1000 + " Gal/min");
     }
-	};
+};
 
 
 // Boil Control Functions
@@ -795,11 +815,11 @@ Brewtroller.boil = {
 	control : function (control, percentage) {
 		var controlMode,
 			controlPercentage;
-		if (control == "boilOff") {
+		if (control === "boilOff") {
 			controlMode = 0;
 			controlPercentage = 0;
 			$("#powerControl").hide();
-		}else if (control == "boilAuto") {
+		}else if (control === "boilAuto") {
 			controlMode = 1;
 			controlPercentage = 0;
 			$("#powerControl").hide();
@@ -973,6 +993,34 @@ Brewtroller.valve = {
     			);
     }
 };
+
+//Valve Control Functions
+Brewtroller.alarm = {
+        printAlarm: function (id, status) {
+            if (status == 1) {
+                $(id).addClass("btn-danger");
+                $(id).removeClass("btn-default");
+
+            } else {
+                $(id).addClass("btn-default");
+                $(id).removeClass("btn-danger");
+            }
+        },
+        click_buttonAlarm: function ()
+        {
+            brewTrollerExecCommand(BTCMD_SetAlarm, null, { "alarmStatus": "0" }, host, username, password, function(data) {
+                console.log('click_buttonAlarm: ' + data.alarmStatus);
+                Brewtroller.alarm.printAlarm(data.alarmStatus);
+            });
+        },
+        click_buttonAlarmOn: function () {
+            brewTrollerExecCommand(BTCMD_SetAlarm, null, { "alarmStatus": "1" }, host, username, password, function(data) {
+                console.log('click_buttonAlarmOn: ' + data.alarmStatus);
+                Brewtroller.alarm.printAlarm(data.alarmStatus);
+            });
+        }
+};
+
 
 //Command Helper Functions
 function brewTrollerExecCommand(cmdObj, index, params, host, user, pwd, callback){

@@ -109,3 +109,25 @@
 #connectionStatus {
 	color : red;
 }
+
+/*
+ * Sidr sidebar
+ */
+.sidr-inner {
+	margin: 10px;
+}
+
+button.sidr-class-close {
+	display: none;
+}
+
+#sidr-overlay {
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    background: #000
+}

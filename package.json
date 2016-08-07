@@ -17,6 +17,7 @@
   "homepage": "https://github.com/brewtrollergit/brewtrollerWebApp",
   "dependencies": {
     "grunt-init": "^0.3.2",
+    "sidr": "^2.2.1",
     "slideout": "^0.1.9"
   },
   "devDependencies": {
