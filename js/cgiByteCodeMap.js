@@ -430,12 +430,12 @@ var BTCMD_SetProgramSettings = {
             "Sacch2 Minutes",
             "Mashout Temperature",
             "Mashout Minutes",
-            "Sparge Temp",
-            "HLT Setpoint",
-            "Boil Mins",
-            "Pitch Temp",
-            "Boil Additions (Bit Mask)",
-            "Mash Liquor Heat Source (0=HLT, 1=Mash)"
+            "Sparge_Temp",
+            "HLT_Setpoint",
+            "Boil_Mins",
+            "Pitch_Temp",
+            "Boil_Additions",
+            "Mash_Liquor_Heat_Source"
     ],
     rspCode : "%40",
     rspParams : [
@@ -466,7 +466,7 @@ var BTCMD_SetProgramSettings = {
 };
 
 /* @, @
- * %40, %40 
+ * %40, %40
  */
 var BTCMD_GetProgramSettings = {
     reqCode : "%40",

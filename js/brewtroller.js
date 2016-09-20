@@ -83,7 +83,7 @@ Brewtroller.init = function () {
   $("#button_alarm").on("click", function () {
       Brewtroller.alarm.click_buttonAlarm();
   });
-  
+
   hltGauge = new Gauge({
 	  						renderTo : 'hltGauge',
 	  						maxValue : 250,
@@ -366,10 +366,8 @@ Brewtroller.program = {
 	        	    brewTrollerExecCommand(BTCMD_SetProgramVolumes, btProg.getPSlot(), btProg.genSetProgramVolumes(), host, username, password, function (data) {});
 	        	    brewTrollerExecCommand(BTCMD_SetProgramMashTemps, btProg.getPSlot(), btProg.genSetProgramMashTemps(), host, username, password, function (data) {});
 	        	    brewTrollerExecCommand(BTCMD_SetProgramMashMins, btProg.getPSlot(), btProg.genSetProgramMashMins(), host, username, password, function (data) {});
-	        	    /*
 	        	    var beerJSON = $.xml2json(beerXML);
 	        	    Brewtroller.program.sendRecipeToBrewtroller(beerJSON);
-	        	    */
 	          };
 		   $("#modal_beerXMLLoader").modal("hide");
 		   //Brewtroller.program.getProgramList(); This is being run before the new program is sent. Why?
@@ -469,7 +467,7 @@ Brewtroller.program = {
 	  brewTrollerExecCommand(BTCMD_SetProgramSettings,
 			  recipeSlot,
 			  {
-			      "Sparge_Temp": spargeTemp,
+			    "Sparge_Temp": spargeTemp,
 				  "HLT_Setpoint": spargeTemp, //HLT Setpoint
 				  "Boil_Mins": boilTime,
 				  "Pitch_Temp": chillTemp,
@@ -659,14 +657,14 @@ Brewtroller.reset = {
 //Status Functions
 Brewtroller.status = {
 	updateStatusBar : function () {
-		if(programName2 !== "255" && programName2 !== "") {
+		if(typeof programName2 !== "undefined" && typeof programName2 !== "undefined") {
 			$('#boilZonePanel').show();
 //			$('#button_nextStep').show();
 //			$('#button_reset').show();
 		}else{
 			$('#boilZonePanel').hide();
 		}
-		if(programName1 !== "255" && programName1 !== "") {
+		if(typeof programName1 !== "undefined" && typeof programName1 !== "undefined") {
 			$('#mashZonePanel').show();
 //			$('#button_nextStep').show();
 //			$('#button_reset').show();
@@ -788,21 +786,21 @@ Brewtroller.status = {
     {
         $(id).html("Step: " + step + " Recipe: " + recipe);
     },
-    
+
     printOutputStatus: function (id, status) {
         $(id).html("Output Status: " + status);
     },
-    
+
     printVolume: function (id, volume)
     {
         $(id).html('<small class="text-muted">volume </small>' + volume / 1000.0 + " Gal");
     },
-    
+
     printTargetVolume: function (id, target)
     {
         $(id).html('<small class="text-muted">target volume </small>' + target / 1000.0 + " Gal");
     },
-    
+
     printFlowRate: function (id, flowrate)
     {
         $(id).html('<small class="text-muted">flow rate </small>' +  flowrate / 1000 + " Gal/min");
@@ -1123,4 +1121,31 @@ function hoursMinutesToMilliseconds(hours, minutes) {
 	minutesTotal = parseInt(minutes) + hoursToMinutes;
 	milliseconds = minutesTotal * 60000;
 	return milliseconds;
+}
+//Taken from BT Live project
+function correctUnits(input, type, currentSystem, targetSystem) {
+ if (currentSystem == targetSystem) return input;
+  if (currentSystem == "metric"){
+    switch (type){
+      case "temperature":
+        return input * (9/5) + 32;
+      case "volume":
+        return input * 0.264;
+      case "weight":
+        return input * 2.204;
+      case "ratio":
+        return input / 0.9464;
+    }
+  } else {
+    switch (type){
+      case "temperature":
+        return (input - 32)/(9.5);
+      case "volume":
+        return input / 0.264;
+      case "weight":
+        return input / 2.204;
+      case "ratio":
+	      return input * 0.9464;
+    }
+  }
 }
