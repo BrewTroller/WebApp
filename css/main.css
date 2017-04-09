@@ -131,3 +131,13 @@ button.sidr-class-close {
     z-index: 1040;
     background: #000
 }
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
+.col-left {
+	text-align: left;
+}
+.col-right {
+	text-align: right;
+}
