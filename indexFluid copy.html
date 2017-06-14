@@ -1,0 +1,742 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <title>
+
+        WebAppTroller - A web interface for Brewtroller
+
+    </title>
+    <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
+    <link rel="stylesheet" href="framework/css/toolkit-inverse.css">
+    <link rel="stylesheet" href="framework/css/application.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link  href="framework/css/drum.min.css" rel="stylesheet">
+  <style>
+      /* note: this is a hack for ios iframe for bootstrap themes shopify page */
+      /* this chunk of css is not part of the toolkit :) */
+      body {
+        width: 1px;
+        min-width: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+
+
+<body class="with-icon-nav">
+  <nav class="iconav">
+    <a class="iconav-brand" href="../index.html">
+      <img src="./images/TransparentLogoOnly.png" alt="BrewTroller" width="40px" height="35px">
+    </a>
+    <div class="iconav-slider">
+      <ul class="nav nav-pills iconav-nav flex-md-column">
+        <li class="nav-item">
+          <a id="button_connect" class="nav-link" href="../index.html" title="Overview" data-toggle="tooltip" data-placement="right" data-container="body">
+            <i class="fa fa-cogs" aria-hidden="true"></i>
+            <small class="iconav-nav-label hidden-md-up">Overview</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../order-history/index.html" title="Order history" data-toggle="tooltip" data-placement="right" data-container="body">
+            <i class="fa fa-exchange" aria-hidden="true"></i>
+            <small class="iconav-nav-label hidden-md-up">History</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../fluid/index.html" title="Fluid layout" data-toggle="tooltip" data-placement="right" data-container="body">
+            <i class="fa fa-sliders" aria-hidden="true"></i>
+            <small class="iconav-nav-label hidden-md-up">Fluid layout</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="../icon-nav/index.html" title="Icon-nav" data-toggle="tooltip" data-placement="right" data-container="body">
+            <i class="fa fa-list-alt" aria-hidden="true"></i>
+            <small class="iconav-nav-label hidden-md-up">Icon nav</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../docs/index.html" title="Docs" data-toggle="tooltip" data-placement="right" data-container="body">
+            <i class="fa fa-server" aria-hidden="true"></i>
+            <small class="iconav-nav-label hidden-md-up">Docs</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../index-light/index.html" title="Light UI" data-toggle="tooltip" data-placement="right" data-container="body">
+            <span class="icon icon-flash"></span>
+            <small class="iconav-nav-label hidden-md-up">Light UI</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" title="Signed in as mdo" data-toggle="tooltip" data-placement="right" data-container="body">
+            <img src="../assets/img/avatar-mdo.png" alt="" class="rounded-circle">
+            <small class="iconav-nav-label hidden-md-up">@mdo</small>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-fluid container-fluid-spacious">
+
+<div class="hr-divider my-4">
+  <ul class="nav nav-pills hr-divider-content hr-divider-nav" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a href="#sales" class="nav-link active" role="tab" data-toggle="tab" aria-controls="sales">Text</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a href="#inventory" class="nav-link" role="tab" data-toggle="tab" aria-controls="inventory">Gauge</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a href="#profit" class="nav-link" role="tab" data-toggle="tab" aria-controls="profit">PID</a>
+    </li>
+  </ul>
+</div>
+
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="sales">
+    <div class="row ex-graphs text-center">
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <h3>Hot Liquor Tank</h3>
+          <div class="row justify-content-center">
+            <div id="hltTempSet" class="col-5">
+              <h1><i class="fa fa-thermometer-empty" aria-hidden="true"></i> <span id="div_hltTemperature"><strong>70</strong></span></h1>
+              <!-- <div id="div_hltHeatPower">On</div><br> -->
+            </div>
+            <div class="col-3">
+              <h7><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="div_hltSetpoint">140</span></h7>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-4">
+              <h6><i class="fa fa-tint" aria-hidden="true"></i> <span id="div_hltVolume">10 Gal</span></h6>
+            </div>
+            <div class="col-4">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="div_hltTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+      </div>
+      </div>
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <h3>Mash Tun</h3>
+          <div class="row justify-content-center">
+            <div id="hltTempSet" class="col-5">
+              <h1><i class="fa fa-thermometer-empty" aria-hidden="true"></i> <span id="div_mashTemperature"><strong>70</strong></span></h1>
+              <!-- <div id="div_hltHeatPower">On</div><br> -->
+            </div>
+            <div class="col-3">
+              <h7><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="div_mashSetpoint">140</span></h7>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-4">
+              <h6><i class="fa fa-tint" aria-hidden="true"></i> <span id="div_mashVolume">10 Gal</span></h6>
+            </div>
+            <div class="col-4">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="div_mashTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <h3>Boil Kettle</h3>
+          <div class="row justify-content-center">
+            <div id="kettleTempSet" class="col-8">
+              <h1><i class="fa fa-thermometer-empty" aria-hidden="true"></i> <span id="div_kettleTemperature"><strong>70</strong></span></h1>
+              <!-- <div id="div_hltHeatPower">On</div><br> -->
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-4">
+              <h6><i class="fa fa-tint" aria-hidden="true"></i> <span id="div_kettleVolume">10 Gal</span></h6>
+            </div>
+            <div class="col-4">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="div_kettleTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div role="tabpanel" class="tab-pane" id="inventory">
+    <div class="row ex-graphs text-center" id="div_hltTemperature">
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <h3>Hot Liquor Tank</h3>
+          <canvas id="hltGauge" width="500" height="500"></canvas>
+        </div>
+        <div>
+          <br><br><br><br>
+          <h5>Volume</h5>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col">
+              <h6><i class="fa fa-tint" aria-hidden="true"></i> <span id="hltGaugeVolume">10 Gal</span></h6>
+            </div>
+            <div class="col">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i><i class="fa fa-tint" aria-hidden="true"></i> <span id="hltGaugeTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <h3>Mash Tun</h3>
+          <canvas id="mashGauge" width="500" height="500"></canvas>
+        </div>
+        <div class="w-3 mx-auto">
+          <h5>Time</h5>
+          <canvas class="seg" id="mashGaugeTimer" width="200" height="50">
+                    Your browser is unfortunately not supported.
+                  </canvas>
+        </div>
+        <div>
+          <h5>Volume</h5>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col">
+              <h6><i class="fa fa-tint" aria-hidden="true"></i> <span id="mashGaugeVolume">10 Gal</span></h6>
+            </div>
+            <div class="col">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i><i class="fa fa-tint" aria-hidden="true"></i> <span id="mashGaugeTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <h3>Boil Kettle</h3>
+          <canvas id="boilGauge" width="500" height="500"></canvas>
+        </div>
+        <div class="w-3 mx-auto">
+          <h5>Time</h5>
+          <canvas class="seg" id="boilGaugeTimer" width="200" height="50">
+                    Your browser is unfortunately not supported.
+                  </canvas>
+        </div>
+        <div>
+          <h5>Volume</h5>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col">
+              <h6><i class="fa fa-tint" aria-hidden="true"></i> <span id="kettleGaugeVolume">10 Gal</span></h6>
+            </div>
+            <div class="col">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i><i class="fa fa-tint" aria-hidden="true"></i> <span id="kettleGaugeTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div role="tabpanel" class="tab-pane" id="profit">
+    <div class="row ex-graphs text-center">
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <div class="row">
+            <div class="col">
+              <h5><i class="fa fa-thermometer-empty" aria-hidden="true"></i> Temp</h5>
+            </div>
+            <div class="col">
+              <h7><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="div_hltSetpoint">140</span></h7>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <canvas class="seg" id="hltSegTemp" width="200" height="50">
+                Your browser is unfortunately not supported.
+              </canvas>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5><i class="fa fa-tint" aria-hidden="true"></i>  Volume</h5>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h6><i class="fa fa-tint" aria-hidden="true"></i> <span id="hltSegVolume">10 Gal</span></h6>
+            </div>
+            <div class="col">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="hltSegTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <br><br><br><br><br>
+              <h3 class="text-muted">Hot Liquor Tank</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <div class="row">
+            <div class="col">
+              <h5><i class="fa fa-thermometer-empty" aria-hidden="true"></i> Temp</h5>
+            </div>
+            <div class="col">
+              <h7><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="div_mashSetpoint">140</span></h7>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <canvas class="seg" id="mashSegTemp" width="200" height="50">
+                Your browser is unfortunately not supported.
+              </canvas>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5><i class="fa fa-clock-o" aria-hidden="true"></i> Timer</h5>
+            </div>
+            <div class="col">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <canvas class="seg" id="mashSegTimer" width="200" height="50">
+                Your browser is unfortunately not supported.
+              </canvas>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5><i class="fa fa-tint" aria-hidden="true"></i>  Volume</h5>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h6><span id="mashSegVolume">10 Gal</span></h6>
+            </div>
+            <div class="col">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="mashSegTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h3 class="text-muted">Mash Tun</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 mb-4 mb-sm-0">
+        <div class="w-3 mx-auto">
+          <div class="row">
+            <div class="col">
+              <h5><i class="fa fa-thermometer-empty" aria-hidden="true"></i> Temp</h5>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <canvas class="seg" id="boilSegTemp" width="200" height="50">
+                Your browser is unfortunately not supported.
+              </canvas>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5><i class="fa fa-clock-o" aria-hidden="true"></i> Timer</h5>
+            </div>
+            <div class="col">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <canvas class="seg" id="boilSegTimer" width="200" height="50">
+                Your browser is unfortunately not supported.
+              </canvas>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5><i class="fa fa-tint" aria-hidden="true"></i>  Volume</h5>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h6><span id="kettleSegVolume">10 Gal</span></h6>
+            </div>
+            <div class="col">
+              <h6><i class="fa fa-bullseye" aria-hidden="true"></i> <span id="kettleSegTargetVolume">10 Gal</span></h6>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h3 class="text-muted">Boil Kettle</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hr-divider mt-5 mb-4">
+  <h3 class="hr-divider-content hr-divider-heading">Functions</h3>
+</div>
+
+<div class="row">
+  <div class="col-lg-4 mb-5">
+    <div class="list-group mb-3">
+      <h6 class="list-group-header">
+        Recipes
+      </h6>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>ESB</span>
+          <button>load</button>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Stout</span>
+          <button>load</button>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>IPA</span>
+          <button>load</button>
+        </a>
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>ESB</span>
+          <button>load</button>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Stout</span>
+          <button>load</button>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>IPA</span>
+          <button>load</button>
+        </a>
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>ESB</span>
+          <button>load</button>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Stout</span>
+          <button>load</button>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>IPA</span>
+          <button>load</button>
+        </a>
+
+
+    </div>
+
+  </div>
+  <div class="col-lg-4 mb-5">
+    <div class="list-group mb-3">
+      <h6 class="list-group-header">
+        Valve Profiles
+      </h6>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Fill HLT</span>
+          <span class="text-muted">3,929,481</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Fill Mash</span>
+          <span class="text-muted">1,143,393</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Add Grain</span>
+          <span class="text-muted">938,287</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Mash Heat</span>
+          <span class="text-muted">749,393</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Mash Idle</span>
+          <span class="text-muted">695,912</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Sparge In</span>
+          <span class="text-muted">501,938</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Sparge Out</span>
+          <span class="text-muted">392,842</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>HLT Heat</span>
+          <span class="text-muted">298,183</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>HLT Idle</span>
+          <span class="text-muted">193,129</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Kettle Heat</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Kettle Idle</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Kettle Heat</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Boil Additions</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Kettle Lid</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Chiller H20</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Chiller Beer</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Boil Recirc</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Drain</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>User 1</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>User 2</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>User 3</span>
+          <span class="text-muted">93,382</span>
+        </a>
+
+    </div>
+    <a href="#" class="btn btn-outline-primary px-3">View all pages</a>
+  </div>
+  <div class="col-lg-4 mb-5">
+    <div class="list-group mb-3">
+      <span class="list-group-header">
+        <h6 class="pull-left">
+          Individual Output Status
+        </h6>
+        <h6 class="pull-right">Select Valve Profile <button>Save</button></h6>
+      </span>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Output 1</span>
+          <span>Output 2</span>
+          <span>Output 3</span>
+          <span>Output 4</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Output 5</span>
+          <span>Output 6</span>
+          <span>Output 7</span>
+          <span>Output 8</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Output 9</span>
+          <span>Output 10</span>
+          <span>Output 11</span>
+          <span>Output 12</span>
+        </a>
+
+        <a class="list-group-item list-group-item-action justify-content-between" href="#">
+          <span>Output 13</span>
+          <span>Output 14</span>
+          <span>Output 15</span>
+          <span>Output 16</span>
+        </a>
+
+    </div>
+    <a href="#" class="btn btn-outline-primary px-3">View all pages</a>
+  </div>
+</div>
+
+  </div>
+
+<!-- Modals -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form">
+    			<h4 class="form-title">Settings</h4>
+    			<div class="form-group">
+    				<label for="hostname">Host</label>
+    				<div>
+    					<input type="text" class="form-control" id="settingsHost"
+    						data-placeholder="Enter hostname or IP"
+    						placeholder="Enter hostname or IP">
+    				</div>
+    			</div>
+    			<div class="form-group">
+    				<div>
+    					<div class="checkbox">
+    						<label> <input type="checkbox"> Use authentication
+    						</label>
+    					</div>
+    				</div>
+    			</div>
+    			<div id="settingsAuth">
+    				<div class="form-group">
+    					<label for="username" class="control-label">Username</label>
+    					<div>
+    						<input type="text" class="form-control" id="settingsUser"
+    							data-placeholder="Enter user name" placeholder="Enter user name"
+    							disabled>
+    					</div>
+    				</div>
+    				<div class="form-group">
+    					<label for="password" class="control-label">Password</label>
+    					<div>
+    						<input type="password" class="form-control" id="settingsPassword"
+    							data-placeholder="Enter password" placeholder="Enter password"
+    							disabled>
+    					</div>
+    				</div>
+    			</div>
+    			<div class="pull-right">
+    				<button id="settingsCancelBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    				<button id="settingsSaveBtn" class="btn btn-primary">Save</button>
+    			</div>
+    		</form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Temp Set Modal -->
+<div class="modal fade" id="tempSetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tempSetModalTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form">
+    			<h4 class="form-title">Choose New Set Temp</h4>
+    			<div class="form-group">
+    				<label for="hostname">Temperature</label>
+    				<div id="tempDrum">
+
+    				</div>
+    			</div>
+    			<div class="pull-right">
+    				<button id="settingsCancelBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    				<button id="settingsSaveBtn" class="btn btn-primary">Save</button>
+    			</div>
+    		</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script src="./framework/js/jquery.min.js"></script>
+    <script src="./framework/js/tether.min.js"></script>
+    <script src="./framework/js/chart.js"></script>
+    <script src="./framework/js/tablesorter.min.js"></script>
+    <script src="./framework/js/toolkit.js"></script>
+    <script src="./framework/js/application.js"></script>
+    <script src="./framework/segment-display.js"></script>
+    <script src="./framework/gauge.min.js"></script>
+    <script src="./framework/js/drum.min.js"></script>
+    <script src="./framework/js/hammer.min.js"></script>
+    <script src="./js/brewtrollerCore.js"></script>
+    <script src="./js/brewtrollerFluid.js"></script>
+    <script src="./js/cgiByteCodeMap.js"></script>
+    <script src="./js/programData.js"></script>
+    <script>
+      // execute/clear BS loaders for docs
+      $(function(){while(window.BS&&window.BS.loader&&window.BS.loader.length){(window.BS.loader.pop())()}})
+    </script>
+    <script>
+  	Brewtroller.init();
+  	</script>
+  </body>
+</html>

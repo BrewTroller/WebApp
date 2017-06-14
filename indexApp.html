@@ -1,0 +1,97 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <title>
+
+        Fluid &middot;
+
+    </title>
+
+    <link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
+    <link rel="stylesheet" href="framework/css/toolkit-inverse.css">
+    <link rel="stylesheet" href="framework/css/application.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link  href="framework/css/drum.min.css" rel="stylesheet">
+
+    <style>
+      /* note: this is a hack for ios iframe for bootstrap themes shopify page */
+      /* this chunk of css is not part of the toolkit :) */
+      body {
+        width: 1px;
+        min-width: 100%;
+        *width: 100%;
+      }
+    </style>
+  </head>
+
+
+<body>
+
+<div class="hr-divider mt-3 mb-5">
+  <h3 class="hr-divider-content hr-divider-heading">Quick Start</h3>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="card text-center">
+      <i id="bigIcons" class="fa fa-list-alt" aria-hidden="true"></i>
+      <div class="card-block">
+        <p class="card-text">Recipes</p>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card text-center">
+      <i class="fa fa-beer" aria-hidden="true"></i>
+      <div class="card-block">
+        <p class="card-text">Brew</p>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card text-center">
+      <i class="fa fa-sliders" aria-hidden="true"></i>
+      <div class="card-block">
+        <p class="card-text">Settings and Configuration</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hr-divider mt-3 mb-5">
+  <h3 class="hr-divider-content hr-divider-heading">BrewTroller</h3>
+</div>
+
+  <script src="./framework/js/jquery.min.js"></script>
+  <script src="./framework/js/tether.min.js"></script>
+  <script src="./framework/js/chart.js"></script>
+  <script src="./framework/js/tablesorter.min.js"></script>
+  <script src="./framework/js/toolkit.js"></script>
+  <script src="./framework/js/application.js"></script>
+  <script src="./framework/segment-display.js"></script>
+  <script src="./framework/gauge.min.js"></script>
+  <script src="./framework/js/drum.min.js"></script>
+  <script src="./framework/js/hammer.min.js"></script>
+  <script src="./js/brewtrollerCore.js"></script>
+  <script src="./js/brewtrollerFluid.js"></script>
+  <script src="./js/cgiByteCodeMap.js"></script>
+  <script src="./js/programData.js"></script>
+  <script>
+    // execute/clear BS loaders for docs
+    $(function(){while(window.BS&&window.BS.loader&&window.BS.loader.length){(window.BS.loader.pop())()}})
+  </script>
+  <script>
+  Brewtroller.init();
+  </script>
+  </body>
+</html>
