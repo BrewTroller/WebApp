@@ -141,3 +141,9 @@ button.sidr-class-close {
 .col-right {
 	text-align: right;
 }
+.container-fluid-spacious {
+	padding-left: 80px;
+}
+#bigButtons {
+	font-size: 40pt;
+}
